@@ -153,6 +153,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setupClickListeners() {
         findViewById(R.id.cardCamera).setOnClickListener(v -> captureImage());
         findViewById(R.id.cardPicture).setOnClickListener(v -> openGallery());
+
+        //  找到 database 的 ImageView 並設定點擊事件
+        ImageView imageViewDatabase = findViewById(R.id.image_database);
+        if (imageViewDatabase != null) {
+            imageViewDatabase.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // 啟動 DatabaseActivity
+                    Intent intent = new Intent(MainActivity.this, database.class);
+                    startActivity(intent);
+                }
+            });
+        } else {
+            Log.e("MainActivity", "image_view_database not found in layout");
+        }
+
+
+        //  找到 orb 的 ImageView 並設定點擊事件 (新增)
+        ImageView imageViewORB = findViewById(R.id.image_orb);
+        if (imageViewORB != null) {
+            imageViewORB.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // 啟動 DatabaseActivity
+                    Intent intent = new Intent(MainActivity.this, ORBActivity.class);
+                    startActivity(intent);
+                }
+            });
+        } else {
+            Log.e("MainActivity", "image_view_database not found in layout");
+        }
     }
 
     //啟動相機應用程式來拍照
