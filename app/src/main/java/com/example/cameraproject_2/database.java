@@ -36,10 +36,7 @@ public class database extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // 修正 1: 設定正確的佈局檔
-        setContentView(R.layout.activity_database); // 假設你的佈局檔叫做 activity_database.xml
-
-
+        setContentView(R.layout.activity_database);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -143,13 +140,12 @@ public class database extends AppCompatActivity {
                     String imageFileName = cursor.getString(cursor.getColumnIndexOrThrow("image"));
                     String fileExtension = cursor.getString(cursor.getColumnIndexOrThrow("file_extension"));
 
-                    // Combine imageFileName and fileExtension
                     String fullImageFileName = imageFileName  + fileExtension;
 
                     String imagePath = getImagePathFromName(fullImageFileName);
                     Log.d("ImageDisplay", "Image path: " + imagePath);
 
-                    // Create ImageView
+                    //圖片
                     ImageView imageView = new ImageView(this);
                     imageView.setId(View.generateViewId());
                     imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
@@ -159,7 +155,6 @@ public class database extends AppCompatActivity {
                     );
                     imageView.setLayoutParams(imageParams);
 
-                    // Load image using Glide
                     File imageFile = new File(imagePath);
                     if (imageFile.exists()) {
                         Glide.with(this)
@@ -167,10 +162,9 @@ public class database extends AppCompatActivity {
                                 .into(imageView);
                     } else {
                         Log.e("ImageDisplay", "Image file not found: " + imagePath);
-                        imageView.setImageResource(R.drawable.ic_launcher_background); // Placeholder
+                        imageView.setImageResource(R.drawable.ic_launcher_background);
                     }
 
-                    // Create TextView
                     TextView textView = new TextView(this);
                     textView.setId(View.generateViewId());
                     textView.setText(description);
@@ -181,11 +175,9 @@ public class database extends AppCompatActivity {
                     );
                     textView.setLayoutParams(textParams);
 
-                    // Add views to container
                     imagesContainer.addView(imageView);
                     imagesContainer.addView(textView);
 
-                    // Apply constraints
                     ConstraintSet set = new ConstraintSet();
                     set.clone(imagesContainer);
 

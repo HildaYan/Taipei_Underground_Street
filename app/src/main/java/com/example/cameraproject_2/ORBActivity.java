@@ -1,6 +1,5 @@
 package com.example.cameraproject_2;
 
-
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -38,6 +37,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+//public class ORB extends AppCompatActivity
 public class ORBActivity extends AppCompatActivity {
 
     private static final int REQUEST_IMAGE_PICK = 100; //用於從圖庫選擇圖片
