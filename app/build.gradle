@@ -121,6 +121,41 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 
+//以下為API使用區塊!!!!!!!
+    // AndroidX
+    implementation "androidx.appcompat:appcompat:1.6.1" // 請檢查最新版本
+    implementation "com.google.android.material:material:1.9.0" // 請檢查最新版本
+    implementation "androidx.constraintlayout:constraintlayout:2.1.4" // 請檢查最新版本
+
+    // Retrofit for network requests
+    implementation "com.squareup.retrofit2:retrofit:2.9.0"
+    implementation "com.squareup.retrofit2:converter-gson:2.9.0" // 用於 JSON 解析
+    implementation "com.squareup.okhttp3:okhttp:4.10.0"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.10.0" // 可選，網路日誌
+
+    // Room
+    def room_version = "2.6.1" // 使用最新的穩定版本
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    // Kotlin Extensions and Coroutines support for Room
+    implementation "androidx.room:room-ktx:$room_version"
+    // Test helpers
+    testImplementation "androidx.room:room-testing:$room_version"
+
+
+    // ViewModel and LiveData
+    implementation "androidx.lifecycle:lifecycle-viewmodel:2.6.2" // 請檢查最新版本
+    implementation "androidx.lifecycle:lifecycle-livedata:2.6.2"
+    implementation "androidx.activity:activity:1.8.0" // For by viewModels() if you were using Kotlin, but for Java use ViewModelProvider
+}
+
+//api-test分支新增的 但感覺用不到 先標註起來
+    // 使用 View Binding
+    /*android {
+        // ...
+        buildFeatures {
+            viewBinding true
+        }*/
 
     //unity需要
     implementation 'com.google.ar:core:1.44.0'
@@ -146,4 +181,5 @@ dependencies {
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
     implementation 'com.google.android.material:material:1.9.0'
         
+
 }

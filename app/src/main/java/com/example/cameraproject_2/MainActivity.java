@@ -31,6 +31,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -63,7 +64,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+
+// api-test分支的 引入FareQueryActivity
+import com.example.cameraproject_2.ui.FareQueryActivity;
 import java.util.Set;
+
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -128,6 +133,31 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+
+        // 設置 Map 按鈕點擊事件
+        cardMap.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, com.example.cameraproject_2.MapActivity.class);
+            startActivity(intent);
+        });
+      
+        //調用orb location
+        // 初始化 ActivityResultLauncher
+        startOrbActivityLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == RESULT_OK) {
+                            Intent intent = result.getData();
+                            if (intent != null) {
+                                String location = intent.getStringExtra("location");
+                                if (location != null && !location.isEmpty()) {
+                                    // 更新目前顯示
+                                    currentLocationTextView.setText("Location: " + location);
+                                    Log.e("location", location);
+                                } else {
+                                    Toast.makeText(MainActivity.this, "位置信息為空", Toast.LENGTH_SHORT).show();
+                                }
 
         navigationView.bringToFront();
         navigationView.setNavigationItemSelectedListener(this);
