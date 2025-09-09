@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 選中時的顏色 -->
+    <item android:color="@color/white" android:state_checked="true"/>
+    <!-- 未選中時的顏色 -->
+    <item android:color="@color/my_forth" android:state_checked="false"/>
+
+</selector>
