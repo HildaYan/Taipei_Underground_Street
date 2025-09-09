@@ -70,7 +70,7 @@
         android:layout_height="62dp"
         android:layout_marginTop="24dp"
         android:textSize="18sp"
-        android:backgroundTint="@color/AADEE3"
+        android:backgroundTint="@color/mainbutton"
         android:textColor="@color/black"
         android:text="查詢"
         app:layout_constraintEnd_toEndOf="parent"

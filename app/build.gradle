@@ -147,7 +147,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel:2.6.2" // 請檢查最新版本
     implementation "androidx.lifecycle:lifecycle-livedata:2.6.2"
     implementation "androidx.activity:activity:1.8.0" // For by viewModels() if you were using Kotlin, but for Java use ViewModelProvider
-}
 
 //api-test分支新增的 但感覺用不到 先標註起來
     // 使用 View Binding

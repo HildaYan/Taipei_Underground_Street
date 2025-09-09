@@ -226,7 +226,7 @@ public class UserProfileActivity extends AppCompatActivity {
                 .readTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .build();
-        String url = "http://13.239.97.6/android_studio/upload_profile_image.php";
+        String url = "http://13.210.14.98/android_studio/upload_profile_image.php";
 
         File file = new File(getRealPathFromURI(imageUri));
         Log.d(TAG, "Uploading image for userId: " + userId + ", file path: " + file.getAbsolutePath() + ", file exists: " + file.exists() + ", file size: " + file.length());
