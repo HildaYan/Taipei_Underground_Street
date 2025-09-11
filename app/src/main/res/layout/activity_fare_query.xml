@@ -4,28 +4,73 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:background="@color/white"
+    android:theme="@style/AppTheme"
     tools:context=".ui.FareQueryActivity">
 
-    <TextView
-        android:id="@+id/textViewTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="捷運票價查詢"
-        android:textSize="26sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
+    <!-- 頂部 BAR -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/top_bar_card"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical">
+
+            <!-- 返回箭頭 -->
+            <ImageView
+                android:id="@+id/backArrow"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="16dp"
+                android:contentDescription="Back"
+                android:src="@drawable/ic_back_arrow_2" />
+
+            <!-- 中間文字 "聊天室" -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="@string/metro_fare_query"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- 底部導航欄 -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/bottom_nav_menu"
+        app:itemIconSize="30dp"
+        app:itemTextColor="@color/bottom_nav_item_color"
+        app:itemIconTint="@color/bottom_nav_item_color"
+        style="@style/CustomBottomNavigationView"
+        android:background="@color/barcolor"
+        app:labelVisibilityMode="labeled" />
+
+    <!-- 起始站點選擇 -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/startStationInputLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:hint="選擇起點站"
-        app:layout_constraintTop_toBottomOf="@id/textViewTitle"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:hint="@string/select_start_station_hint"
+        app:layout_constraintTop_toBottomOf="@id/top_bar_card"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -34,20 +79,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="none"
-            android:paddingStart="12dp"
+            android:paddingStart="20dp"
             android:paddingEnd="12dp"
             android:paddingTop="16dp"
             android:paddingBottom="16dp"
             tools:ignore="LabelFor" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- 終點站點選擇 -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/endStationInputLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:hint="選擇終點站"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:hint="@string/select_end_station_hint"
         app:layout_constraintTop_toBottomOf="@id/startStationInputLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -64,6 +112,7 @@
             tools:ignore="LabelFor" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- 查詢按鈕 -->
     <Button
         android:id="@+id/buttonQueryFare"
         android:layout_width="144dp"
@@ -72,11 +121,12 @@
         android:textSize="18sp"
         android:backgroundTint="@color/mainbutton"
         android:textColor="@color/black"
-        android:text="查詢"
+        android:text="@string/query_button_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/endStationInputLayout" />
 
+    <!-- 全票結果 -->
     <TextView
         android:id="@+id/textViewFullFareResult"
         android:layout_width="wrap_content"
@@ -84,13 +134,13 @@
         android:layout_marginTop="24dp"
         android:textSize="18sp"
         android:visibility="gone"
-        tools:text="全票票價：NT$ 25"
+        tools:text="@string/full_fare_price"
         tools:visibility="visible"
         app:layout_constraintTop_toBottomOf="@id/buttonQueryFare"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-    <!--愛心票-->
 
+    <!-- 愛心票結果 -->
     <TextView
         android:id="@+id/textViewConcessionFareResult"
         android:layout_width="wrap_content"
@@ -101,8 +151,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewFullFareResult"
-        tools:text="敬老愛心/兒童(新北)：NT$ 12"
+        tools:text="@string/senior_child_fare_newtaipei"
         tools:visibility="visible" />
+
+    <!-- 台北兒童票結果 -->
     <TextView
         android:id="@+id/textViewTaipeiChildFareResult"
         android:layout_width="wrap_content"
@@ -113,9 +165,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewConcessionFareResult"
-        tools:text="兒童(北市)：NT$ 10"
+        tools:text="@string/child_fare_taipei"
         tools:visibility="visible" />
 
+    <!-- 距離結果 -->
     <TextView
         android:id="@+id/textViewDistanceResult"
         android:layout_width="wrap_content"
@@ -123,12 +176,13 @@
         android:layout_marginTop="8dp"
         android:textSize="18sp"
         android:visibility="gone"
-        tools:text="距離：3.2 km"
+        tools:text="@string/distance_text"
         tools:visibility="visible"
         app:layout_constraintTop_toBottomOf="@id/textViewTaipeiChildFareResult"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- 進度條 -->
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyle"
@@ -140,5 +194,34 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- 圓形圖標與聊天圖標 -->
+    <FrameLayout
+        android:id="@+id/fab_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation">
+
+        <!-- 圓形圖標 -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/circle_icon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:contentDescription="@string/create_new_chat_desc"
+            android:src="@drawable/ic_circle"
+            app:shapeAppearanceOverlay="@style/CircularShapeAppearance" />
+
+        <!-- 聊天圖標，居中疊加 -->
+        <ImageView
+            android:id="@+id/chat_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:contentDescription="@string/chat_icon_desc"
+            android:src="@drawable/map_icon" />
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

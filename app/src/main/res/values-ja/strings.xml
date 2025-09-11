@@ -1,12 +1,12 @@
 <resources>
-    <string name="app_name">Unlost</string>
+    <string name="app_name">NO LOST</string>
 
     <string name="navigation_drawer_open">ナビゲーションドロワーを開く</string>
     <string name="navigation_drawer_close">ナビゲーションドロワーを閉じる</string>
-    <string name="taipei">台北地下街ナビゲーション</string>
+    <string name="taipei">台北駅の情報</string>
     <string name="uploaded_image_desc">アップロードされた画像</string>
-    <string name="database_image_desc">データベース一致画像</string>
-    <string name="location_unknown">位置情報：不明</string>
+    <string name="database_image_desc">データベースに一致した画像</string>
+    <string name="location_unknown">位置：不明</string>
     <string name="upload_image">画像をアップロード</string>
     <string name="appbar_scrolling_view_behavior">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
 
@@ -18,64 +18,247 @@
     <string name="guest">ゲスト</string>
 
     <string name="language_setting">言語設定</string>
-    <string name="user_guide">使用説明</string>
-    <string name="delete_account">アカウント削除</string>
+    <string name="user_guide">ユーザーガイドを見る</string>
+    <string name="delete_account">アカウントを削除</string>
     <string name="language_english">英語</string>
     <string name="language_japanese">日本語</string>
     <string name="language_chinese">中国語</string>
 
-    <string name="user_guide_content">こちらは使用説明の内容です。必要に応じて修正してください。</string>
-    <string name="delete_account_confirm">アカウントを削除してもよろしいですか？この操作は元に戻せません。</string>
+    <string name="user_guide_content">こちらはユーザーガイドの内容です。必要に応じて修正してください。</string>
+    <string name="delete_account_confirm">アカウントを削除しますか？この操作は元に戻せません。</string>
     <string name="delete">削除</string>
     <string name="account_deleted">アカウントが正常に削除されました。</string>
     <string name="user_info_not_found">ユーザー情報が見つかりません。</string>
     <string name="confirm_language_change">言語変更の確認</string>
-    <string name="confirm_language_message">%1$s に言語を変更してもよろしいですか？</string>
-    <string name="language_change_cancelled">言語変更はキャンセルされました。</string>
+    <string name="confirm_language_message">%1$s に言語を変更しますか？</string>
+    <string name="language_change_cancelled">言語変更がキャンセルされました。</string>
 
-    <string name="incorrect_location">位置情報エラー</string>
-    <string name="start_navigation">ナビゲーション開始</string>
+    <string name="incorrect_location">位置エラー</string>
+    <string name="start_navigation">ナビゲーションを開始</string>
 
-    <!-- Added missing strings -->
-    <string name="current_location_label">現在の位置：</string>
+    <string name="current_location_label">現在地：</string>
     <string name="home_page">ホームページに戻りました</string>
     <string name="taipei_info">台北地下街情報</string>
-    <string name="account_logout_confirm">ログアウトしてもよろしいですか？</string>
+    <string name="account_logout_confirm">ログアウトしますか？</string>
     <string name="account_logout_success">ログアウトに成功しました</string>
     <string name="group_invitation_title">グループ招待</string>
     <string name="group_invitation_message">グループ %1$s に招待されました</string>
-    <string name="accept_invitation_success">%1$s グループの招待を承諾しました</string>
-    <string name="reject_invitation_success">%1$s グループの招待を拒否しました</string>
+    <string name="accept_invitation_success">グループ招待を承諾しました：%1$s</string>
+    <string name="reject_invitation_success">グループ招待を拒否しました：%1$s</string>
     <string name="new_group_notification_title">新しいグループ招待</string>
-    <string name="new_group_notification_message">グループ %1$s から招待を受け取りました</string>
+    <string name="new_group_notification_message">グループ %1$s からの招待を受け取りました</string>
 
     <string name="init_failed">アプリケーションの初期化に失敗しました。開発者に連絡してください</string>
-    <string name="navigation_setup_failed">ナビゲーション設定に失敗しました</string>
-    <string name="database_init_failed">データベースの初期化に失敗しました</string>
     <string name="map_load_failed">一致するマップ画像を読み込めませんでした</string>
-    <string name="location_updated">位置が更新されました：%1$s</string>
     <string name="location_not_selected">位置が選択されていません</string>
     <string name="operation_cancelled">操作がキャンセルまたは失敗しました</string>
     <string name="camera_permission_required">カメラ機能を使用するにはカメラとストレージの権限が必要です</string>
-    <string name="notification_permission_granted">通知権限が付与されました</string>
-    <string name="notification_permission_required">グループ招待通知を受信するには通知権限が必要です</string>
+    <string name="notification_permission_granted">通知の権限が付与されました</string>
 
-    <string name="picture">ピクチャー</string>
+    <string name="picture">画像</string>
     <string name="camera">カメラ</string>
 
     <string name="navigation_home">ホーム</string>
     <string name="navigation_chat">チャットルーム</string>
-    <string name="navigation_member">メンバー情報</string>
-    <string name="navigation_info">台北駅地下街情報</string>
+    <string name="navigation_member">会員情報</string>
+    <string name="navigation_info">台北駅情報</string>
     <string name="navigation_settings">設定</string>
 
     <string name="profile_image">プロフィール画像</string>
     <string name="change_profile">プロフィール画像を変更</string>
-    <string name="username_hint">名前を入力してください</string>
+    <string name="username_hint">名前を入力</string>
     <string name="user_id_label">アカウント: [User ID]</string>
     <string name="logout">ログアウト</string>
     <string name="switch_account">別のアカウントでログイン</string>
     <string name="login">ログイン</string>
 
+    <string name="guide_next">次へ</string>
+    <string name="guide_finish">完了</string>
+    <string name="do_not_show_again">再度表示しない</string>
+    <string name="guide_image_description">ユーザーガイド画像</string>
 
+    <string name="cancel">キャンセル</string>
+    <string name="confirm_logout">ログアウトを確認</string>
+    <string name="confirm">確定</string>
+
+    <string name="input_current_password">現在のパスワードを入力してください</string>
+    <string name="input_new_password">新しいパスワードを入力してください</string>
+    <string name="new_password_length_error">新しいパスワードは6文字以上である必要があります</string>
+    <string name="input_confirm_password">新しいパスワードを再度入力してください</string>
+    <string name="password_mismatch_error">エラー：新しいパスワードと確認パスワードが一致しません</string>
+    <string name="incorrect_current_password">現在のパスワードが正しくありません</string>
+    <string name="password_updated">パスワードが更新されました</string>
+    <string name="password_update_failed">パスワードの更新に失敗しました</string>
+
+    <string name="username_cannot_be_empty">ユーザー名は空にできません</string>
+    <string name="username_same_as_original">新しいユーザー名が元のユーザー名と同じです</string>
+    <string name="username_update_failed">ユーザー名の更新に失敗しました</string>
+
+    <string name="no_network_local_load_only">ネットワーク接続がありません。ローカルからのみメッセージを読み込みます</string>
+    <string name="group_not_selected">グループが選択されていません</string>
+    <string name="group_no_members">グループにメンバーがいません</string>
+    <string name="please_login_first">まずログインしてください</string>
+    <string name="no_network_location_saved">ネットワーク接続がありません。位置情報はローカルに保存されました</string>
+    <string name="welcome_to_group">ようこそ</string>
+    <string name="error_updating_message">メッセージの更新中にエラーが発生しました</string>
+    <string name="server_error_retry_fetch_all">サーバーエラー、全メッセージの取得を再試行</string>
+    <string name="network_error_retry_later">ネットワークエラー、後で再試行します</string>
+    <string name="sync_invitation_failed">招待の同期に失敗しました。ネットワークを確認するか、後で再試行してください</string>
+    <string name="sync_failed">同期に失敗しました</string>
+    <string name="sync_group_invitation_failed_retry">グループ招待の同期に失敗しました。再試行しますか？</string>
+    <string name="retry">再試行</string>
+    <string name="accept">承諾</string>
+    <string name="reject">拒否</string>
+    <string name="please_accept_group_invitation">メッセージを送信するにはまずグループ招待を承諾してください</string>
+    <string name="message_cannot_be_empty">メッセージは空にできません</string>
+    <string name="unable_to_send_message">メッセージを送信できません: </string>
+    <string name="server_error">サーバーエラー: </string>
+    <string name="json_parse_error">サーバー応答を解析できません</string>
+    <string name="server_error_code">サーバーエラー: </string>
+    <string name="unable_to_prepare_message">メッセージを準備できません</string>
+    <string name="no_new_messages">新しいメッセージはありません</string>
+    <string name="unknown_error">不明なエラー</string>
+    <string name="fetch_messages_failed">メッセージの取得に失敗しました: </string>
+    <string name="loading_messages">メッセージを再読み込み中</string>
+    <string name="input_message_hint">メッセージを入力...</string>
+    <string name="please_accept_group_invitation_to_send">メッセージを送信するにはまずグループ招待を承諾してください</string>
+    <string name="create_group">グループを作成</string>
+    <string name="logged_out">ログアウトしました</string>
+
+    <string name="username_cannot_be_blank">ユーザー名は空白にできません</string>
+    <string name="email_cannot_be_blank">メールアドレスは空白にできません</string>
+    <string name="invalid_email_address">有効なメールアドレスを入力してください</string>
+    <string name="password_cannot_be_blank">パスワードは空白にできません</string>
+    <string name="password_min_length">パスワードは6文字以上である必要があります</string>
+    <string name="confirm_password_cannot_be_blank">パスワードを再度確認してください</string>
+    <string name="passwords_do_not_match">入力したパスワードが一致しません</string>
+    <string name="please_enter_member_id">メンバーIDを入力してください</string>
+    <string name="max_group_members">グループメンバーは最大30人です</string>
+    <string name="member_already_added">このメンバーはすでに追加されています</string>
+    <string name="user_not_found">ユーザーが見つかりません。ユーザーIDを確認してください</string>
+    <string name="please_enter_group_name">グループ名を入力してください</string>
+    <string name="please_select_at_least_one_member">少なくとも1人のメンバーを選択してください</string>
+    <string name="group_creation_success">グループが正常に作成され、招待が送信されました</string>
+    <string name="group_creation_failure">グループの作成に失敗しました</string>
+    <string name="navigation_setup_failed">ナビゲーションまたはアップロードの設定に失敗しました</string>
+
+    <string name="database_init_failed">データベースの初期化に失敗しました</string>
+    <string name="unable_to_get_photo">撮影した写真を取得できません。もう一度試してください</string>
+    <string name="photo_cancelled_or_failed">写真撮影がキャンセルまたは失敗しました</string>
+    <string name="no_image_selected">画像が選択されていません</string>
+    <string name="image_selection_cancelled_or_failed">画像選択がキャンセルまたは失敗しました</string>
+    <string name="cannot_get_group_name">グループが見つかりません</string>
+    <string name="cannot_get_invitation_group_name">招待IDのグループ名を取得できません: </string>
+    <string name="unable_to_create_image_file">画像ファイルを作成できません</string>
+    <string name="camera_app_not_found">カメラアプリが見つかりません。デバイスにカメラアプリがインストールされていることを確認してください</string>
+    <string name="camera_or_storage_permission_denied">カメラ機能を使用するにはカメラとストレージの権限が必要です</string>
+    <string name="notification_permission_required">グループ招待通知を受信するには通知の権限が必要です</string>
+    <string name="select_image_source">画像のソースを選択してください</string>
+    <string name="from_camera">カメラから</string>
+    <string name="from_picture">アルバムから</string>
+    <string name="upload">アップロード</string>
+    <string name="unknown_location">不明な位置</string>
+    <string name="username_empty_error">ユーザー名は空白にできません</string>
+    <string name="password_empty_error">パスワードは空白にできません</string>
+    <string name="progress_logging_in">ログイン中...</string>
+    <string name="login_success">ログインに成功しました</string>
+    <string name="login_failed">ログインに失敗しました。ユーザー名またはパスワードを確認してください</string>
+
+    <string name="invitation_status_pending">招待を受け取りましたが、まだ承諾していません</string>
+    <string name="invitation_status_accepted">承諾済み</string>
+    <string name="invitation_status_rejected">拒否済み</string>
+    <string name="button_accept">承諾</string>
+
+    <string name="password_sync_failed">パスワードの同期に失敗しました: </string>
+    <string name="password_sync_success">パスワードの同期に成功しました</string>
+    <string name="location_updated">位置が更新されました：%1$s</string>
+    <string name="not_joined_any_chatroom">まだどのチャットルームにも参加していません</string>
+    <string name="select_chatroom">共有するチャットルームを選択</string>
+    <string name="location_shared_message">選択したチャットルームに位置を共有しました</string>
+    <string name="location_share_prefix">位置共有:</string>
+    <string name="matching_in_progress">マッチング中、しばらくお待ちください...</string>
+    <string name="please_login">まずログインしてください</string>
+
+    <string name="label_name">名前: </string>
+    <string name="unknown_user">不明なユーザー</string>
+    <string name="unknown_id">不明なID</string>
+
+    <string name="confirm_delete_title">削除の確認</string>
+    <string name="confirm_delete_message">アカウントを削除しますか？この操作は元に戻せません！</string>
+    <string name="account_deleted_failed">アカウントの削除に失敗しました</string>
+    <string name="no_match_result">一致する結果がありません</string>
+    <string name="match_first">合計 %d</string>
+    <string name="match_second">%d 件の一致結果</string>
+    <string name="confirm_location_title">位置の確認</string>
+    <string name="confirm_location_message">現在地は %1$s です\n確認しますか？</string>
+    <string name="button_see_again">もう一度確認</string>
+    <string name="change_password">パスワードの変更</string>
+    <string name="original_password">元のパスワード</string>
+    <string name="new_password">新しいパスワード</string>
+    <string name="confirm_password">パスワードの確認</string>
+    <string name="update">更新</string>
+    <string name="error_password_mismatch">エラー：新しいパスワードと確認パスワードが一致しません</string>
+    <string name="enter_new_nickname">新しいニックネームを入力</string>
+    <string name="send_message_hint">メッセージを送信...</string>
+    <string name="send_button_text">送信</string>
+    <string name="chatroom">チャットルーム</string>
+    <string name="search_group_hint">グループ名を検索</string>
+    <string name="group_list_desc">グループリスト</string>
+    <string name="welcome_chatroom">チャットルームへようこそ！</string>
+    <string name="create_chat_tip">＋ボタンを使って他のユーザーとの会話を開始</string>
+    <string name="message_circle_bg_desc">メッセージの円形背景</string>
+    <string name="message_icon_desc">メッセージアイコン</string>
+    <string name="create_new_chat_desc">新しいチャットを作成</string>
+    <string name="chat_icon_desc">チャットアイコン</string>
+
+    <string name="create_account">アカウントを作成</string>
+    <string name="input_username_hint">ユーザー名を入力</string>
+    <string name="input_email_hint">メールアドレスを入力</string>
+    <string name="input_password_hint">パスワードを入力</string>
+    <string name="input_confirm_password_hint">パスワードを再度確認</string>
+    <string name="confirm_register">登録を確認</string>
+    <string name="enter_member_id_hint">メンバーIDを入力</string>
+    <string name="search_button_text">検索</string>
+    <string name="searched_members_info">検索されたメンバー（最大30人）</string>
+
+    <string name="metro_fare_query">地下鉄運賃の問い合わせ</string>
+    <string name="select_start_station_hint">出発駅を選択</string>
+    <string name="select_end_station_hint">到着駅を選択</string>
+    <string name="query_button_text">問い合わせ</string>
+    <string name="full_fare_price">全額運賃：NT$ 25</string>
+    <string name="senior_child_fare_newtaipei">高齢者/子供（新北）：NT$ 12</string>
+    <string name="child_fare_taipei">子供（台北）：NT$ 10</string>
+    <string name="distance_text">距離：3.2 km</string>
+
+    <string name="photo_match_location">写真を使用して現在地をマッチング</string>
+    <string name="upload_photo">写真をアップロード</string>
+    <string name="ar_navigation">ARナビゲーション</string>
+    <string name="enter_ar_navigation">ARナビゲーションに入る</string>
+    <string name="analyzing">分析中</string>
+
+    <string name="personal_account">個人アカウント</string>
+    <string name="enter_account_info">アカウント情報を入力してください</string>
+    <string name="username">ユーザー名</string>
+    <string name="password">パスワード</string>
+    <string name="register">登録</string>
+    <string name="group_notification">グループ通知</string>
+
+    <string name="detection_result">検出結果：</string>
+    <string name="share_location">位置を共有</string>
+    <string name="uploaded_photo">アップロードした写真</string>
+    <string name="reupload">再アップロード</string>
+    <string name="system_returned_photo">システムが返した写真</string>
+
+    <string name="personal_profile">個人プロフィール</string>
+    <string name="change_nickname">ニックネームを変更</string>
+    <string name="match_database">データベースにマッチ</string>
+    <string name="match_results_count">合計 %d 件の一致結果</string>
+    <string name="confirm_new_password_hint">新しいパスワードを確認</string>
+
+    <string name="group_creator_avatar_desc">グループ作成者のアバター</string>
+    <string name="group_name_desc">グループ名</string>
+    <string name="latest_message_desc">最新メッセージ</string>
+    <string name="last_message_time_desc">最終メッセージ時間</string>
+    <string name="default_group_name">グループ名</string>
+    <string name="default_latest_message">最新メッセージ内容</string>
 </resources>

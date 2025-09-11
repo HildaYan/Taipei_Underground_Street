@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
+    android:theme="@style/AppTheme"
     android:background="@android:color/white">
 
     <!-- 頂部 BAR -->
@@ -40,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="設定"
+                android:text="@string/navigation_settings"
                 android:textColor="#000000"
                 android:textSize="20sp"
                 android:textStyle="bold" />

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@style/AppTheme"
     android:background="@drawable/openappbackphoto"
     tools:context=".MainActivity">
 
@@ -49,7 +50,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-medium"
-                    android:text="Unlost"
+                    android:text="NO LOST"
                     android:textColor="@color/white"
                     android:textSize="32sp"
                     android:textStyle="bold" />
@@ -91,7 +92,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="創建帳號"
+                    android:text="@string/create_account"
                     android:textColor="@color/my_primary"
                     android:textSize="32sp"
                     android:textStyle="bold"
@@ -120,7 +121,7 @@
                         android:id="@+id/editTextNewUsername"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="輸入使用者帳號名稱"
+                        android:hint="@string/input_username_hint"
                         android:inputType="text"
                         android:padding="16dp" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -147,7 +148,7 @@
                         android:id="@+id/editTextEmail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="輸入信箱"
+                        android:hint="@string/input_email_hint"
                         android:inputType="textEmailAddress"
                         android:padding="16dp" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -172,7 +173,7 @@
                         android:id="@+id/editTextNewPassword"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="輸入密碼"
+                        android:hint="@string/input_password_hint"
                         android:inputType="textPassword"
                         android:padding="16dp" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -197,7 +198,7 @@
                         android:id="@+id/editTextConfirmPassword"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="再次確認密碼"
+                        android:hint="@string/input_confirm_password_hint"
                         android:inputType="textPassword"
                         android:padding="16dp" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -208,7 +209,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:backgroundTint="@color/color_change_blue"
-                    android:text="確認註冊"
+                    android:text="@string/confirm_register"
                     app:cornerRadius="40dp"
                     android:textColor="#000000"
                     android:layout_gravity="center" />

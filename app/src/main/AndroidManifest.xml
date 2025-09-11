@@ -113,12 +113,6 @@
             android:name=".WhereLocation"
             android:exported="false" />
         <activity
-            android:name=".UnityHanderActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ARNavigationActivity"
-            android:exported="false" />
-        <activity
             android:name=".ORBActivity"
             android:exported="false" />
         <activity
@@ -128,11 +122,6 @@
             android:name=".MainActivity"
             android:exported="false"
             android:configChanges="orientation|screenSize|keyboardHidden" />
-        <activity
-            android:name=".MapActivity"
-            />
-       
-
 
         <activity
             android:name=".ui.FareQueryActivity"

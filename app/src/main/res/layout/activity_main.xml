@@ -33,7 +33,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="80dp">
+                    android:paddingBottom="3dp">
 
                     <!-- 長方形，位於最上方，寬度與螢幕相同 -->
                     <View
@@ -70,7 +70,7 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="10dp"
                         android:gravity="start"
-                        android:text="透過照片來比對現在的位置"
+                        android:text="@string/photo_match_location"
                         android:textColor="#FF000000"
                         android:textSize="20sp"
                         android:textStyle="bold"
@@ -104,7 +104,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:text="上傳照片"
+                                android:text="@string/upload_photo"
                                 android:textColor="#FF000000"
                                 android:textSize="20sp"
                                 android:textStyle="bold"
@@ -116,11 +116,11 @@
                             <!-- 按鈕：上傳圖片，位於下方垂直居中 -->
                             <Button
                                 android:id="@+id/buttonupload"
-                                android:layout_width="200dp"
+                                android:layout_width="250dp"
                                 android:layout_height="60dp"
                                 android:backgroundTint="@color/mainbutton"
                                 android:textColor="#000000"
-                                android:textSize="20sp"
+                                android:textSize="15sp"
                                 android:textStyle="bold"
                                 app:layout_constraintTop_toBottomOf="@id/uploadtext"
                                 app:layout_constraintBottom_toBottomOf="parent"
@@ -131,11 +131,11 @@
                             <!-- Spinner：圖片來源選擇 -->
                             <Spinner
                                 android:id="@+id/imageSourceSpinner"
-                                android:layout_width="200dp"
+                                android:layout_width="220dp"
                                 android:layout_height="60dp"
                                 android:backgroundTint="@color/mainbutton"
                                 android:textColor="#000000"
-                                android:textSize="20sp"
+                                android:textSize="15sp"
                                 android:textStyle="bold"
                                 app:layout_constraintTop_toBottomOf="@id/uploadtext"
                                 app:layout_constraintBottom_toBottomOf="parent"
@@ -153,7 +153,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="16dp"
                         android:gravity="start"
-                        android:text="AR導航"
+                        android:text="@string/ar_navigation"
                         android:textColor="#FF000000"
                         android:textSize="20sp"
                         android:textStyle="bold"
@@ -167,7 +167,6 @@
                         android:layout_height="200dp"
                         android:layout_marginTop="16dp"
                         android:src="@drawable/taipeiimage"
-                        android:alpha="0.4"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/artext" />
@@ -181,11 +180,9 @@
                         android:layout_marginTop="16dp"
                         android:layout_marginEnd="99dp"
                         android:backgroundTint="@color/mainbutton"
-                        android:alpha="0.4"
-                        android:enabled="false"
-                        android:text="進入AR導航"
+                        android:text="@string/enter_ar_navigation"
                         android:textColor="#000000"
-                        android:textSize="20sp"
+                        android:textSize="15sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -208,13 +205,4 @@
             android:background="@color/barcolor"
             app:labelVisibilityMode="labeled" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- 導航抽屜 -->
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        app:headerLayout="@layout/activity_menu_header"
-        app:menu="@menu/menu_main" />
 </androidx.drawerlayout.widget.DrawerLayout>

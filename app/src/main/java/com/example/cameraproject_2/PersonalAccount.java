@@ -60,8 +60,8 @@ public class PersonalAccount extends AppCompatActivity {
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
         if (!sharedPreferences.getBoolean("isLoggedIn", false)) {
-            editor.putString("loggedInUser", "訪客");
-            editor.putString("userId", "訪客");
+            editor.putString("loggedInUser", getString(R.string.guest));
+            editor.putString("userId", getString(R.string.guest));
             editor.putString("profileImageUrl", null);
             editor.apply();
         }
@@ -79,19 +79,19 @@ public class PersonalAccount extends AppCompatActivity {
             String password = editTextPassword.getText().toString().trim();
 
             if (username.isEmpty()) {
-                editTextUsername.setError("帳號不能為空白");
+                editTextUsername.setError(getString(R.string.username_empty_error));
                 editTextUsername.requestFocus();
                 return;
             }
 
             if (password.isEmpty()) {
-                textInputLayoutPassword.setError("密碼不能為空白");
+                textInputLayoutPassword.setError(getString(R.string.password_empty_error));
                 editTextPassword.requestFocus();
                 return;
             }
 
             progressDialog = new ProgressDialog(PersonalAccount.this);
-            progressDialog.setMessage("正在登入...");
+            progressDialog.setMessage(getString(R.string.progress_logging_in));
             progressDialog.setCancelable(false);
             progressDialog.show();
 
@@ -102,7 +102,7 @@ public class PersonalAccount extends AppCompatActivity {
                     progressDialog.dismiss();
 
                     if (loginSuccess) {
-                        Toast.makeText(PersonalAccount.this, "登入成功", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PersonalAccount.this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
                         Log.d("PersonalAccount", "Login attempt for " + username + ": Success");
 
                         String userId = dbHelper.getUserId(username, password);
@@ -110,7 +110,7 @@ public class PersonalAccount extends AppCompatActivity {
 
                         SharedPreferences.Editor loginEditor = sharedPreferences.edit();
                         loginEditor.putString("loggedInUser", username);
-                        loginEditor.putString("userId", userId != null ? userId : "未知 ID");
+                        loginEditor.putString("userId", userId != null ? userId : getString(R.string.user_id_label));
                         loginEditor.putBoolean("isLoggedIn", true);
                         loginEditor.putString("profileImageUrl", profileImageUrl);
                         loginEditor.apply();
@@ -122,7 +122,7 @@ public class PersonalAccount extends AppCompatActivity {
                         Set<String> groupNames = sharedPreferences.getStringSet("group_names", new HashSet<>());
                         Intent intent = new Intent(PersonalAccount.this, UserProfileActivity.class);
                         intent.putExtra("username", username);
-                        intent.putExtra("userId", userId != null ? userId : "未知 ID");
+                        intent.putExtra("userId", userId != null ? userId : getString(R.string.user_id_label));
                         intent.putExtra("profileImageUrl", profileImageUrl);
                         intent.putStringArrayListExtra("groupNames", new ArrayList<>(groupNames));
                         if (!groupNames.isEmpty()) {
@@ -142,7 +142,7 @@ public class PersonalAccount extends AppCompatActivity {
                         overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
                         finish();
                     } else {
-                        Toast.makeText(PersonalAccount.this, "登入失敗，請檢查帳號或密碼", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PersonalAccount.this, getString(R.string.login_failed), Toast.LENGTH_SHORT).show();
                         Log.d("PersonalAccount", "Login attempt for " + username + ": Failed");
                     }
                 });
@@ -169,7 +169,7 @@ public class PersonalAccount extends AppCompatActivity {
             mainHandler.post(() -> {
                 if (!syncSuccess.get()) {
                     Log.w("PersonalAccount", "Background database sync failed");
-                    Toast.makeText(PersonalAccount.this, "資料庫同步失敗，將在下次嘗試", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(PersonalAccount.this, "資料庫同步失敗，將在下次嘗試", Toast.LENGTH_LONG).show();
                 } else {
                     Log.d("PersonalAccount", "Background database sync completed");
                     String username = sharedPreferences.getString("loggedInUser", null);
@@ -194,14 +194,14 @@ public class PersonalAccount extends AppCompatActivity {
                         for (Invitation invitation : invitations) {
                             Log.d("PersonalAccount", "Displaying invitation: id=" + invitation.getInvitationId() + ", group=" + invitation.getGroupName());
                             AlertDialog.Builder builder = new AlertDialog.Builder(PersonalAccount.this);
-                            builder.setTitle("群組邀請");
-                            builder.setMessage("您被邀請加入群組: " + invitation.getGroupName());
-                            builder.setPositiveButton("接受", (dialog, which) -> {
+                            builder.setTitle(getString(R.string.new_group_notification_title));
+                            builder.setMessage(getString(R.string.group_invitation_message)+ invitation.getGroupName());
+                            builder.setPositiveButton(getString(R.string.accept), (dialog, which) -> {
                                 dbHelper.updateInvitationStatus(invitation.getInvitationId(), "accepted");
                                 addGroupToSharedPreferences(invitation.getGroupName());
                                 dialog.dismiss();
                             });
-                            builder.setNegativeButton("拒絕", (dialog, which) -> {
+                            builder.setNegativeButton(getString(R.string.reject), (dialog, which) -> {
                                 dbHelper.updateInvitationStatus(invitation.getInvitationId(), "rejected");
                                 dialog.dismiss();
                             });

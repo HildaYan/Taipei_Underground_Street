@@ -39,12 +39,14 @@ public class AppGuideActivity extends AppCompatActivity {
 
         // 檢查是否需要顯示使用說明
         sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        boolean forceShowGuide = getIntent().getBooleanExtra("FORCE_SHOW_GUIDE", false);
         boolean doNotShowGuide = sharedPreferences.getBoolean(KEY_DO_NOT_SHOW_GUIDE, false);
-        if (doNotShowGuide) {
-            Log.d(TAG, "不再顯示引導頁面，跳轉到 MainActivity");
+
+        if (!forceShowGuide && doNotShowGuide) {
             navigateToMainActivity();
             return;
         }
+
 
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_app_guide);
@@ -55,8 +57,8 @@ public class AppGuideActivity extends AppCompatActivity {
         tabLayout = findViewById(R.id.tabLayout);
 
         if (viewPager == null || checkBoxDoNotShowAgain == null || tabLayout == null) {
-            Log.e(TAG, "初始化元件失敗，無法找到 ViewPager、CheckBox 或 TabLayout");
-            Toast.makeText(this, "初始化失敗，請重試", Toast.LENGTH_LONG).show();
+            //Log.e(TAG, "初始化元件失敗，無法找到 ViewPager、CheckBox 或 TabLayout");
+            //Toast.makeText(this, "初始化失敗，請重試", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -78,10 +80,10 @@ public class AppGuideActivity extends AppCompatActivity {
             guideImages.add(R.drawable.person);
             guideImages.add(R.drawable.white_app_name);
             guideImages.add(R.drawable.trainupload);
-            Log.d(TAG, "成功載入引導圖片: " + guideImages.size());
+            //Log.d(TAG, "成功載入引導圖片: " + guideImages.size());
         } catch (Exception e) {
-            Log.e(TAG, "載入引導圖片失敗: " + e.getMessage());
-            Toast.makeText(this, "載入圖片失敗，請重試", Toast.LENGTH_LONG).show();
+            //Log.e(TAG, "載入引導圖片失敗: " + e.getMessage());
+            //Toast.makeText(this, "載入圖片失敗，請重試", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -92,7 +94,7 @@ public class AppGuideActivity extends AppCompatActivity {
 
         // 設置 TabLayout 與 ViewPager2 關聯
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
-            Log.d(TAG, "TabLayoutMediator: 標籤位置 " + position);
+            //Log.d(TAG, "TabLayoutMediator: 標籤位置 " + position);
         }).attach();
 
         // 監聽 ViewPager 頁面變化
@@ -100,12 +102,12 @@ public class AppGuideActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                Log.d(TAG, "ViewPager 選擇頁面: " + position);
+                //Log.d(TAG, "ViewPager 選擇頁面: " + position);
                 if (position == guideImages.size() - 1) {
                     // 最後一頁，延遲 2 秒後跳轉到 MainActivity
                     new Handler(Looper.getMainLooper()).postDelayed(() -> {
                         saveDoNotShowPreference();
-                        Log.d(TAG, "從最後一頁跳轉到 MainActivity");
+                        //Log.d(TAG, "從最後一頁跳轉到 MainActivity");
                         navigateToMainActivity();
                     }, 2000); // 增加延遲到 2 秒
                 }
@@ -116,7 +118,7 @@ public class AppGuideActivity extends AppCompatActivity {
         checkBoxDoNotShowAgain.setOnCheckedChangeListener((buttonView, isChecked) -> {
             saveDoNotShowPreference();
             if (isChecked) {
-                Log.d(TAG, "勾選不再顯示，跳轉到 MainActivity");
+                //Log.d(TAG, "勾選不再顯示，跳轉到 MainActivity");
                 new Handler(Looper.getMainLooper()).postDelayed(() -> navigateToMainActivity(), 500); // 添加 0.5 秒延遲
             }
         });
@@ -132,7 +134,7 @@ public class AppGuideActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(KEY_DO_NOT_SHOW_GUIDE, checkBoxDoNotShowAgain.isChecked());
         editor.apply();
-        Log.d(TAG, "保存不再顯示偏好: " + checkBoxDoNotShowAgain.isChecked());
+        //Log.d(TAG, "保存不再顯示偏好: " + checkBoxDoNotShowAgain.isChecked());
     }
 
     // ViewPager 適配器
@@ -175,11 +177,11 @@ public class AppGuideActivity extends AppCompatActivity {
                 try {
                     imageView.setImageResource(getArguments().getInt(ARG_IMAGE_RES));
                 } catch (Exception e) {
-                    Log.e(TAG, "設置圖片資源失敗: " + e.getMessage());
-                    Toast.makeText(getContext(), "載入圖片失敗", Toast.LENGTH_SHORT).show();
+                    //Log.e(TAG, "設置圖片資源失敗: " + e.getMessage());
+                    //Toast.makeText(getContext(), "載入圖片失敗", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Log.e(TAG, "無法設置圖片，參數或 ImageView 為空");
+                //Log.e(TAG, "無法設置圖片，參數或 ImageView 為空");
             }
             return view;
         }

@@ -53,43 +53,43 @@ public class change_password extends AppCompatActivity {
             String confirmPassword = editTextConfirmPassword.getText().toString().trim();
 
             if (oldPassword.isEmpty()) {
-                editTextOldPassword.setError("請輸入當前密碼");
+                editTextOldPassword.setError(getString(R.string.input_current_password));
                 return;
             }
 
             if (newPassword.isEmpty()) {
-                editTextNewPassword.setError("請輸入新密碼");
+                editTextNewPassword.setError(getString(R.string.input_new_password));
                 return;
             }
 
             if (newPassword.length() < 6) {
-                editTextNewPassword.setError("新密碼長度至少需要 6 個字符");
+                editTextNewPassword.setError(getString(R.string.new_password_length_error));
                 return;
             }
 
             if (confirmPassword.isEmpty()) {
-                editTextConfirmPassword.setError("請再次輸入新密碼");
+                editTextConfirmPassword.setError(getString(R.string.input_confirm_password));
                 return;
             }
 
             if (!newPassword.equals(confirmPassword)) {
-                textViewError.setText("錯誤：新密碼與確認密碼不一致");
+                textViewError.setText(getString(R.string.password_mismatch_error));
                 return;
             }
 
             RegisterDatabaseHelper dbHelper = new RegisterDatabaseHelper(this);
             String currentPassword = dbHelper.getCurrentPassword(userId);
             if (currentPassword == null || !currentPassword.equals(oldPassword)) {
-                editTextOldPassword.setError("當前密碼不正確");
+                editTextOldPassword.setError(getString(R.string.incorrect_current_password));
                 return;
             }
 
             boolean success = dbHelper.updatePassword(userId, newPassword);
             if (success) {
-                Toast.makeText(this, "密碼已更新", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.password_updated), Toast.LENGTH_SHORT).show();
                 finish();
             } else {
-                Toast.makeText(this, "更新密碼失敗", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.password_update_failed), Toast.LENGTH_SHORT).show();
             }
         });
     }

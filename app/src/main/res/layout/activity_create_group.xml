@@ -4,14 +4,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@android:color/white">
+    android:theme="@style/AppTheme"
+    android:background="@color/white">
 
     <!-- 群組名稱輸入框 -->
     <EditText
         android:id="@+id/editTextGroupName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="輸入群組名稱"
+        android:hint="@string/please_enter_group_name"
         android:padding="8dp" />
 
     <!-- 搜索成員區域 -->
@@ -26,14 +27,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="輸入成員 ID"
+            android:hint="@string/enter_member_id_hint"
             android:padding="8dp" />
 
         <Button
             android:id="@+id/buttonSearchMember"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="搜索"
+            android:text="@string/search_button_text"
             android:backgroundTint="@color/mainbutton"
             android:textColor="#000000"/>
 
@@ -43,7 +44,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="已搜索的成員 (最多 30 人)"
+        android:text="@string/searched_members_info"
         android:textSize="18sp"
         android:padding="8dp" />
 
@@ -60,7 +61,7 @@
         android:id="@+id/buttonCreateGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="創建群組"
+        android:text="@string/create_group"
         android:backgroundTint="@color/mainbutton"
         android:textColor="#000000"/>
 

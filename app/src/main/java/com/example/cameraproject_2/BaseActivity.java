@@ -42,9 +42,9 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
 
         preferenceChangeListener = (sharedPrefs, key) -> {
-            Log.d("BaseActivity", "Preference changed, key: " + key);
+            //Log.d("BaseActivity", "Preference changed, key: " + key);
             if (key.equals("isLoggedIn") || key.equals("loggedInUser") || key.equals("userId") || key.equals("groupNames")) {
-                Log.d("BaseActivity", "Relevant key changed, updating UI");
+                //Log.d("BaseActivity", "Relevant key changed, updating UI");
                 updateHeader();
                 updateNavigationMenu();
                 if (navigationView != null) {
@@ -62,7 +62,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         super.onStart();
         sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener);
         updateHeader();
-        updateNavigationMenu();
+        //updateNavigationMenu();
         Log.d("BaseActivity", "onStart: Navigation menu updated");
     }
 
@@ -110,15 +110,15 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
     }
 
     protected void updateHeader() {
-        Log.d("BaseActivity", "Updating header...");
+        //Log.d("BaseActivity", "Updating header...");
         if (navigationView == null) {
-            Log.e("BaseActivity", "navigationView is null");
+            //Log.e("BaseActivity", "navigationView is null");
             return;
         }
 
         View headerView = navigationView.getHeaderView(0);
         if (headerView == null) {
-            Log.e("BaseActivity", "headerView is null");
+            //Log.e("BaseActivity", "headerView is null");
             headerView = navigationView.inflateHeaderView(R.layout.activity_menu_header);
         }
 
@@ -126,13 +126,13 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         TextView accountValue = headerView.findViewById(R.id.textViewAccountValue);
 
         if (usernameValue == null || accountValue == null) {
-            Log.e("BaseActivity", "TextViews not found: usernameValue=" + usernameValue + ", accountValue=" + accountValue);
+            //Log.e("BaseActivity", "TextViews not found: usernameValue=" + usernameValue + ", accountValue=" + accountValue);
             return;
         }
 
-        String username = sharedPreferences.getString("loggedInUser", "訪客");
-        String userId = sharedPreferences.getString("userId", "訪客");
-        Log.d("BaseActivity", "Setting username: " + username + ", userId: " + userId);
+        String username = sharedPreferences.getString("loggedInUser", getString(R.string.guest));
+        String userId = sharedPreferences.getString("userId", getString(R.string.guest));
+        //Log.d("BaseActivity", "Setting username: " + username + ", userId: " + userId);
 
         usernameValue.setText(username);
         accountValue.setText(userId);
@@ -155,7 +155,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
         } else {
-            Toast.makeText(this, "ActionBar not available", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "ActionBar not available", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -180,19 +180,19 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
             startActivity(intent);
         } else if (id == R.id.nav_logout) {
             new android.app.AlertDialog.Builder(this)
-                    .setTitle("確認登出")
-                    .setMessage("您確定要登出嗎？")
-                    .setPositiveButton("確定", (dialog, which) -> {
+                    .setTitle(getString(R.string.confirm_logout))
+                    .setMessage(getString(R.string.account_logout_confirm))
+                    .setPositiveButton(getString(R.string.confirm), (dialog, which) -> {
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.remove("loggedInUser");
                         editor.putBoolean("isLoggedIn", false);
-                        editor.putString("userId", "訪客");
+                        editor.putString("userId", getString(R.string.guest));
                         editor.apply();
                         Toast.makeText(this, "Logged out", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(this, PersonalAccount.class);
                         startActivity(intent);
                     })
-                    .setNegativeButton("取消", null)
+                    .setNegativeButton(getString(R.string.cancel), null)
                     .show();
         } else {
             String groupName = item.getTitle().toString();

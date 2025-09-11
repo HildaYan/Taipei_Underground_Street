@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:backgroundTint="@color/white"
+    android:theme="@style/AppTheme"
     tools:context=".receive_group">
 
     <!-- 頂部 BAR -->
@@ -41,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="群組通知"
+                android:text="@string/group_notification"
                 android:textColor="#000000"
                 android:textSize="20sp"
                 android:textStyle="bold" />

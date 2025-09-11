@@ -17,6 +17,8 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.cameraproject_2.ui.FareQueryActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.ArrayList;
 import java.util.List;
@@ -111,13 +113,14 @@ public class chatroom_main extends AppCompatActivity {
                 boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
                 Intent intent = new Intent(chatroom_main.this, isLoggedIn ? UserProfileActivity.class : PersonalAccount.class);
                 intent.putExtra("isLoggedIn", isLoggedIn);
-                intent.putExtra("userId", sharedPreferences.getString("userId", "訪客"));
-                intent.putExtra("loggedInUser", sharedPreferences.getString("loggedInUser", "訪客"));
+                intent.putExtra("userId", sharedPreferences.getString("userId", getString(R.string.guest)));
+                intent.putExtra("loggedInUser", sharedPreferences.getString("loggedInUser", getString(R.string.guest)));
                 startActivity(intent);
                 overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
                 return true;
             } else if (id == R.id.nav_info) {
-                Toast.makeText(this, R.string.taipei_info, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(chatroom_main.this, FareQueryActivity.class);
+                startActivity(intent);
                 return true;
             } else if (id == R.id.nav_settings) {
                 Intent intent = new Intent(chatroom_main.this, SettingsActivity.class);

@@ -45,11 +45,11 @@ public class change_username extends AppCompatActivity {
         buttonConfirmUsername.setOnClickListener(v -> {
             String newUsername = editTextNewUsername.getText().toString().trim();
             if (newUsername.isEmpty()) {
-                Toast.makeText(this, "用戶名不能為空", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.username_cannot_be_empty), Toast.LENGTH_SHORT).show();
                 return;
             }
             if (newUsername.equals(originalUsername)) {
-                Toast.makeText(this, "新用戶名與原用戶名相同", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.username_same_as_original), Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -61,8 +61,9 @@ public class change_username extends AppCompatActivity {
                 setResult(RESULT_OK, resultIntent);
                 finish();
             } else {
-                Toast.makeText(this, "更新用戶名失敗", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.username_update_failed), Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 }

@@ -36,6 +36,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,6 +53,8 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.example.cameraproject_2.ui.FareQueryActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.unity3d.player.UnityPlayerActivity;
@@ -91,8 +94,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private SharedPreferences sharedPreferences;
 
     private String currentUserId;
-    private NavigationView navigationView;
-    private DrawerLayout drawerLayout;
     private BottomNavigationView bottomNavigationView;
     private Spinner imageSourceSpinner;
     private Button buttonUpload;
@@ -107,33 +108,24 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         setContentView(R.layout.activity_main);
 
         sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        currentUserId = sharedPreferences.getString(USER_ID_KEY, "訪客");
-        String loggedInUser = sharedPreferences.getString(LOGGED_IN_USER_KEY, "訪客");
+        currentUserId = sharedPreferences.getString(USER_ID_KEY, getString(R.string.guest));
+        String loggedInUser = sharedPreferences.getString(LOGGED_IN_USER_KEY, getString(R.string.guest));
 
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
+
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         buttonUpload = findViewById(R.id.buttonupload);
         imageSourceSpinner = findViewById(R.id.imageSourceSpinner);
 
-        if (drawerLayout == null || navigationView == null || bottomNavigationView == null || buttonUpload == null || imageSourceSpinner == null) {
-            Toast.makeText(this, "導航或上傳設置失敗", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
+        // 新增 buttonCorrectLocation 初始化和點擊事件
+        Button buttonCorrectLocation = findViewById(R.id.buttonCorrectLocation);
+        buttonCorrectLocation.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, UnityPlayerActivity.class);
+            startActivity(intent);
+        });
+
+
 
         buttonUpload.setEnabled(false);
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-
-        navigationView.bringToFront();
-        navigationView.setNavigationItemSelectedListener(this);
-
-        updateNavigationMenu();
-        updateHeader();
 
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
@@ -172,11 +164,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
                 Intent intent = new Intent(MainActivity.this, isLoggedIn ? UserProfileActivity.class : PersonalAccount.class);
                 intent.putExtra("isLoggedIn", isLoggedIn);
-                intent.putExtra("userId", sharedPreferences.getString("userId", "訪客"));
-                intent.putExtra("loggedInUser", sharedPreferences.getString("loggedInUser", "訪客"));
+                intent.putExtra("userId", sharedPreferences.getString("userId", getString(R.string.guest)));
+                intent.putExtra("loggedInUser", sharedPreferences.getString("loggedInUser", getString(R.string.guest)));
                 startActivity(intent);
                 overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
             } else if (id == R.id.nav_info) {
+                Intent intent = new Intent(MainActivity.this, FareQueryActivity.class);
+                startActivity(intent);
                 Toast.makeText(this, R.string.taipei_info, Toast.LENGTH_SHORT).show();
             } else if (id == R.id.nav_settings) {
                 Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
@@ -195,8 +189,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             registerDbHelper.getRegisterDatabase();
             database = pictureDbHelper.getPictureDatabase();
         } catch (IOException e) {
-            Log.e("MainActivity", "創建資料庫錯誤: " + e.getMessage());
-            Toast.makeText(this, "資料庫初始化失敗", Toast.LENGTH_LONG).show();
+            //Log.e("MainActivity", "創建資料庫錯誤: " + e.getMessage());
+            //Toast.makeText(this, "資料庫初始化失敗", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -217,11 +211,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                             intent.putExtra("photoUri", photoUri.toString());
                             startActivity(intent);
                         } else {
-                            Toast.makeText(this, "無法獲取拍攝的照片，請重試", Toast.LENGTH_LONG).show();
+                            Toast.makeText(this, getString(R.string.unable_to_get_photo), Toast.LENGTH_LONG).show();
                         }
                     } else {
-                        Log.d("MainActivity", "拍照取消或失敗, resultCode: " + result.getResultCode());
-                        Toast.makeText(this, "拍照取消或失敗", Toast.LENGTH_SHORT).show();
+                        //Log.d("MainActivity", "拍照取消或失敗, resultCode: " + result.getResultCode());
+                        Toast.makeText(this, getString(R.string.photo_cancelled_or_failed), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -235,10 +229,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                             intent.putExtra("photoUri", selectedImageUri.toString());
                             startActivity(intent);
                         } else {
-                            Toast.makeText(this, "未選擇圖片", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, getString(R.string.no_image_selected), Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(this, "圖片選擇取消或失敗", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.image_selection_cancelled_or_failed), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -255,57 +249,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         });
     }
 
-    @Override
-    protected void updateNavigationMenu() {
-        if (navigationView == null) {
-            Log.e("MainActivity", "navigationView 為空，無法更新菜單");
-            return;
-        }
 
-        Menu menu = navigationView.getMenu();
-        if (menu == null) {
-            Log.e("MainActivity", "菜單為空，無法更新");
-            return;
-        }
 
-        menu.clear();
-        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        Set<String> groupNames = prefs.getStringSet("groupNames", new HashSet<>());
-        int order = 100;
-        for (String groupName : groupNames) {
-            menu.add(Menu.NONE, Menu.NONE, order++, groupName)
-                    .setIcon(R.drawable.store_icon);
-            Log.d("MainActivity", "添加群組到菜單: " + groupName);
-        }
 
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        Log.d("MainActivity", "導航菜單已更新，群組: " + groupNames.toString());
-    }
-
-    @Override
-    protected void updateHeader() {
-        if (navigationView == null) {
-            Log.e("MainActivity", "navigationView 為空，無法更新頭部");
-            return;
-        }
-
-        View headerView = navigationView.getHeaderView(0);
-        if (headerView != null) {
-            TextView usernameValueText = headerView.findViewById(R.id.textViewUsernameValue);
-            TextView accountValueText = headerView.findViewById(R.id.textViewAccountValue);
-
-            if (usernameValueText != null && accountValueText != null) {
-                String loggedInUser = sharedPreferences.getString(LOGGED_IN_USER_KEY, "訪客");
-                usernameValueText.setText(loggedInUser);
-                accountValueText.setText(currentUserId);
-                Log.d("MainActivity", "頭部更新為: 姓名: " + loggedInUser + ", 帳號: " + currentUserId);
-            } else {
-                Log.e("MainActivity", "無法找到頭部 TextView (textViewUsernameValue 或 textViewAccountValue)");
-            }
-        } else {
-            Log.e("MainActivity", "無法獲取導航頭部視圖");
-        }
-    }
 
     public void onInvitationAccepted(String invitationId) {
         registerDbHelper.updateInvitationStatus(invitationId, "accepted");
@@ -321,8 +267,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                             if (isLoggedIn) {
                                 Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
                                 intent.putExtra("isLoggedIn", true);
-                                intent.putExtra("loggedInUser", sharedPreferences.getString("loggedInUser", "未知用戶"));
-                                intent.putExtra("userId", sharedPreferences.getString("userId", "未知 ID"));
+                                intent.putExtra("loggedInUser", sharedPreferences.getString("loggedInUser", getString(R.string.guest)));
+                                intent.putExtra("userId", sharedPreferences.getString("userId", getString(R.string.user_id_label)));
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
                             } else {
@@ -345,8 +291,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                             startActivity(chatIntent);
                             overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
                         } else {
-                            Log.e("MainActivity", "無法獲取邀請 ID 的群組名稱: " + invitationId);
-                            Toast.makeText(MainActivity.this, "無法找到群組", Toast.LENGTH_SHORT).show();
+                            Log.e("MainActivity", getString(R.string.cannot_get_invitation_group_name) + invitationId);
+                            Toast.makeText(MainActivity.this, getString(R.string.cannot_get_group_name), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -369,90 +315,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         return groupName;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        return super.onOptionsItemSelected(item);
-    }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
 
-        if (id == R.id.personal_account || id == R.id.nav_member) {
-            boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
-            Intent intent = new Intent(MainActivity.this, isLoggedIn ? UserProfileActivity.class : PersonalAccount.class);
-            intent.putExtra("isLoggedIn", isLoggedIn);
-            intent.putExtra("userId", sharedPreferences.getString("userId", "訪客"));
-            intent.putExtra("loggedInUser", sharedPreferences.getString("loggedInUser", "訪客"));
-            startActivity(intent);
-            overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
-        } else if (id == R.id.Chat_room) {
-            boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
-            Intent intent = new Intent(MainActivity.this, isLoggedIn ? Chatroom.class : PersonalAccount.class);
-            startActivity(intent);
-            overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
-        } else if (id == R.id.Create_Group) {
-            Intent intent = new Intent(MainActivity.this, CreateGroupActivity.class);
-            startActivity(intent);
-            overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
-        } else if (id == R.id.nav_logout) {
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.account_logout_confirm)
-                    .setMessage(getString(R.string.account_logout_confirm))
-                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.remove("loggedInUser");
-                        editor.putBoolean("isLoggedIn", false);
-                        editor.putString("userId", "訪客");
-                        editor.apply();
-                        Toast.makeText(this, R.string.account_logout_success, Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(MainActivity.this, PersonalAccount.class);
-                        startActivity(intent);
-                        overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
-                    })
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .show();
-        } else {
-            String groupName = item.getTitle().toString();
-            Set<String> groupNames = sharedPreferences.getStringSet("groupNames", new HashSet<>());
-            if (groupNames.contains(groupName)) {
-                String membersString = sharedPreferences.getString(groupName + "_members", "");
-                List<String> members = new ArrayList<>();
-                if (!membersString.isEmpty()) {
-                    String[] membersArray = membersString.split(",");
-                    for (String member : membersArray) {
-                        members.add(member.trim());
-                    }
-                }
-                Intent intent = new Intent(MainActivity.this, Chatroom.class);
-                intent.putExtra("groupName", groupName);
-                intent.putStringArrayListExtra("members", new ArrayList<>(members));
-                startActivity(intent);
-                overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
-            } else {
-                Log.w("MainActivity", "群組 " + groupName + " 不在 groupNames 中");
-            }
-        }
-
-        drawerLayout.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
 
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
@@ -477,7 +342,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             photoFile = createImageFile();
         } catch (IOException e) {
             Log.e("MainActivity", "創建圖片文件錯誤: " + e.getMessage());
-            Toast.makeText(this, "無法創建圖片文件", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.unable_to_create_image_file), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -485,7 +350,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             photoUri = FileProvider.getUriForFile(this, "com.example.cameraproject_2.fileprovider", photoFile);
         } catch (IllegalArgumentException e) {
             Log.e("MainActivity", "使用 FileProvider 生成 URI 錯誤: " + e.getMessage());
-            Toast.makeText(this, "無法生成圖片 URI，請檢查 FileProvider 配置", Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "無法生成圖片 URI，請檢查 FileProvider 配置", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -495,7 +360,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             takePictureLauncher.launch(takePictureIntent);
         } else {
             Log.e("MainActivity", "無可用相機應用處理意圖");
-            Toast.makeText(this, "找不到相機應用程式，請確保設備已安裝相機應用", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.camera_app_not_found), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -515,13 +380,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 captureImage();
             } else {
                 Log.w("MainActivity", "相機或儲存權限被拒絕");
-                Toast.makeText(this, "需要相機和儲存權限才能使用拍照功能", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.camera_or_storage_permission_denied), Toast.LENGTH_LONG).show();
             }
         } else if (requestCode == REQUEST_NOTIFICATION_PERMISSION_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "通知權限已授予", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.notification_permission_granted), Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, "需要通知權限以接收群組邀請通知", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.notification_permission_required), Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -544,7 +409,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     showInvitationNotification(groupName);
                 });
                 updateGroupInPreferences(groupName);
-                updateNavigationMenu();
+                //updateNavigationMenu();
             }
         }
     }
@@ -641,8 +506,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onResume() {
         super.onResume();
-        updateNavigationMenu();
-        updateHeader();
+        //updateNavigationMenu();
+        //updateHeader();
         registerDbHelper.checkInvitationStatus(sharedPreferences.getString("userId", "1"));
     }
 
@@ -672,9 +537,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     private void setupSpinner() {
         List<String> options = new ArrayList<>();
-        options.add("請選擇圖片來源");
-        options.add("從相機");
-        options.add("從圖庫");
+
+        options.add(getString(R.string.select_image_source));
+        options.add(getString(R.string.from_camera));
+        options.add(getString(R.string.from_picture));
 
         // 創建自定義適配器
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_item_with_icons, R.id.spinner_text, options) {
@@ -686,10 +552,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 ImageView icon2 = view.findViewById(R.id.icon2);
 
                 textView.setGravity(Gravity.RIGHT);
-                textView.setTextSize(20);
+                textView.setTextSize(15);
                 textView.setTextColor(Color.BLACK);
                 textView.setTypeface(null, Typeface.BOLD);
-                if (position == 0) textView.setText("上傳");
+                if (position == 0) textView.setText(getString(R.string.upload));
 
                 // 設置選中項的圖標
                 icon1.setVisibility(View.GONE);
@@ -715,6 +581,16 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 TextView textView = view.findViewById(R.id.spinner_text);
                 ImageView icon1 = view.findViewById(R.id.icon1);
                 ImageView icon2 = view.findViewById(R.id.icon2);
+
+
+                // 動態設置圖標靠右
+                LinearLayout.LayoutParams params1 = (LinearLayout.LayoutParams) icon1.getLayoutParams();
+                params1.gravity = Gravity.END;
+                icon1.setLayoutParams(params1);
+
+                LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) icon2.getLayoutParams();
+                params2.gravity = Gravity.END;
+                icon2.setLayoutParams(params2);
 
                 textView.setGravity(Gravity.CENTER);
                 textView.setTextSize(20);
@@ -745,9 +621,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 String selectedOption = options.get(position);
                 if (position == 0) {
                     return;
-                } else if (selectedOption.equals("從相機")) {
+                } else if (selectedOption.equals(getString(R.string.from_camera))) {
                     captureImage();
-                } else if (selectedOption.equals("從圖庫")) {
+                } else if (selectedOption.equals(getString(R.string.from_picture))) {
                     openGallery();
                 }
                 imageSourceSpinner.setSelection(0); // 選擇後恢復到默認項

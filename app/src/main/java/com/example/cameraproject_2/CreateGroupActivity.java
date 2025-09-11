@@ -65,18 +65,18 @@ public class CreateGroupActivity extends AppCompatActivity {
         buttonSearchMember.setOnClickListener(v -> {
             String memberId = editTextMemberId.getText().toString().trim();
             if (memberId.isEmpty()) {
-                Toast.makeText(this, "請輸入成員 ID", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.please_enter_member_id), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (searchedUsers.size() >= 30) {
-                Toast.makeText(this, "群組成員最多 30 人", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.max_group_members), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             for (User user : searchedUsers) {
                 if (user.getId().equals(memberId)) {
-                    Toast.makeText(this, "該成員已添加", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.member_already_added), Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
@@ -88,26 +88,26 @@ public class CreateGroupActivity extends AppCompatActivity {
                 editTextMemberId.setText("");
                 Log.d("CreateGroupActivity", "Added user: " + user.getId() + ", " + user.getUsername());
             } else {
-                Toast.makeText(this, "沒有該使用者，請確認使用者 ID", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.user_not_found), Toast.LENGTH_SHORT).show();
             }
         });
 
         buttonCreateGroup.setOnClickListener(v -> {
             String groupName = editTextGroupName.getText().toString().trim();
             if (groupName.isEmpty()) {
-                Toast.makeText(this, "請輸入群組名稱", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.please_enter_group_name), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             List<String> selectedMembers = memberAdapter.getSelectedMembers();
             if (selectedMembers.isEmpty()) {
-                Toast.makeText(this, "請至少選擇一名成員", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.please_select_at_least_one_member), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             String currentUserId = sharedPreferences.getString("userId", null);
             if (currentUserId == null) {
-                Toast.makeText(this, "請先登錄", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.please_login_first), Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(this, PersonalAccount.class));
                 finish();
                 return;
@@ -141,7 +141,7 @@ public class CreateGroupActivity extends AppCompatActivity {
                 try {
                     latch.await();
                     runOnUiThread(() -> {
-                        Toast.makeText(this, "群組創建成功，已發送邀請", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.group_creation_success), Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(CreateGroupActivity.this, Chatroom.class);
                         intent.putExtra("groupName", groupName);
                         intent.putStringArrayListExtra("members", new ArrayList<>(selectedMembers));
@@ -150,7 +150,7 @@ public class CreateGroupActivity extends AppCompatActivity {
                     });
                 } catch (InterruptedException e) {
                     Log.e("CreateGroupActivity", "Interrupted while waiting for invitations: " + e.getMessage());
-                    runOnUiThread(() -> Toast.makeText(this, "群組創建失敗", Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> Toast.makeText(this, getString(R.string.group_creation_failure), Toast.LENGTH_SHORT).show());
                 }
             }).start();
         });
@@ -164,7 +164,7 @@ public class CreateGroupActivity extends AppCompatActivity {
         if (creatorId == null) {
             Log.e("CreateGroupActivity", "Creator ID is null, redirecting to login");
             runOnUiThread(() -> {
-                Toast.makeText(this, "請先登錄", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.please_login_first), Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(this, PersonalAccount.class));
                 finish();
             });
@@ -182,7 +182,7 @@ public class CreateGroupActivity extends AppCompatActivity {
         long result = db.insert(TABLE_INVITATIONS, null, creatorValues);
         if (result == -1) {
             Log.e("CreateGroupActivity", "Failed to insert creator invitation for group: " + groupName);
-            runOnUiThread(() -> Toast.makeText(this, "無法為創建者插入邀請", Toast.LENGTH_SHORT).show());
+            //runOnUiThread(() -> Toast.makeText(this, "無法為創建者插入邀請", Toast.LENGTH_SHORT).show());
             return;
         } else {
             Log.d("CreateGroupActivity", "Inserted creator invitation for group: " + groupName + ", invitationId: " + invitationId);

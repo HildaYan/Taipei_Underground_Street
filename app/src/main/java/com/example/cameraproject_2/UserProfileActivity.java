@@ -84,10 +84,10 @@ public class UserProfileActivity extends AppCompatActivity {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         Uri selectedImageUri = result.getData().getData();
                         if (selectedImageUri != null) {
-                            if (userId != null && !userId.equals("訪客")) {
+                            if (userId != null && !userId.equals(getString(R.string.guest))) {
                                 uploadProfileImage(selectedImageUri, userId);
                             } else {
-                                Toast.makeText(this, "請先登入", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, getString(R.string.please_login), Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -99,13 +99,13 @@ public class UserProfileActivity extends AppCompatActivity {
         boolean isLoggedIn = intent.getBooleanExtra("isLoggedIn", sharedPreferences.getBoolean("isLoggedIn", false));
         String loggedInUser = intent.getStringExtra("username");
         userId = intent.getStringExtra("userId");
-        if (loggedInUser == null) loggedInUser = sharedPreferences.getString("loggedInUser", "未知用戶");
-        if (userId == null) userId = sharedPreferences.getString("userId", "未知 ID");
+        if (loggedInUser == null) loggedInUser = sharedPreferences.getString("loggedInUser", getString(R.string.unknown_user));
+        if (userId == null) userId = sharedPreferences.getString("userId", getString(R.string.unknown_id));
 
         // 根據狀態顯示內容
-        if (isLoggedIn && !userId.equals("訪客")) {
+        if (isLoggedIn && !userId.equals(getString(R.string.guest))) {
             originalUsername = loggedInUser;
-            textViewNameLabel.setText("姓名: " + loggedInUser);
+            textViewNameLabel.setText(getString(R.string.label_name) + loggedInUser);
             textViewAccountLabel.setText("ID: " + userId);
 
             // 載入頭像
@@ -153,13 +153,13 @@ public class UserProfileActivity extends AppCompatActivity {
 
             deleteAccountLayout.setOnClickListener(v -> {
                 new AlertDialog.Builder(this)
-                        .setTitle("確認刪除")
-                        .setMessage("確定要刪除帳號嗎？此操作不可逆！")
-                        .setPositiveButton("確認", (dialog, which) -> {
+                        .setTitle(getString(R.string.confirm_delete_title))
+                        .setMessage(getString(R.string.confirm_delete_message))
+                        .setPositiveButton(getString(R.string.confirm), (dialog, which) -> {
                             deleteAccount(userId);
                             dialog.dismiss();
                         })
-                        .setNegativeButton("取消", (dialog, which) -> dialog.dismiss())
+                        .setNegativeButton(getString(R.string.cancel), (dialog, which) -> dialog.dismiss())
                         .show();
             });
 
@@ -180,7 +180,7 @@ public class UserProfileActivity extends AppCompatActivity {
             logoutLayout.setVisibility(View.GONE);
             deleteAccountLayout.setVisibility(View.GONE);
             profileImage.setImageResource(R.drawable.user);
-            Toast.makeText(this, "請先登入", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.please_login), Toast.LENGTH_SHORT).show();
             Intent personalIntent = new Intent(this, PersonalAccount.class);
             startActivity(personalIntent);
             finish();
@@ -194,7 +194,7 @@ public class UserProfileActivity extends AppCompatActivity {
             String newUsername = data.getStringExtra("newUsername");
             if (newUsername != null) {
                 originalUsername = newUsername;
-                textViewNameLabel.setText("姓名: " + newUsername);
+                textViewNameLabel.setText(getString(R.string.label_name) + newUsername);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("loggedInUser", newUsername);
                 editor.apply();
@@ -207,16 +207,16 @@ public class UserProfileActivity extends AppCompatActivity {
         if (success) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("isLoggedIn", false);
-            editor.putString("loggedInUser", "訪客");
-            editor.putString("userId", "訪客");
+            editor.putString("loggedInUser", getString(R.string.guest));
+            editor.putString("userId", getString(R.string.guest));
             editor.putString("profileImageUrl", null);
             editor.apply();
-            Toast.makeText(this, "帳號已刪除", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.account_deleted), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this, PersonalAccount.class);
             startActivity(intent);
             finish();
         } else {
-            Toast.makeText(this, "帳號刪除失敗", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.account_deleted_failed), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -232,7 +232,7 @@ public class UserProfileActivity extends AppCompatActivity {
         Log.d(TAG, "Uploading image for userId: " + userId + ", file path: " + file.getAbsolutePath() + ", file exists: " + file.exists() + ", file size: " + file.length());
 
         if (!file.exists() || file.length() == 0) {
-            runOnUiThread(() -> Toast.makeText(UserProfileActivity.this, "無效的圖片文件", Toast.LENGTH_SHORT).show());
+            //runOnUiThread(() -> Toast.makeText(UserProfileActivity.this, "無效的圖片文件", Toast.LENGTH_SHORT).show());
             Log.e(TAG, "Invalid image file: exists=" + file.exists() + ", size=" + file.length());
             return;
         }
@@ -252,7 +252,7 @@ public class UserProfileActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                runOnUiThread(() -> Toast.makeText(UserProfileActivity.this, "上傳失敗: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                //runOnUiThread(() -> Toast.makeText(UserProfileActivity.this, "上傳失敗: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                 Log.e(TAG, "Upload failed: " + e.getMessage());
             }
 
@@ -262,7 +262,7 @@ public class UserProfileActivity extends AppCompatActivity {
                 Log.d(TAG, "Upload response: " + responseData);
 
                 if (!responseData.trim().startsWith("{")) {
-                    runOnUiThread(() -> Toast.makeText(UserProfileActivity.this, "伺服器錯誤: 無效的回應格式", Toast.LENGTH_SHORT).show());
+                    //runOnUiThread(() -> Toast.makeText(UserProfileActivity.this, "伺服器錯誤: 無效的回應格式", Toast.LENGTH_SHORT).show());
                     Log.e(TAG, "Invalid JSON response: " + responseData);
                     return;
                 }
@@ -293,15 +293,15 @@ public class UserProfileActivity extends AppCompatActivity {
                                             profileImage.setImageResource(R.drawable.user);
                                         }
                                     });
-                            Toast.makeText(UserProfileActivity.this, "圖片上傳成功", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(UserProfileActivity.this, "圖片上傳成功", Toast.LENGTH_SHORT).show();
                         });
                     } else {
-                        String message = jsonResponse.optString("message", "未知錯誤");
-                        runOnUiThread(() -> Toast.makeText(UserProfileActivity.this, "上傳失敗: " + message, Toast.LENGTH_SHORT).show());
-                        Log.e(TAG, "Upload failed: " + message);
+                        String message = jsonResponse.optString("message", getString(R.string.unknown_error));
+                        //runOnUiThread(() -> Toast.makeText(UserProfileActivity.this, "上傳失敗: " + message, Toast.LENGTH_SHORT).show());
+                        //Log.e(TAG, "Upload failed: " + message);
                     }
                 } catch (JSONException e) {
-                    runOnUiThread(() -> Toast.makeText(UserProfileActivity.this, "JSON 錯誤: 無效的伺服器回應", Toast.LENGTH_SHORT).show());
+                    //runOnUiThread(() -> Toast.makeText(UserProfileActivity.this, "JSON 錯誤: 無效的伺服器回應", Toast.LENGTH_SHORT).show());
                     Log.e(TAG, "JSON error: " + e.getMessage() + ", response: " + responseData);
                 }
             }
@@ -339,11 +339,11 @@ public class UserProfileActivity extends AppCompatActivity {
     private void logout() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("isLoggedIn", false);
-        editor.putString("loggedInUser", "訪客");
-        editor.putString("userId", "訪客");
+        editor.putString("loggedInUser", getString(R.string.guest));
+        editor.putString("userId", getString(R.string.guest));
         editor.putString("profileImageUrl", null);
         editor.apply();
-        Toast.makeText(this, "已登出", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.logged_out), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, PersonalAccount.class);
         startActivity(intent);
         finish();

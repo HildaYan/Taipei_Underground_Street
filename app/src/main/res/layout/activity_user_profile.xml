@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@style/AppTheme"
     android:background="#FFFFFF">
 
     <!-- 頂部 BAR -->
@@ -33,7 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="個人檔案"
+                android:text="@string/personal_profile"
                 android:textColor="#000000"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -84,7 +85,7 @@
                     android:id="@+id/text_view_change_nickname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="變更暱稱"
+                    android:text="@string/change_nickname"
                     android:textColor="#000000"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -126,7 +127,7 @@
                     android:id="@+id/text_view_account_nickname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="變更密碼"
+                    android:text="@string/button_see_again"
                     android:textColor="#000000"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -168,7 +169,7 @@
                     android:id="@+id/text_view_layout_nickname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="登出"
+                    android:text="@string/logout"
                     android:textColor="#000000"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -210,7 +211,7 @@
                     android:id="@+id/text_view_delete_account"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="刪除帳號"
+                    android:text="@string/delete_account"
                     android:textColor="@color/red"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -284,7 +285,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="150dp"
         android:layout_marginTop="156dp"
-        android:text="姓名: "
+        android:text="@string/label_name"
         android:textColor="#000000"
         android:textSize="16sp"
         android:textStyle="bold" />

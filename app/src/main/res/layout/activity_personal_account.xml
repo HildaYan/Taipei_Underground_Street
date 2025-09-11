@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@style/AppTheme"
     android:background="@drawable/openappbackphoto"
     tools:context=".MainActivity">
 
@@ -49,7 +50,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-medium"
-                    android:text="Unlost"
+                    android:text="NO LOST"
                     android:textColor="@color/white"
                     android:textSize="32sp"
                     android:textStyle="bold" />
@@ -84,7 +85,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="個人帳號"
+                android:text="@string/personal_account"
                 android:textColor="@color/my_primary"
                 android:textSize="32sp"
                 android:textStyle="bold"
@@ -95,7 +96,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="請輸入您的帳號資訊"
+                android:text="@string/enter_account_info"
                 android:alpha="0.7"
                 android:layout_marginBottom="20dp" />
 
@@ -103,7 +104,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="用戶名"
+                android:text="@string/username"
                 android:alpha="0.7"
                 android:textStyle="bold"
                 android:layout_marginBottom="5dp" />
@@ -121,7 +122,7 @@
                     android:id="@+id/editTextUsername"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="用戶名"
+                    android:hint="@string/username"
                     android:inputType="text"
                     android:padding="16dp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -130,7 +131,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="密碼"
+                android:text="@string/password"
                 android:alpha="0.7"
                 android:textStyle="bold"
                 android:layout_marginBottom="5dp" />
@@ -146,7 +147,7 @@
                     android:id="@+id/editTextPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="密碼"
+                    android:hint="@string/password"
                     android:inputType="textPassword"
                     android:padding="16dp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -156,7 +157,7 @@
                 android:id="@+id/buttonLogin"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:text="登入"
+                android:text="@string/login"
                 android:textColor="#000000"
                 android:backgroundTint="@color/color_change_blue"
                 app:cornerRadius="32dp"
@@ -166,7 +167,7 @@
                 android:id="@+id/buttonRegister"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:text="註冊"
+                android:text="@string/register"
                 android:backgroundTint="@color/color_change_yello"
                 android:textColor="#000000"
                 app:cornerRadius="32dp" />

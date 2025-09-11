@@ -23,6 +23,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.cameraproject_2.ui.FareQueryActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.unity3d.player.UnityPlayerActivity;
 import org.opencv.android.OpenCVLoader;
@@ -70,7 +72,7 @@ public class UploadImage extends AppCompatActivity {
         // Initialize OpenCV
         if (!OpenCVLoader.initDebug()) {
             Log.e("OpenCV", "無法載入 OpenCV");
-            Toast.makeText(this, "OpenCV 初始化失敗，請檢查應用配置", Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "OpenCV 初始化失敗，請檢查應用配置", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -93,7 +95,7 @@ public class UploadImage extends AppCompatActivity {
                 buttonCorrectLocation == null || buttonIncorrectLocation == null ||
                 buttonUpload == null || sendToChatButton == null || bottomNavigationView == null) {
             Log.e("UploadImage", "UI components not found in layout, check activity_upload_image.xml");
-            Toast.makeText(this, "應用程式初始化失敗，請檢查佈局文件", Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "應用程式初始化失敗，請檢查佈局文件", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -143,6 +145,8 @@ public class UploadImage extends AppCompatActivity {
                 startActivity(intent);
                 overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
             } else if (id == R.id.nav_info) {
+                Intent intent = new Intent(UploadImage.this, FareQueryActivity.class);
+                startActivity(intent);
                 Toast.makeText(this, R.string.taipei_info, Toast.LENGTH_SHORT).show();
             } else if (id == R.id.nav_settings) {
                 Intent intent = new Intent(UploadImage.this, SettingsActivity.class);
@@ -209,16 +213,16 @@ public class UploadImage extends AppCompatActivity {
                             String selectedLocation = resultIntent.getStringExtra("selectedLocation");
                             if (selectedLocation != null && !selectedLocation.isEmpty()) {
                                 currentLocationTextView.setText("Location: " + selectedLocation);
-                                Toast.makeText(this, "位置已更新為：" + selectedLocation, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, getString(R.string.location_updated) + selectedLocation, Toast.LENGTH_SHORT).show();
                                 buttonCorrectLocation.setEnabled(true);
                                 buttonIncorrectLocation.setEnabled(true);
                             } else {
-                                Toast.makeText(this, "未選擇位置", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(this, "未選擇位置", Toast.LENGTH_SHORT).show();
                             }
                         }
                     } else {
                         Log.w("UploadImage", "Result code is not OK or data is null");
-                        Toast.makeText(this, "操作取消或失敗", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(this, "操作取消或失敗", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -230,7 +234,7 @@ public class UploadImage extends AppCompatActivity {
 
         buttonIncorrectLocation.setOnClickListener(v -> {
             if (topMatches.isEmpty()) {
-                Toast.makeText(this, "請先進行圖片比對以獲取匹配結果", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "請先進行圖片比對以獲取匹配結果", Toast.LENGTH_SHORT).show();
                 return;
             }
             Intent intent = new Intent(UploadImage.this, WhereLocation.class);
@@ -250,7 +254,7 @@ public class UploadImage extends AppCompatActivity {
             // 獲取所有聊天室名稱
             Set<String> groupNames = sharedPreferences.getStringSet("groupNames", new HashSet<>());
             if (groupNames == null || groupNames.isEmpty()) {
-                Toast.makeText(this, "您尚未加入任何聊天室", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.not_joined_any_chatroom), Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -258,10 +262,10 @@ public class UploadImage extends AppCompatActivity {
             final boolean[] checkedItems = new boolean[groupNames.size()];
             final ArrayList<String> groupList = new ArrayList<>(groupNames);
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("選擇要分享的聊天室")
+            builder.setTitle(getString(R.string.select_chatroom))
                     .setMultiChoiceItems(groupList.toArray(new String[0]), checkedItems,
                             (dialog, which, isChecked) -> checkedItems[which] = isChecked)
-                    .setPositiveButton("確定", (dialog, which) -> {
+                    .setPositiveButton(getString(R.string.confirm), (dialog, which) -> {
                         String currentLocation = currentLocationTextView.getText().toString().replace("Location: ", "");
                         for (int i = 0; i < checkedItems.length; i++) {
                             if (checkedItems[i]) {
@@ -269,9 +273,9 @@ public class UploadImage extends AppCompatActivity {
                                 sendLocationToChatroom(selectedGroup, currentLocation);
                             }
                         }
-                        Toast.makeText(UploadImage.this, "位置已分享到選定的聊天室", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UploadImage.this, getString(R.string.location_shared_message), Toast.LENGTH_SHORT).show();
                     })
-                    .setNegativeButton("取消", (dialog, which) -> dialog.dismiss())
+                    .setNegativeButton(getString(R.string.cancel), (dialog, which) -> dialog.dismiss())
                     .show();
         });
 
@@ -282,7 +286,7 @@ public class UploadImage extends AppCompatActivity {
             photoUri = Uri.parse(photoUriString);
             processImage(photoUri);
         } else {
-            Toast.makeText(this, "未接收到圖片數據", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "未接收到圖片數據", Toast.LENGTH_SHORT).show();
             finish();
         }
 
@@ -308,7 +312,7 @@ public class UploadImage extends AppCompatActivity {
     private void sendLocationToChatroom(String groupName, String location) {
         Intent intent = new Intent(this, Chatroom.class);
         intent.putExtra("groupName", groupName);
-        intent.putExtra("locationMessage", "位置分享: " + location);
+        intent.putExtra("locationMessage", getString(R.string.location_share_prefix) + location);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
         Log.d("UploadImage", "Sending location '" + location + "' to chatroom: " + groupName);
@@ -317,7 +321,7 @@ public class UploadImage extends AppCompatActivity {
     private void processImage(Uri photoUri) {
         if (photoUri == null) {
             Log.e("UploadImage", "photoUri is null");
-            Toast.makeText(this, "無法處理圖片：URI 為空", Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "無法處理圖片：URI 為空", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -325,7 +329,7 @@ public class UploadImage extends AppCompatActivity {
 
 // 創建並顯示進度提示框
         ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("正在比對中，請稍後...");
+        progressDialog.setMessage(getString(R.string.matching_in_progress));
         progressDialog.setCancelable(false); // 禁止用戶取消
         progressDialog.show();
 
@@ -337,7 +341,7 @@ public class UploadImage extends AppCompatActivity {
                     InputStream inputStream = getContentResolver().openInputStream(photoUri);
                     if (inputStream == null) {
                         Log.e("UploadImage", "無法為 photoUri 打開 InputStream");
-                        runOnUiThread(() -> Toast.makeText(UploadImage.this, "無法讀取圖片", Toast.LENGTH_SHORT).show());
+                        //runOnUiThread(() -> Toast.makeText(UploadImage.this, "無法讀取圖片", Toast.LENGTH_SHORT).show());
                         return null;
                     }
 
@@ -346,7 +350,7 @@ public class UploadImage extends AppCompatActivity {
                     inputStream.close();
                     if (bitmap == null) {
                         Log.e("UploadImage", "從 InputStream 解碼 Bitmap 失敗");
-                        runOnUiThread(() -> Toast.makeText(UploadImage.this, "無法解碼圖片", Toast.LENGTH_SHORT).show());
+                        //runOnUiThread(() -> Toast.makeText(UploadImage.this, "無法解碼圖片", Toast.LENGTH_SHORT).show());
                         return null;
                     }
 
@@ -369,7 +373,7 @@ public class UploadImage extends AppCompatActivity {
                     return bitmap;
                 } catch (IOException e) {
                     Log.e("UploadImage", "處理圖片錯誤: " + e.getMessage());
-                    runOnUiThread(() -> Toast.makeText(UploadImage.this, "處理圖片時出錯", Toast.LENGTH_SHORT).show());
+                    //runOnUiThread(() -> Toast.makeText(UploadImage.this, "處理圖片時出錯", Toast.LENGTH_SHORT).show());
                     return null;
                 }
             }

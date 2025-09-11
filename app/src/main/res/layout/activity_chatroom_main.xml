@@ -6,6 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:theme="@style/AppTheme"
+    android:background="@color/white"
     tools:context=".chatroom_main">
 
     <!-- 頂部 BAR -->
@@ -40,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="聊天室"
+                android:text="@string/chatroom"
                 android:textColor="#000000"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -70,11 +72,11 @@
             android:id="@+id/edit_text_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="搜尋群組名稱"
+            android:hint="@string/search_group_hint"
             android:inputType="text"
             android:padding="16dp"
             android:background="@color/white_smoke"
-            android:contentDescription="搜尋群組名稱" />
+            android:contentDescription="@string/search_group_hint" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- 滾動視圖 -->
@@ -102,7 +104,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
                 android:nestedScrollingEnabled="false"
-                android:contentDescription="群組列表"
+                android:contentDescription="@string/group_list_desc"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
@@ -112,7 +114,7 @@
                 android:id="@+id/text_view_empty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="歡迎來到聊天室！"
+                android:text="@string/welcome_chatroom"
                 android:textColor="@color/black"
                 android:textSize="40sp"
                 app:layout_constraintTop_toTopOf="parent"
@@ -128,7 +130,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="透過+號按鈕建立您與他人的對話"
+                android:text="@string/create_chat_tip"
                 android:textColor="#888888"
                 android:textSize="16sp"
                 app:layout_constraintTop_toBottomOf="@id/text_view_empty"
@@ -155,7 +157,7 @@
             android:id="@+id/message_circle_icon"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:contentDescription="訊息圓形背景"
+            android:contentDescription="@string/message_circle_bg_desc"
             android:src="@drawable/ic_circle"
             app:shapeAppearanceOverlay="@style/CircularShapeAppearance" />
 
@@ -165,7 +167,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="center"
-            android:contentDescription="訊息圖標"
+            android:contentDescription="@string/message_icon_desc"
             android:src="@drawable/icon_message" />
     </FrameLayout>
 
@@ -184,7 +186,7 @@
             android:id="@+id/circle_icon"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:contentDescription="建立新對話"
+            android:contentDescription="@string/create_new_chat_desc"
             android:src="@drawable/ic_circle"
             app:shapeAppearanceOverlay="@style/CircularShapeAppearance" />
 
@@ -194,7 +196,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="center"
-            android:contentDescription="聊天圖標"
+            android:contentDescription="@string/chat_icon_desc"
             android:src="@drawable/ic_chat" />
     </FrameLayout>
 
@@ -205,9 +207,10 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_nav_menu"
-        app:itemIconSize="40dp"
-        app:itemTextColor="@color/my_forth"
-        app:itemIconTint="@color/my_forth"
+        app:itemIconSize="30dp"
+        app:itemTextColor="@color/bottom_nav_item_color"
+        app:itemIconTint="@color/bottom_nav_item_color"
+        style="@style/CustomBottomNavigationView"
         android:background="@color/barcolor"
         app:labelVisibilityMode="labeled" />
 </androidx.constraintlayout.widget.ConstraintLayout>

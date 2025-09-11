@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@style/AppTheme"
     android:background="@color/white">
 
     <!-- 上傳的圖片 -->
@@ -72,7 +73,7 @@
             android:id="@+id/loadingTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="分析中"
+            android:text="@string/analyzing"
             android:textColor="@color/white"
             android:textSize="16sp"
             android:layout_marginTop="8dp" />

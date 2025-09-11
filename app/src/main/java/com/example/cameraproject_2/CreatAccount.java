@@ -87,43 +87,43 @@ public class CreatAccount extends AppCompatActivity {
 
             // 檢查所有欄位是否為空
             if (newUsername.isEmpty()) {
-                editTextNewUsername.setError("帳號名稱不能為空白");
+                editTextNewUsername.setError(getString(R.string.username_cannot_be_blank));
                 editTextNewUsername.requestFocus();
                 return;
             }
 
             if (email.isEmpty()) {
-                editTextEmail.setError("信箱不能為空白");
+                editTextEmail.setError(getString(R.string.email_cannot_be_blank));
                 editTextEmail.requestFocus();
                 return;
             }
 
             if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                editTextEmail.setError("請輸入有效的信箱地址");
+                editTextEmail.setError(getString(R.string.invalid_email_address));
                 editTextEmail.requestFocus();
                 return;
             }
 
             if (newPassword.isEmpty()) {
-                textInputLayoutNewPassword.setError("密碼不能為空白");
+                textInputLayoutNewPassword.setError(getString(R.string.password_cannot_be_blank));
                 editTextNewPassword.requestFocus();
                 return;
             }
 
             if (newPassword.length() < 6) {
-                textInputLayoutNewPassword.setError("密碼長度至少需要 6 個字符");
+                textInputLayoutNewPassword.setError(getString(R.string.password_min_length));
                 editTextNewPassword.requestFocus();
                 return;
             }
 
             if (confirmPassword.isEmpty()) {
-                textInputLayoutConfirmPassword.setError("請再次確認密碼");
+                textInputLayoutConfirmPassword.setError(getString(R.string.confirm_password_cannot_be_blank));
                 editTextConfirmPassword.requestFocus();
                 return;
             }
 
             if (!newPassword.equals(confirmPassword)) {
-                textInputLayoutConfirmPassword.setError("兩次輸入的密碼不一致");
+                textInputLayoutConfirmPassword.setError(getString(R.string.passwords_do_not_match));
                 editTextConfirmPassword.requestFocus();
                 return;
             }

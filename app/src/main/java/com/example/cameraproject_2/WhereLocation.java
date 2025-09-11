@@ -52,13 +52,13 @@ public class WhereLocation extends AppCompatActivity {
         ArrayList<MatchResult> topMatches = intent.getParcelableArrayListExtra("topMatches");
         Log.d(TAG, "topMatches size: " + (topMatches != null ? topMatches.size() : "null"));
         if (topMatches == null || topMatches.isEmpty()) {
-            Toast.makeText(this, "無匹配結果", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.no_match_result), Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
         // 更新底部文字
-        bottomText.setText("共 " + topMatches.size() + " 個匹配結果");
+        bottomText.setText(getString(R.string.match_first)+ topMatches.size() + getString(R.string.match_second));
         adapter.setData(topMatches);
 
         // 設置返回箭頭點擊事件，返回到 UploadImage
@@ -84,15 +84,15 @@ public class WhereLocation extends AppCompatActivity {
 
     private void showLocationDialog(String location) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("確認位置");
-        builder.setMessage("您現在的位置是：" + location + "\n是否確認？");
-        builder.setPositiveButton("確認", (dialog, which) -> {
+        builder.setTitle(getString(R.string.confirm_location_title));
+        builder.setMessage(String.format(getString(R.string.confirm_location_message), location));
+        builder.setPositiveButton(getString(R.string.confirm), (dialog, which) -> {
             Intent resultIntent = new Intent();
             resultIntent.putExtra("selectedLocation", location);
             setResult(RESULT_OK, resultIntent);
             finish();
         });
-        builder.setNegativeButton("我再看看", (dialog, which) -> {
+        builder.setNegativeButton(getString(R.string.button_see_again), (dialog, which) -> {
             dialog.dismiss();
         });
         builder.setCancelable(false);

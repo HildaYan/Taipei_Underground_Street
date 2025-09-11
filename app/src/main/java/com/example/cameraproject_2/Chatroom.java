@@ -116,7 +116,7 @@ public class Chatroom extends AppCompatActivity {
                     ", refreshIcon=" + (refreshIcon != null) +
                     ", groupName=" + (textViewGroupName != null) +
                     ", dbHelper=" + (dbHelper != null));
-            Toast.makeText(this, "初始化失敗", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "初始化失敗", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -135,7 +135,7 @@ public class Chatroom extends AppCompatActivity {
             if (isNetworkAvailable()) {
                 fetchMessagesFromServer();
             } else {
-                Toast.makeText(this, "無網路連線，僅從本地載入訊息", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.no_network_local_load_only), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -157,7 +157,7 @@ public class Chatroom extends AppCompatActivity {
             Log.e("Chatroom", "groupName is null from Intent");
             groupName = sharedPreferences.getString("lastGroupName", "taipei underground");
             if (groupName.isEmpty()) {
-                Toast.makeText(this, "未選擇群組", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.group_not_selected), Toast.LENGTH_SHORT).show();
                 finish();
                 return;
             }
@@ -181,13 +181,13 @@ public class Chatroom extends AppCompatActivity {
 
         if (members.isEmpty()) {
             Log.w("Chatroom", "Members list is empty for group: " + groupName);
-            Toast.makeText(this, "群組無成員", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.group_no_members), Toast.LENGTH_SHORT).show();
         }
 
         currentUserId = sharedPreferences.getString("userId", null);
         if (currentUserId == null || currentUserId.trim().isEmpty()) {
             Log.e("Chatroom", "No userId found in SharedPreferences, redirecting to login");
-            Toast.makeText(this, "請先登錄", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.please_login_first), Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, PersonalAccount.class));
             finish();
             return;
@@ -196,7 +196,7 @@ public class Chatroom extends AppCompatActivity {
         currentUsername = dbHelper.getUsernameFromUserId(currentUserId);
         if (currentUsername == null) {
             Log.e("Chatroom", "Username not found for userId: " + currentUserId);
-            currentUsername = "訪客";
+            currentUsername = getString(R.string.guest);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("loggedInUser", currentUsername);
             editor.apply();
@@ -224,7 +224,7 @@ public class Chatroom extends AppCompatActivity {
                 sendMessageToServer(groupName, "System", locationMessage, messageId, timestamp);
             } else {
                 Log.w("Chatroom", "No network available, location message stored locally");
-                Toast.makeText(this, "無網路連線，位置訊息已儲存至本地", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.no_network_location_saved), Toast.LENGTH_SHORT).show();
             }
 
             loadMessagesFromDatabase();
@@ -239,7 +239,7 @@ public class Chatroom extends AppCompatActivity {
 
         textViewGroupName.setText(groupName);
         updateUI();
-        Toast.makeText(this, "歡迎來到 " + groupName + ", " + currentUsername + "!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.welcome_to_group) + groupName + ", " + currentUsername + "!", Toast.LENGTH_SHORT).show();
 
         buttonSend.setOnClickListener(this::onSendButtonClick);
         loadMessagesFromDatabase();
@@ -276,7 +276,7 @@ public class Chatroom extends AppCompatActivity {
             Log.d("Chatroom", "UI updated with " + messageList.size() + " messages, lastMessageId: " + lastMessageId);
         } catch (Exception e) {
             Log.e("Chatroom", "Error updating UI: " + e.getMessage());
-            Toast.makeText(this, "Error updating messages", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.error_updating_message), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -317,7 +317,7 @@ public class Chatroom extends AppCompatActivity {
                             pollingRetryCount = 0;
                             retryDelay = POLLING_INTERVAL_MS; // 重置延遲
                             lastMessageId = "0"; // 僅在必要時重置
-                            runOnUiThread(() -> Toast.makeText(Chatroom.this, "伺服器錯誤，重試拉取全部訊息", Toast.LENGTH_SHORT).show());
+                            runOnUiThread(() -> Toast.makeText(Chatroom.this, getString(R.string.server_error_retry_fetch_all), Toast.LENGTH_SHORT).show());
                         } else {
                             retryDelay *= 2; // 指數退避
                         }
@@ -333,7 +333,7 @@ public class Chatroom extends AppCompatActivity {
                     } else {
                         retryDelay *= 2;
                     }
-                    runOnUiThread(() -> Toast.makeText(Chatroom.this, "網路錯誤，將稍後重試", Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> Toast.makeText(Chatroom.this, getString(R.string.network_error_retry_later), Toast.LENGTH_SHORT).show());
                     try {
                         Thread.sleep(retryDelay);
                     } catch (InterruptedException ie) {
@@ -376,7 +376,7 @@ public class Chatroom extends AppCompatActivity {
             if (currentUserId == null) {
                 Log.e("Chatroom", "currentUserId is null, redirecting to login");
                 runOnUiThread(() -> {
-                    Toast.makeText(Chatroom.this, "請先登錄", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Chatroom.this, getString(R.string.please_login_first), Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(Chatroom.this, PersonalAccount.class));
                     finish();
                 });
@@ -391,12 +391,12 @@ public class Chatroom extends AppCompatActivity {
                     Log.d("Chatroom", "Server invitation sync status: " + success);
                     if (!success) {
                         Log.e("Chatroom", "Failed to sync invitations");
-                        Toast.makeText(Chatroom.this, "無法同步邀請，請檢查網路或稍後重試", Toast.LENGTH_LONG).show();
+                        Toast.makeText(Chatroom.this, getString(R.string.sync_invitation_failed), Toast.LENGTH_LONG).show();
                         new android.app.AlertDialog.Builder(Chatroom.this)
-                                .setTitle("同步失敗")
-                                .setMessage("無法同步群組邀請，是否重試？")
-                                .setPositiveButton("重試", (dialog, which) -> checkInvitationStatus())
-                                .setNegativeButton("取消", null)
+                                .setTitle(getString(R.string.sync_failed))
+                                .setMessage(getString(R.string.sync_group_invitation_failed_retry))
+                                .setPositiveButton(getString(R.string.retry), (dialog, which) -> checkInvitationStatus())
+                                .setNegativeButton(getString(R.string.cancel), null)
                                 .show();
                         return;
                     }
@@ -439,9 +439,9 @@ public class Chatroom extends AppCompatActivity {
     private void showInvitationDialog(Invitation invitation) {
         runOnUiThread(() -> {
             android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-            builder.setTitle("群組邀請")
-                    .setMessage("您已被邀請加入群組: " + invitation.getGroupName())
-                    .setPositiveButton("接受", (dialog, which) -> {
+            builder.setTitle(getString(R.string.group_invitation_title))
+                    .setMessage(getString(R.string.group_invitation_message) + invitation.getGroupName())
+                    .setPositiveButton(getString(R.string.accept), (dialog, which) -> {
                         dbHelper.updateInvitationStatus(invitation.getInvitationId(), "accepted");
                         hasAcceptedInvitation = true;
                         updateUI();
@@ -449,7 +449,7 @@ public class Chatroom extends AppCompatActivity {
                         dialog.dismiss();
                         Log.d("Chatroom", "Invitation accepted: " + invitation.getInvitationId());
                     })
-                    .setNegativeButton("拒絕", (dialog, which) -> {
+                    .setNegativeButton(getString(R.string.reject), (dialog, which) -> {
                         dbHelper.updateInvitationStatus(invitation.getInvitationId(), "rejected");
                         checkInvitationStatus();
                         dialog.dismiss();
@@ -462,13 +462,13 @@ public class Chatroom extends AppCompatActivity {
 
     public void onSendButtonClick(View view) {
         if (!hasAcceptedInvitation) {
-            Toast.makeText(this, "請先接受群組邀請以發送訊息", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.please_accept_group_invitation), Toast.LENGTH_SHORT).show();
             return;
         }
 
         String message = editTextMessage.getText().toString().trim();
         if (message.isEmpty()) {
-            Toast.makeText(this, "訊息不能為空", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.message_cannot_be_empty), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -484,7 +484,7 @@ public class Chatroom extends AppCompatActivity {
             sendMessageToServer(groupName, currentUsername, message, messageId, timestamp);
         } else {
             Log.w("Chatroom", "No network available, message stored locally");
-            Toast.makeText(this, "無網路連線，訊息已儲存至本地", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.no_network_location_saved), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -522,7 +522,7 @@ public class Chatroom extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Call call, @NonNull IOException e) {
                         Log.e("Chatroom", "Failed to send message: " + e.getMessage());
-                        runOnUiThread(() -> Toast.makeText(Chatroom.this, "無法發送訊息: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                        runOnUiThread(() -> Toast.makeText(Chatroom.this, getString(R.string.unable_to_send_message) + e.getMessage(), Toast.LENGTH_SHORT).show());
                     }
 
                     @Override
@@ -536,24 +536,24 @@ public class Chatroom extends AppCompatActivity {
                                     dbHelper.updateMessageSyncStatus(messageId, 1);
                                     Log.d("Chatroom", "Message synced successfully: ID=" + messageId + ", message=" + message);
                                 } else {
-                                    String errorMessage = jsonResponse.optString("message", "未知錯誤");
+                                    String errorMessage = jsonResponse.optString("message", getString(R.string.unknown_error));
                                     Log.e("Chatroom", "Server error: " + errorMessage);
-                                    runOnUiThread(() -> Toast.makeText(Chatroom.this, "伺服器錯誤: " + errorMessage, Toast.LENGTH_SHORT).show());
+                                    runOnUiThread(() -> Toast.makeText(Chatroom.this, getString(R.string.server_error_code) + errorMessage, Toast.LENGTH_SHORT).show());
                                 }
                             } catch (JSONException e) {
                                 Log.e("Chatroom", "JSON parse error: " + e.getMessage());
-                                runOnUiThread(() -> Toast.makeText(Chatroom.this, "無法解析伺服器回應", Toast.LENGTH_SHORT).show());
+                                runOnUiThread(() -> Toast.makeText(Chatroom.this, getString(R.string.json_parse_error), Toast.LENGTH_SHORT).show());
                             }
                         } else {
                             Log.e("Chatroom", "Server error: " + response.code() + ", response: " + responseData);
-                            runOnUiThread(() -> Toast.makeText(Chatroom.this, "伺服器錯誤: " + response.code(), Toast.LENGTH_SHORT).show());
+                            runOnUiThread(() -> Toast.makeText(Chatroom.this, getString(R.string.server_error) + response.code(), Toast.LENGTH_SHORT).show());
                         }
                         response.close();
                     }
                 });
             } catch (JSONException e) {
                 Log.e("Chatroom", "JSON error: " + e.getMessage());
-                runOnUiThread(() -> Toast.makeText(Chatroom.this, "無法準備訊息", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> Toast.makeText(Chatroom.this, getString(R.string.unable_to_prepare_message), Toast.LENGTH_SHORT).show());
             }
         });
     }
@@ -586,7 +586,7 @@ public class Chatroom extends AppCompatActivity {
                                     for (int i = 0; i < data.length(); i++) {
                                         JSONObject messageObj = data.getJSONObject(i);
                                         String messageId = messageObj.getString("message_id");
-                                        String sender = messageObj.optString("sender", "未知用戶");
+                                        String sender = messageObj.optString("sender", getString(R.string.guest));
                                         String messageText = messageObj.optString("message", "");
                                         long timestamp;
                                         try {
@@ -623,7 +623,7 @@ public class Chatroom extends AppCompatActivity {
                                     runOnUiThread(this::loadMessagesFromDatabase);
                                 } else {
                                     Log.d("Chatroom", "No new messages received for group: " + groupName);
-                                    runOnUiThread(() -> Toast.makeText(Chatroom.this, "無新訊息", Toast.LENGTH_SHORT).show());
+                                    runOnUiThread(() -> Toast.makeText(Chatroom.this, getString(R.string.no_new_messages), Toast.LENGTH_SHORT).show());
                                 }
                                 String newLastMessageId = jsonResponse.optString("last_message_id", lastMessageId);
                                 if (!newLastMessageId.equals(lastMessageId)) {
@@ -631,13 +631,13 @@ public class Chatroom extends AppCompatActivity {
                                     Log.d("Chatroom", "Updated lastMessageId to: " + lastMessageId);
                                 }
                             } else {
-                                String errorMessage = jsonResponse.optString("message", "未知錯誤");
+                                String errorMessage = jsonResponse.optString("message", getString(R.string.unknown_error));
                                 Log.w("Chatroom", "Fetch response not successful: " + errorMessage);
-                                runOnUiThread(() -> Toast.makeText(Chatroom.this, "拉取訊息失敗: " + errorMessage, Toast.LENGTH_SHORT).show());
+                                runOnUiThread(() -> Toast.makeText(Chatroom.this, getString(R.string.fetch_messages_failed)+ errorMessage, Toast.LENGTH_SHORT).show());
                             }
                         } catch (JSONException e) {
                             Log.e("Chatroom", "JSON parse error: " + e.getMessage());
-                            runOnUiThread(() -> Toast.makeText(Chatroom.this, "無法解析伺服器回應: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                            runOnUiThread(() -> Toast.makeText(Chatroom.this, getString(R.string.json_parse_error) + e.getMessage(), Toast.LENGTH_SHORT).show());
                         }
                     } else {
                         Log.e("Chatroom", "Fetch failed with code: " + response.code() + ", response: " + responseData);
@@ -646,7 +646,7 @@ public class Chatroom extends AppCompatActivity {
                             Log.w("Chatroom", "Max retries reached, resetting lastMessageId to 0");
                             lastMessageId = "0";
                             pollingRetryCount = 0;
-                            runOnUiThread(() -> Toast.makeText(Chatroom.this, "伺服器錯誤，重試拉取全部訊息", Toast.LENGTH_SHORT).show());
+                            runOnUiThread(() -> Toast.makeText(Chatroom.this, getString(R.string.server_error_retry_fetch_all), Toast.LENGTH_SHORT).show());
                         }
                     }
                 }
@@ -657,7 +657,7 @@ public class Chatroom extends AppCompatActivity {
                     Log.w("Chatroom", "Max retries reached due to error, resetting lastMessageId to 0");
                     lastMessageId = "0";
                     pollingRetryCount = 0;
-                    runOnUiThread(() -> Toast.makeText(Chatroom.this, "網路錯誤，重試拉取全部訊息", Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> Toast.makeText(Chatroom.this, getString(R.string.server_error_retry_fetch_all), Toast.LENGTH_SHORT).show());
                 }
             }
         });
@@ -668,7 +668,7 @@ public class Chatroom extends AppCompatActivity {
         pollingRetryCount = 0;
         loadMessagesFromDatabase();
         Log.d("Chatroom", "Manual refresh triggered, lastMessageId reset to 0");
-        Toast.makeText(this, "正在重新載入訊息", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.loading_messages), Toast.LENGTH_SHORT).show();
     }
 
     private String formatTimestamp(long timestamp) {
@@ -678,7 +678,7 @@ public class Chatroom extends AppCompatActivity {
     }
 
     private String formatDate(long timestamp) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/", Locale.getDefault());
         sdf.setTimeZone(TimeZone.getTimeZone("Asia/Taipei"));
         return sdf.format(new Date(timestamp));
     }
@@ -765,11 +765,11 @@ public class Chatroom extends AppCompatActivity {
             if (hasAcceptedInvitation) {
                 buttonSend.setEnabled(true);
                 editTextMessage.setEnabled(true);
-                editTextMessage.setHint("輸入訊息...");
+                editTextMessage.setHint(getString(R.string.input_message_hint));
             } else {
                 buttonSend.setEnabled(false);
                 editTextMessage.setEnabled(false);
-                editTextMessage.setHint("請先接受群組邀請才能發送訊息");
+                editTextMessage.setHint(getString(R.string.please_accept_group_invitation_to_send));
             }
             Log.d("Chatroom", "UI updated, hasAcceptedInvitation: " + hasAcceptedInvitation);
         });
@@ -785,7 +785,7 @@ public class Chatroom extends AppCompatActivity {
             Menu menu = navigationView.getMenu();
             menu.clear();
 
-            menu.add(Menu.NONE, R.id.Chat_room, Menu.NONE, "主頁")
+            menu.add(Menu.NONE, R.id.Chat_room, Menu.NONE, getString(R.string.home_page))
                     .setIcon(R.drawable.store_icon)
                     .setOnMenuItemClickListener(item -> {
                         startActivity(new Intent(Chatroom.this, Chatroom.class));
@@ -793,7 +793,7 @@ public class Chatroom extends AppCompatActivity {
                         return true;
                     });
 
-            menu.add(Menu.NONE, R.id.Create_Group, Menu.NONE, "創建群組")
+            menu.add(Menu.NONE, R.id.Create_Group, Menu.NONE, getString(R.string.create_group))
                     .setIcon(R.drawable.store_icon)
                     .setOnMenuItemClickListener(item -> {
                         startActivity(new Intent(Chatroom.this, CreateGroupActivity.class));
@@ -832,15 +832,15 @@ public class Chatroom extends AppCompatActivity {
                         });
             }
 
-            menu.add(Menu.NONE, R.id.nav_logout, Menu.NONE, "登出")
+            menu.add(Menu.NONE, R.id.nav_logout, Menu.NONE, getString(R.string.logout))
                     .setIcon(R.drawable.login_icon)
                     .setOnMenuItemClickListener(item -> {
                         SharedPreferences.Editor editor1 = sharedPreferences.edit();
                         editor1.putBoolean("isLoggedIn", false);
-                        editor1.putString("loggedInUser", "訪客");
+                        editor1.putString("loggedInUser", getString(R.string.guest));
                         editor1.putString("userId", null);
                         editor1.apply();
-                        Toast.makeText(Chatroom.this, "已登出", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Chatroom.this, getString(R.string.logged_out), Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(Chatroom.this, PersonalAccount.class));
                         finish();
                         return true;
@@ -855,10 +855,10 @@ public class Chatroom extends AppCompatActivity {
         if (id == R.id.nav_logout) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("isLoggedIn", false);
-            editor.putString("loggedInUser", "訪客");
+            editor.putString("loggedInUser", getString(R.string.guest));
             editor.putString("userId", null);
             editor.apply();
-            Toast.makeText(this, "已登出", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.logged_out), Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, PersonalAccount.class));
             finish();
         } else if (id == R.id.Chat_room) {

@@ -44,7 +44,7 @@ public class IntroductoryActivity extends AppCompatActivity {
         appName = findViewById(R.id.app_name);
 
         // 檢查 logo 資源
-        logo.setImageResource(R.drawable.icon_logo);
+        logo.setImageResource(R.drawable.icon_logo1);
         if (logo.getDrawable() == null) {
             Log.e("IntroductoryActivity", "Failed to load icon_logo image");
         }

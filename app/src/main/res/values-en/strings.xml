@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">Unlost</string>
+    <string name="app_name">NO LOST</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="taipei">Taipei Underground Mall Navigation</string>
+    <string name="taipei">Taipei Main Station Information</string>
     <string name="uploaded_image_desc">Uploaded image</string>
     <string name="database_image_desc">Database matched image</string>
     <string name="location_unknown">Location: Unknown</string>
@@ -17,67 +17,249 @@
 
     <string name="guest">Guest</string>
 
-    <string name="language_setting">Language Setting</string>
-    <string name="user_guide">User Guide</string>
+    <string name="language_setting">Language Settings</string>
+    <string name="user_guide">View User Guide</string>
     <string name="delete_account">Delete Account</string>
     <string name="language_english">English</string>
     <string name="language_japanese">Japanese</string>
     <string name="language_chinese">Chinese</string>
 
-    <string name="user_guide_content">This is the user guide content. Please modify as needed.</string>
+    <string name="user_guide_content">This is the content of the user guide, please modify as needed.</string>
     <string name="delete_account_confirm">Are you sure you want to delete your account? This action cannot be undone.</string>
     <string name="delete">Delete</string>
-    <string name="account_deleted">Account has been successfully deleted.</string>
+    <string name="account_deleted">Account successfully deleted.</string>
     <string name="user_info_not_found">User information not found.</string>
     <string name="confirm_language_change">Confirm Language Change</string>
     <string name="confirm_language_message">Are you sure you want to change the language to %1$s?</string>
-    <string name="language_change_cancelled">Language change has been cancelled.</string>
+    <string name="language_change_cancelled">Language change cancelled.</string>
 
-    <string name="incorrect_location">Incorrect Location</string>
+    <string name="incorrect_location">Incorrect location</string>
     <string name="start_navigation">Start Navigation</string>
 
-    <!-- Added missing strings -->
     <string name="current_location_label">Current Location:</string>
-    <string name="home_page">Returned to home page</string>
-    <string name="taipei_info">Taipei Underground Mall Information</string>
+    <string name="home_page">Returned to Home Page</string>
+    <string name="taipei_info">Taipei Underground Information</string>
     <string name="account_logout_confirm">Are you sure you want to log out?</string>
     <string name="account_logout_success">Successfully logged out</string>
     <string name="group_invitation_title">Group Invitation</string>
     <string name="group_invitation_message">You have been invited to join the group: %1$s</string>
-    <string name="accept_invitation_success">Accepted group invitation: %1$s</string>
-    <string name="reject_invitation_success">Rejected group invitation: %1$s</string>
+    <string name="accept_invitation_success">Group invitation accepted: %1$s</string>
+    <string name="reject_invitation_success">Group invitation rejected: %1$s</string>
     <string name="new_group_notification_title">New Group Invitation</string>
     <string name="new_group_notification_message">You have received an invitation from the group %1$s</string>
 
     <string name="init_failed">Application initialization failed, please contact the developer</string>
-    <string name="navigation_setup_failed">Navigation setup failed</string>
-    <string name="database_init_failed">Database initialization failed</string>
-    <string name="map_load_failed">Unable to load matched map image</string>
-    <string name="location_updated">Location updated to: %1$s</string>
-    <string name="location_not_selected">No location selected</string>
+    <string name="map_load_failed">Failed to load matched map image</string>
+    <string name="location_not_selected">Location not selected</string>
     <string name="operation_cancelled">Operation cancelled or failed</string>
     <string name="camera_permission_required">Camera and storage permissions are required to use the camera function</string>
     <string name="notification_permission_granted">Notification permission granted</string>
-    <string name="notification_permission_required">Notification permission is required to receive group invitation notifications</string>
-
 
     <string name="picture">Picture</string>
     <string name="camera">Camera</string>
 
     <string name="navigation_home">Home</string>
     <string name="navigation_chat">Chat Room</string>
-    <string name="navigation_member">Member Info</string>
-    <string name="navigation_info">Taipei Main Station Underground Mall Info</string>
+    <string name="navigation_member">Member Information</string>
+    <string name="navigation_info">Taipei Station Information</string>
     <string name="navigation_settings">Settings</string>
 
-    <string name="profile_image">Profile Image</string>
+    <string name="profile_image">Profile Picture</string>
     <string name="change_profile">Change Profile Picture</string>
     <string name="username_hint">Enter Name</string>
     <string name="user_id_label">Account: [User ID]</string>
-    <string name="logout">Logout</string>
-    <string name="switch_account">Switch Account</string>
-    <string name="login">Login</string>
+    <string name="logout">Log Out</string>
+    <string name="switch_account">Log in with Another Account</string>
+    <string name="login">Log In</string>
 
+    <string name="guide_next">Next</string>
+    <string name="guide_finish">Finish</string>
+    <string name="do_not_show_again">Do Not Show Again</string>
+    <string name="guide_image_description">User Guide Image</string>
 
+    <string name="cancel">Cancel</string>
+    <string name="confirm_logout">Confirm Logout</string>
+    <string name="confirm">Confirm</string>
+
+    <string name="input_current_password">Please enter current password</string>
+    <string name="input_new_password">Please enter new password</string>
+    <string name="new_password_length_error">New password must be at least 6 characters long</string>
+    <string name="input_confirm_password">Please confirm new password</string>
+    <string name="password_mismatch_error">Error: New password and confirmation password do not match</string>
+    <string name="incorrect_current_password">Current password is incorrect</string>
+    <string name="password_updated">Password updated</string>
+    <string name="password_update_failed">Failed to update password</string>
+
+    <string name="username_cannot_be_empty">Username cannot be empty</string>
+    <string name="username_same_as_original">New username is the same as the original</string>
+    <string name="username_update_failed">Failed to update username</string>
+
+    <string name="no_network_local_load_only">No network connection, loading messages from local only</string>
+    <string name="group_not_selected">No group selected</string>
+    <string name="group_no_members">Group has no members</string>
+    <string name="please_login_first">Please log in first</string>
+    <string name="no_network_location_saved">No network connection, location information saved locally</string>
+    <string name="welcome_to_group">Welcome to </string>
+    <string name="error_updating_message">Error updating message</string>
+    <string name="server_error_retry_fetch_all">Server error, retry fetching all messages</string>
+    <string name="network_error_retry_later">Network error, will retry later</string>
+    <string name="sync_invitation_failed">Failed to sync invitation, please check network or try again later</string>
+    <string name="sync_failed">Sync failed</string>
+    <string name="sync_group_invitation_failed_retry">Failed to sync group invitation, retry?</string>
+    <string name="retry">Retry</string>
+    <string name="accept">Accept</string>
+    <string name="reject">Reject</string>
+    <string name="please_accept_group_invitation">Please accept the group invitation to send messages</string>
+    <string name="message_cannot_be_empty">Message cannot be empty</string>
+    <string name="unable_to_send_message">Unable to send message: </string>
+    <string name="server_error">Server error: </string>
+    <string name="json_parse_error">Unable to parse server response</string>
+    <string name="server_error_code">Server error: </string>
+    <string name="unable_to_prepare_message">Unable to prepare message</string>
+    <string name="no_new_messages">No new messages</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="fetch_messages_failed">Failed to fetch messages: </string>
+    <string name="loading_messages">Reloading messages</string>
+    <string name="input_message_hint">Enter message...</string>
+    <string name="please_accept_group_invitation_to_send">Please accept the group invitation to send messages</string>
+    <string name="create_group">Create Group</string>
+    <string name="logged_out">Logged out</string>
+
+    <string name="username_cannot_be_blank">Username cannot be blank</string>
+    <string name="email_cannot_be_blank">Email cannot be blank</string>
+    <string name="invalid_email_address">Please enter a valid email address</string>
+    <string name="password_cannot_be_blank">Password cannot be blank</string>
+    <string name="password_min_length">Password must be at least 6 characters long</string>
+    <string name="confirm_password_cannot_be_blank">Please confirm password</string>
+    <string name="passwords_do_not_match">Passwords do not match</string>
+    <string name="please_enter_member_id">Please enter member ID</string>
+    <string name="max_group_members">Group can have a maximum of 30 members</string>
+    <string name="member_already_added">This member has already been added</string>
+    <string name="user_not_found">User not found, please verify user ID</string>
+    <string name="please_enter_group_name">Please enter group name</string>
+    <string name="please_select_at_least_one_member">Please select at least one member</string>
+    <string name="group_creation_success">Group created successfully, invitations sent</string>
+    <string name="group_creation_failure">Failed to create group</string>
+    <string name="navigation_setup_failed">Navigation or upload setup failed</string>
+
+    <string name="database_init_failed">Database initialization failed</string>
+    <string name="unable_to_get_photo">Unable to retrieve captured photo, please try again</string>
+    <string name="photo_cancelled_or_failed">Photo capture cancelled or failed</string>
+    <string name="no_image_selected">No image selected</string>
+    <string name="image_selection_cancelled_or_failed">Image selection cancelled or failed</string>
+    <string name="cannot_get_group_name">Unable to find group</string>
+    <string name="cannot_get_invitation_group_name">Unable to get group name for invitation ID: </string>
+    <string name="unable_to_create_image_file">Unable to create image file</string>
+    <string name="camera_app_not_found">Camera app not found, please ensure a camera app is installed on the device</string>
+    <string name="camera_or_storage_permission_denied">Camera and storage permissions are required to use the camera function</string>
+    <string name="notification_permission_required">Notification permission is required to receive group invitation notifications</string>
+    <string name="select_image_source">Please select image source</string>
+    <string name="from_camera">From Camera</string>
+    <string name="from_picture">From Gallery</string>
+    <string name="upload">Upload</string>
+    <string name="unknown_location">Unknown Location</string>
+    <string name="username_empty_error">Username cannot be empty</string>
+    <string name="password_empty_error">Password cannot be empty</string>
+    <string name="progress_logging_in">Logging in...</string>
+    <string name="login_success">Login successful</string>
+    <string name="login_failed">Login failed, please check username or password</string>
+
+    <string name="invitation_status_pending">Invitation received, not yet accepted</string>
+    <string name="invitation_status_accepted">Accepted</string>
+    <string name="invitation_status_rejected">Rejected</string>
+    <string name="button_accept">Accept</string>
+
+    <string name="password_sync_failed">Password sync failed: </string>
+    <string name="password_sync_success">Password sync successful</string>
+    <string name="location_updated">Location updated to: </string>
+    <string name="not_joined_any_chatroom">You have not joined any chat rooms</string>
+    <string name="select_chatroom">Select chat room to share</string>
+    <string name="location_shared_message">Location shared to selected chat room</string>
+    <string name="location_share_prefix">Location shared:</string>
+    <string name="matching_in_progress">Matching in progress, please wait...</string>
+    <string name="please_login">Please log in</string>
+
+    <string name="label_name">Name: </string>
+    <string name="unknown_user">Unknown User</string>
+    <string name="unknown_id">Unknown ID</string>
+
+    <string name="confirm_delete_title">Confirm Deletion</string>
+    <string name="confirm_delete_message">Are you sure you want to delete your account? This action is irreversible!</string>
+    <string name="account_deleted_failed">Account deletion failed</string>
+    <string name="no_match_result">No match results</string>
+    <string name="match_first">Total %d</string>
+    <string name="match_second">%d match results</string>
+    <string name="confirm_location_title">Confirm Location</string>
+    <string name="confirm_location_message">Your current location is: %1$s\nConfirm?</string>
+    <string name="button_see_again">Let me review again</string>
+    <string name="change_password">Change Password</string>
+    <string name="original_password">Original Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="update">Update</string>
+    <string name="error_password_mismatch">Error: New password and confirmation password do not match</string>
+    <string name="enter_new_nickname">Enter new nickname</string>
+    <string name="send_message_hint">Send message...</string>
+    <string name="send_button_text">Send</string>
+    <string name="chatroom">Chat Room</string>
+    <string name="search_group_hint">Search group name</string>
+    <string name="group_list_desc">Group list</string>
+    <string name="welcome_chatroom">Welcome to the chat room!</string>
+    <string name="create_chat_tip">Start a conversation with others using the + button</string>
+    <string name="message_circle_bg_desc">Message circle background</string>
+    <string name="message_icon_desc">Message icon</string>
+    <string name="create_new_chat_desc">Create new chat</string>
+    <string name="chat_icon_desc">Chat icon</string>
+
+    <string name="create_account">Create Account</string>
+    <string name="input_username_hint">Enter username</string>
+    <string name="input_email_hint">Enter email</string>
+    <string name="input_password_hint">Enter password</string>
+    <string name="input_confirm_password_hint">Confirm password</string>
+    <string name="confirm_register">Confirm Registration</string>
+    <string name="enter_member_id_hint">Enter member ID</string>
+    <string name="search_button_text">Search</string>
+    <string name="searched_members_info">Searched members (up to 30)</string>
+
+    <string name="metro_fare_query">Metro Fare Inquiry</string>
+    <string name="select_start_station_hint">Select starting station</string>
+    <string name="select_end_station_hint">Select destination station</string>
+    <string name="query_button_text">Query</string>
+    <string name="full_fare_price">Full fare price: NT$ 25</string>
+    <string name="senior_child_fare_newtaipei">Senior/Child (New Taipei): NT$ 12</string>
+    <string name="child_fare_taipei">Child (Taipei): NT$ 10</string>
+    <string name="distance_text">Distance: 3.2 km</string>
+
+    <string name="photo_match_location">Match current location using photo</string>
+    <string name="upload_photo">Upload Photo</string>
+    <string name="ar_navigation">AR Navigation</string>
+    <string name="enter_ar_navigation">Enter AR Navigation</string>
+    <string name="analyzing">Analyzing</string>
+
+    <string name="personal_account">Personal Account</string>
+    <string name="enter_account_info">Please enter your account information</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="register">Register</string>
+    <string name="group_notification">Group Notification</string>
+
+    <string name="detection_result">Detection Result:</string>
+    <string name="share_location">Share Location</string>
+    <string name="uploaded_photo">Your uploaded photo</string>
+    <string name="reupload">Reupload</string>
+    <string name="system_returned_photo">System returned photo</string>
+
+    <string name="personal_profile">Personal Profile</string>
+    <string name="change_nickname">Change Nickname</string>
+    <string name="match_database">Match Database</string>
+    <string name="match_results_count">Total %d match results</string>
+    <string name="confirm_new_password_hint">Confirm New Password</string>
+
+    <string name="group_creator_avatar_desc">Group creator avatar</string>
+    <string name="group_name_desc">Group name</string>
+    <string name="latest_message_desc">Latest message</string>
+    <string name="last_message_time_desc">Last message time</string>
+    <string name="default_group_name">Group Name</string>
+    <string name="default_latest_message">Latest message content</string>
 
 </resources>

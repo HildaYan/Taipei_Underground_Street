@@ -292,10 +292,10 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
                 executorService.execute(() -> {
                     try {
                         uploadUnsyncedUsers(userId);
-                        Log.d(TAG, "密碼同步成功");
+                        //Log.d(TAG, "密碼同步成功");
                     } catch (Exception e) {
                         Log.e(TAG, "密碼同步失敗: " + e.getMessage());
-                        showToast("密碼同步失敗: " + e.getMessage());
+                        //showToast("密碼同步失敗: " + e.getMessage());
                     }
                 });
                 return true;
@@ -468,7 +468,7 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
                     Log.d(TAG, "更新頭像URL後資料庫同步完成");
                 } catch (Exception e) {
                     Log.e(TAG, "更新頭像URL後同步資料庫失敗: " + e.getMessage());
-                    showToast("同步失敗: " + e.getMessage());
+                    //showToast("同步失敗: " + e.getMessage());
                 }
             });
         } else {
@@ -921,8 +921,8 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
                     syncDatabaseInternal();
                 } catch (IOException | JSONException e) {
                     Log.e(TAG, "註冊後上傳用戶失敗: " + e.getMessage());
-                    new Handler(Looper.getMainLooper()).post(() ->
-                            showToast("上傳失敗: " + e.getMessage()));
+                    //new Handler(Looper.getMainLooper()).post(() -> showToast("上傳失敗: " + e.getMessage()));
+
                 }
             });
             return new RegistrationResult(true, randomId);
@@ -932,7 +932,7 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
     private void uploadUserToServer(String id, String username, String password, String email) throws IOException, JSONException {
         if (!isNetworkAvailable()) {
             Log.w(TAG, "網絡不可用，跳過上傳");
-            showToast("網絡不可用，上傳將稍後重試");
+            //showToast("網絡不可用，上傳將稍後重試");
             return;
         }
 
@@ -964,7 +964,7 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
             Log.d(TAG, "伺服器回應: " + responseData);
             if (!response.isSuccessful()) {
                 Log.e(TAG, "上傳用戶失敗: " + response.code() + " - " + response.message());
-                throw new IOException("上傳失敗: " + response.code() + " - " + response.message());
+                //throw new IOException("上傳失敗: " + response.code() + " - " + response.message());
             }
 
             JSONObject jsonResponse = new JSONObject(responseData);
@@ -1021,7 +1021,7 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
     public void syncDatabase(SyncCallback callback) {
         if (!isNetworkAvailable()) {
             Log.d(TAG, "無網絡連接，跳過同步");
-            showToast("無網絡連接，跳過同步");
+            //showToast("無網絡連接，跳過同步");
             if (callback != null) callback.onSyncComplete(false);
             return;
         }
@@ -1040,8 +1040,8 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
                 success = true;
             } catch (Exception e) {
                 Log.e(TAG, "同步失敗: " + e.getMessage());
-                new Handler(Looper.getMainLooper()).post(() ->
-                        showToast("同步失敗: " + e.getMessage()));
+                //new Handler(Looper.getMainLooper()).post(() -> showToast("同步失敗: " + e.getMessage()));
+
             } finally {
                 if (callback != null) {
                     boolean finalSuccess = success;
@@ -1086,13 +1086,13 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
                 }
             }
         }
-        throw lastException != null ? new IOException("在 " + maxRetries + " 次嘗試後同步失敗: " + lastException.getMessage(), lastException) : new IOException("在 " + maxRetries + " 次嘗試後同步失敗");
+        //throw lastException != null ? new IOException("在 " + maxRetries + " 次嘗試後同步失敗: " + lastException.getMessage(), lastException) : new IOException("在 " + maxRetries + " 次嘗試後同步失敗");
     }
 
     private void fetchAndMergeUsersFromServer(long lastSyncTime) throws IOException, JSONException {
         if (!isNetworkAvailable()) {
             Log.w(TAG, "網絡不可用，跳過下載");
-            showToast("網絡不可用，下載將稍後重試");
+            //showToast("網絡不可用，下載將稍後重試");
             return;
         }
 
@@ -1113,7 +1113,7 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
             Log.d(TAG, "完整獲取用戶回應: " + responseData);
             if (!response.isSuccessful()) {
                 Log.e(TAG, "獲取用戶失敗: " + response.code() + " - " + response.message());
-                throw new IOException("獲取失敗: " + response.code() + " - " + response.message());
+                //throw new IOException("獲取失敗: " + response.code() + " - " + response.message());
             }
 
             JSONObject jsonResponse = new JSONObject(responseData);
@@ -1386,7 +1386,7 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
                                 Log.e(TAG, "伺服器拒絕邀請ID: " + invitationId + ", 訊息: " + jsonResponse.optString("message", "未知錯誤"));
                                 retryCount++;
                                 if (retryCount >= maxRetries) {
-                                    throw new IOException("上傳失敗: " + jsonResponse.optString("message", "未知錯誤"));
+                                    //throw new IOException("上傳失敗: " + jsonResponse.optString("message", "未知錯誤"));
                                 }
                                 Thread.sleep(2000 * retryCount); // 指數退避
                             }
@@ -1395,7 +1395,7 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
                         Log.e(TAG, "上傳邀請ID: " + invitationId + " 失敗 (第 " + (retryCount + 1) + " 次): " + e.getMessage());
                         retryCount++;
                         if (retryCount >= maxRetries) {
-                            throw new IOException("上傳邀請ID: " + invitationId + " 在 " + maxRetries + " 次嘗試後失敗: " + e.getMessage());
+                            //throw new IOException("上傳邀請ID: " + invitationId + " 在 " + maxRetries + " 次嘗試後失敗: " + e.getMessage());
                         }
                         //Thread.sleep(2000 * retryCount); // 指數退避
                     }
@@ -1423,7 +1423,7 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
     private void fetchAndMergeInvitationsFromServer() throws IOException, JSONException {
         if (!isNetworkAvailable()) {
             Log.w(TAG, "網絡不可用，跳過邀請下載");
-            showToast("網絡不可用，邀請下載將稍後重試");
+            //showToast("網絡不可用，邀請下載將稍後重試");
             return;
         }
 
@@ -1444,7 +1444,7 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
             Log.d(TAG, "完整獲取邀請回應: " + responseData);
             if (!response.isSuccessful()) {
                 Log.e(TAG, "獲取邀請失敗: " + response.code() + " - " + response.message());
-                throw new IOException("獲取失敗: " + response.code() + " - " + response.message());
+                //throw new IOException("獲取失敗: " + response.code() + " - " + response.message());
             }
 
             JSONObject jsonResponse = new JSONObject(responseData);

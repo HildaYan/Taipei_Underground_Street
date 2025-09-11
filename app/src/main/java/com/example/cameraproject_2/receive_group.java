@@ -1,5 +1,8 @@
 package com.example.cameraproject_2;
 
+import static android.provider.Settings.System.getString;
+
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -81,10 +84,10 @@ public class receive_group extends AppCompatActivity {
     private void onInvitationAction(String invitationId, String action) {
         if ("accept".equals(action)) {
             dbHelper.updateInvitationStatus(invitationId, "accepted");
-            Toast.makeText(this, "已同意加入群組", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "已同意加入群組", Toast.LENGTH_SHORT).show();
         } else if ("reject".equals(action)) {
             dbHelper.updateInvitationStatus(invitationId, "rejected");
-            Toast.makeText(this, "已拒絕加入群組", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "已拒絕加入群組", Toast.LENGTH_SHORT).show();
         }
         // Refresh the list
         invitationAdapter.updateInvitations(loadInvitationList());
@@ -123,19 +126,23 @@ class InvitationAdapter extends RecyclerView.Adapter<InvitationAdapter.ViewHolde
     public void onBindViewHolder(ViewHolder holder, int position) {
         Invitation invitation = invitations.get(position);
         holder.textViewGroupName.setText(invitation.getGroupName());
+        Context context = holder.itemView.getContext();
+
         if ("pending".equals(invitation.getStatus())) {
-            holder.textViewStatus.setText("收到邀請，尚未同意");
+            holder.textViewStatus.setText(context.getString(R.string.invitation_status_pending));
             holder.buttonAction.setVisibility(View.VISIBLE);
-            holder.buttonAction.setText("同意");
+            holder.buttonAction.setText(context.getString(R.string.button_accept));
             holder.buttonAction.setOnClickListener(v -> listener.onInvitationAction(invitation.getInvitationId(), "accept"));
         } else if ("accepted".equals(invitation.getStatus())) {
-            holder.textViewStatus.setText("已同意");
+            holder.textViewStatus.setText(context.getString(R.string.invitation_status_accepted));
             holder.buttonAction.setVisibility(View.GONE);
         } else if ("rejected".equals(invitation.getStatus())) {
-            holder.textViewStatus.setText("已拒絕");
+            holder.textViewStatus.setText(context.getString(R.string.invitation_status_rejected));
             holder.buttonAction.setVisibility(View.GONE);
         }
     }
+
+
 
     @Override
     public int getItemCount() {

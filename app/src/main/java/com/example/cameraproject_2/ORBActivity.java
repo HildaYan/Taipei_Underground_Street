@@ -58,7 +58,7 @@ public class ORBActivity extends AppCompatActivity {
 
         if (!OpenCVLoader.initDebug()) {
             Log.e("ORBActivity", "OpenCV initialization failed!");
-            Toast.makeText(this, "OpenCV 初始化失敗，請檢查應用配置", Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "OpenCV 初始化失敗，請檢查應用配置", Toast.LENGTH_LONG).show();
             finish();
             return;
         } else {
@@ -82,7 +82,7 @@ public class ORBActivity extends AppCompatActivity {
             Uri imageUri = Uri.parse(imageUriString);
             processImage(imageUri);
         } else {
-            Toast.makeText(this, "No image provided", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "No image provided", Toast.LENGTH_SHORT).show();
             finish();
         }
     }
@@ -142,7 +142,7 @@ public class ORBActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 overlayView.setVisibility(View.GONE);
                 loadingLayout.setVisibility(View.GONE);
-                Toast.makeText(this, "Error processing image", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Error processing image", Toast.LENGTH_SHORT).show();
                 finish();
             });
         }
@@ -268,7 +268,7 @@ public class ORBActivity extends AppCompatActivity {
             while (cursor.moveToNext()) {
                 int imageId = cursor.getInt(cursor.getColumnIndexOrThrow("image"));
                 String locationData = cursor.getString(cursor.getColumnIndexOrThrow("location_data"));
-                String locationName = (locationData != null && !locationData.trim().isEmpty()) ? locationData : "未知位置";
+                String locationName = (locationData != null && !locationData.trim().isEmpty()) ? locationData : getString(R.string.unknown_location);;
                 String fileExtension = cursor.getString(cursor.getColumnIndexOrThrow("file_extension"));
                 String imageFileName = "images/" + imageId + fileExtension;
 

@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">Unlost</string>
+    <string name="app_name">NO LOST</string>
 
     <string name="navigation_drawer_open">開啟導航抽屜</string>
     <string name="navigation_drawer_close">關閉導航抽屜</string>
-    <string name="taipei">台北地下街導航</string>
+    <string name="taipei">北車資訊</string>
     <string name="uploaded_image_desc">上傳的圖片</string>
     <string name="database_image_desc">資料庫匹配的圖片</string>
     <string name="location_unknown">位置：未知</string>
@@ -50,10 +50,7 @@
     <string name="new_group_notification_message">您收到來自群組 %1$s 的邀請</string>
 
     <string name="init_failed">應用程式初始化失敗，請聯繫開發者</string>
-    <string name="navigation_setup_failed">導航設置失敗</string>
-    <string name="database_init_failed">資料庫初始化失敗</string>
     <string name="map_load_failed">無法加載匹配的地圖圖片</string>
-    <string name="location_updated">位置已更新為：%1$s</string>
     <string name="location_not_selected">未選擇位置</string>
     <string name="operation_cancelled">操作取消或失敗</string>
     <string name="camera_permission_required">需要相機和儲存權限才能使用拍照功能</string>
@@ -78,10 +75,199 @@
     <string name="switch_account">登入其他帳號</string>
     <string name="login">登入</string>
 
-
     <string name="guide_next">下一步</string>
     <string name="guide_finish">完成</string>
     <string name="do_not_show_again">不再顯示</string>
     <string name="guide_image_description">使用說明圖片</string>
+
+    <string name="cancel">取消</string>
+    <string name="confirm_logout">確認登出</string>
+    <string name="confirm">確定</string>
+
+    <string name="input_current_password">請輸入當前密碼</string>
+    <string name="input_new_password">請輸入新密碼</string>
+    <string name="new_password_length_error">新密碼長度至少需要 6 個字符</string>
+    <string name="input_confirm_password">請再次輸入新密碼</string>
+    <string name="password_mismatch_error">錯誤：新密碼與確認密碼不一致</string>
+    <string name="incorrect_current_password">當前密碼不正確</string>
+    <string name="password_updated">密碼已更新</string>
+    <string name="password_update_failed">更新密碼失敗</string>
+
+
+    <string name="username_cannot_be_empty">用戶名不能為空</string>
+    <string name="username_same_as_original">新用戶名與原用戶名相同</string>
+    <string name="username_update_failed">更新用戶名失敗</string>
+
+    <string name="no_network_local_load_only">無網路連線，僅從本地載入訊息</string>
+    <string name="group_not_selected">未選擇群組</string>
+    <string name="group_no_members">群組無成員</string>
+    <string name="please_login_first">請先登錄</string>
+    <string name="no_network_location_saved">無網路連線，位置訊息已儲存至本地</string>
+    <string name="welcome_to_group">歡迎來到 </string>
+    <string name="error_updating_message">更新訊息時出錯</string>
+    <string name="server_error_retry_fetch_all">伺服器錯誤，重試拉取全部訊息</string>
+    <string name="network_error_retry_later">網路錯誤，將稍後重試</string>
+    <string name="sync_invitation_failed">無法同步邀請，請檢查網路或稍後重試</string>
+    <string name="sync_failed">同步失敗</string>
+    <string name="sync_group_invitation_failed_retry">無法同步群組邀請，是否重試？</string>
+    <string name="retry">重試</string>
+    <string name="accept">接受</string>
+    <string name="reject">拒絕</string>
+    <string name="please_accept_group_invitation">請先接受群組邀請以發送訊息</string>
+    <string name="message_cannot_be_empty">訊息不能為空</string>
+    <string name="unable_to_send_message">無法發送訊息: </string>
+    <string name="server_error">伺服器錯誤: </string>
+    <string name="json_parse_error">無法解析伺服器回應</string>
+    <string name="server_error_code">伺服器錯誤: </string>
+    <string name="unable_to_prepare_message">無法準備訊息</string>
+    <string name="no_new_messages">無新訊息</string>
+    <string name="unknown_error">未知錯誤</string>
+    <string name="fetch_messages_failed">拉取訊息失敗: </string>
+    <string name="loading_messages">正在重新載入訊息</string>
+    <string name="input_message_hint">輸入訊息...</string>
+    <string name="please_accept_group_invitation_to_send">請先接受群組邀請才能發送訊息</string>
+    <string name="create_group">創建群組</string>
+    <string name="logged_out">已登出</string>
+
+    <string name="username_cannot_be_blank">帳號名稱不能為空白</string>
+    <string name="email_cannot_be_blank">信箱不能為空白</string>
+    <string name="invalid_email_address">請輸入有效的信箱地址</string>
+    <string name="password_cannot_be_blank">密碼不能為空白</string>
+    <string name="password_min_length">密碼長度至少需要 6 個字符</string>
+    <string name="confirm_password_cannot_be_blank">請再次確認密碼</string>
+    <string name="passwords_do_not_match">兩次輸入的密碼不一致</string>
+    <string name="please_enter_member_id">請輸入成員 ID</string>
+    <string name="max_group_members">群組成員最多 30 人</string>
+    <string name="member_already_added">該成員已添加</string>
+    <string name="user_not_found">沒有該使用者，請確認使用者 ID</string>
+    <string name="please_enter_group_name">請輸入群組名稱</string>
+    <string name="please_select_at_least_one_member">請至少選擇一名成員</string>
+    <string name="group_creation_success">群組創建成功，已發送邀請</string>
+    <string name="group_creation_failure">群組創建失敗</string>
+    <string name="navigation_setup_failed">導航或上傳設置失敗</string>
+
+    <string name="database_init_failed">資料庫初始化失敗</string>
+    <string name="unable_to_get_photo">無法獲取拍攝的照片，請重試</string>
+    <string name="photo_cancelled_or_failed">拍照取消或失敗</string>
+    <string name="no_image_selected">未選擇圖片</string>
+    <string name="image_selection_cancelled_or_failed">圖片選擇取消或失敗</string>
+    <string name="cannot_get_group_name">無法找到群組</string>
+    <string name="cannot_get_invitation_group_name">無法獲取邀請 ID 的群組名稱: </string>
+    <string name="unable_to_create_image_file">無法創建圖片文件</string>
+    <string name="camera_app_not_found">找不到相機應用程式，請確保設備已安裝相機應用</string>
+    <string name="camera_or_storage_permission_denied">需要相機和儲存權限才能使用拍照功能</string>
+    <string name="notification_permission_required">需要通知權限以接收群組邀請通知</string>
+    <string name="select_image_source">請選擇圖片來源</string>
+    <string name="from_camera">從相機</string>
+    <string name="from_picture">從相簿</string>
+    <string name="upload">上傳</string>
+    <string name="unknown_location">未知位置</string>
+    <string name="username_empty_error">帳號不能為空白</string>
+    <string name="password_empty_error">密碼不能為空白</string>
+    <string name="progress_logging_in">正在登入...</string>
+    <string name="login_success">登入成功</string>
+    <string name="login_failed">登入失敗，請檢查帳號或密碼</string>
+
+    <string name="invitation_status_pending">收到邀請，尚未同意</string>
+    <string name="invitation_status_accepted">已同意</string>
+    <string name="invitation_status_rejected">已拒絕</string>
+    <string name="button_accept">同意</string>
+
+    <string name="password_sync_failed">密碼同步失敗: </string>
+    <string name="password_sync_success">密碼同步成功</string>
+    <string name="location_updated">位置已經更新為：</string>
+    <string name="not_joined_any_chatroom">您尚未加入任何聊天室</string>
+    <string name="select_chatroom">選擇要分享的聊天室</string>
+    <string name="location_shared_message">位置已分享到選定的聊天室</string>
+    <string name="location_share_prefix">位置分享:</string>
+    <string name="matching_in_progress">正在比對中，請稍後...</string>
+    <string name="please_login">請先登入</string>
+
+    <string name="label_name">姓名: </string>
+    <string name="unknown_user">未知用戶</string>
+    <string name="unknown_id">未知 ID</string>
+
+    <string name="confirm_delete_title">確認刪除</string>
+    <string name="confirm_delete_message">確定要刪除帳號嗎？此操作不可逆！</string>
+    <string name="account_deleted_failed">帳號刪除失敗</string>
+    <string name="no_match_result">無匹配結果</string>
+    <string name="match_first">共 %d</string>
+    <string name="match_second">%d 個匹配結果</string>
+    <string name="confirm_location_title">確認位置</string>
+    <string name="confirm_location_message">您現在的位置是：%1$s\n是否確認？</string>
+    <string name="button_see_again">我再看看</string>
+    <string name="change_password">變更密碼</string>
+    <string name="original_password">原密碼</string>
+    <string name="new_password">新密碼</string>
+    <string name="confirm_password">確認密碼</string>
+    <string name="update">更新</string>
+    <string name="error_password_mismatch">錯誤：新密碼與確認密碼不一致</string>
+    <string name="enter_new_nickname">輸入新暱稱</string>
+    <string name="send_message_hint">發送訊息...</string>
+    <string name="send_button_text">傳送</string>
+    <string name="chatroom">聊天室</string>
+    <string name="search_group_hint">搜尋群組名稱</string>
+    <string name="group_list_desc">群組列表</string>
+    <string name="welcome_chatroom">歡迎來到聊天室！</string>
+    <string name="create_chat_tip">透過+號按鈕建立您與他人的對話</string>
+    <string name="message_circle_bg_desc">訊息圓形背景</string>
+    <string name="message_icon_desc">訊息圖標</string>
+    <string name="create_new_chat_desc">建立新對話</string>
+    <string name="chat_icon_desc">聊天圖標</string>
+
+    <string name="create_account">創建帳號</string>
+    <string name="input_username_hint">輸入使用者帳號名稱</string>
+    <string name="input_email_hint">輸入信箱</string>
+    <string name="input_password_hint">輸入密碼</string>
+    <string name="input_confirm_password_hint">再次確認密碼</string>
+    <string name="confirm_register">確認註冊</string>
+    <string name="enter_member_id_hint">輸入成員 ID</string>
+    <string name="search_button_text">搜索</string>
+    <string name="searched_members_info">已搜索的成員 (最多 30 人)</string>
+
+    <string name="metro_fare_query">捷運票價查詢</string>
+    <string name="select_start_station_hint">選擇起點站</string>
+    <string name="select_end_station_hint">選擇終點站</string>
+    <string name="query_button_text">查詢</string>
+    <string name="full_fare_price">全票票價：NT$ 25</string>
+    <string name="senior_child_fare_newtaipei">敬老愛心/兒童(新北)：NT$ 12</string>
+    <string name="child_fare_taipei">兒童(北市)：NT$ 10</string>
+    <string name="distance_text">距離：3.2 km</string>
+
+    <string name="photo_match_location">透過照片來比對現在的位置</string>
+    <string name="upload_photo">上傳照片</string>
+    <string name="ar_navigation">AR導航</string>
+    <string name="enter_ar_navigation">進入AR導航</string>
+    <string name="analyzing">分析中</string>
+
+    <string name="personal_account">個人帳號</string>
+    <string name="enter_account_info">請輸入您的帳號資訊</string>
+    <string name="username">用戶名</string>
+    <string name="password">密碼</string>
+    <string name="register">註冊</string>
+    <string name="group_notification">群組通知</string>
+
+    <string name="detection_result">偵測結果：</string>
+    <string name="share_location">分享位置</string>
+    <string name="uploaded_photo">您上傳的照片</string>
+    <string name="reupload">重新上傳</string>
+    <string name="system_returned_photo">系統回傳照片</string>
+
+    <string name="personal_profile">個人檔案</string>
+    <string name="change_nickname">變更暱稱</string>
+    <string name="match_database">匹配資料庫</string>
+    <string name="match_results_count">共 %d 個匹配結果</string>
+    <string name="confirm_new_password_hint">確認新密碼</string>
+
+    <string name="group_creator_avatar_desc">群組創建者頭貼</string>
+    <string name="group_name_desc">群組名稱</string>
+    <string name="latest_message_desc">最新訊息</string>
+    <string name="last_message_time_desc">最後訊息時間</string>
+    <string name="default_group_name">群組名稱</string>
+    <string name="default_latest_message">最新訊息內容</string>
+
+
+
+
 
 </resources>

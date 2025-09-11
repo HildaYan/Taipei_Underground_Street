@@ -49,11 +49,11 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
         if (avatarUrl != null && !avatarUrl.isEmpty()) {
             Glide.with(holder.itemView.getContext())
                     .load(avatarUrl)
-                    .placeholder(R.drawable.icon_logo)
-                    .error(R.drawable.icon_logo)
+                    .placeholder(R.drawable.icon_logo1)
+                    .error(R.drawable.icon_logo1)
                     .into(holder.groupCreatorAvatar);
         } else {
-            holder.groupCreatorAvatar.setImageResource(R.drawable.icon_logo);
+            holder.groupCreatorAvatar.setImageResource(R.drawable.icon_logo1);
         }
 
         holder.itemView.setOnClickListener(v -> clickListener.onGroupClick(group));
