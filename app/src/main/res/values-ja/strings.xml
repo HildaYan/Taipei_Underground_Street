@@ -30,7 +30,7 @@
     <string name="account_deleted">アカウントが正常に削除されました。</string>
     <string name="user_info_not_found">ユーザー情報が見つかりません。</string>
     <string name="confirm_language_change">言語変更の確認</string>
-    <string name="confirm_language_message">%1$s に言語を変更しますか？</string>
+    <string name="confirm_language_message"> に言語を変更しますか？</string>
     <string name="language_change_cancelled">言語変更がキャンセルされました。</string>
 
     <string name="incorrect_location">位置エラー</string>
@@ -42,11 +42,11 @@
     <string name="account_logout_confirm">ログアウトしますか？</string>
     <string name="account_logout_success">ログアウトに成功しました</string>
     <string name="group_invitation_title">グループ招待</string>
-    <string name="group_invitation_message">グループ %1$s に招待されました</string>
-    <string name="accept_invitation_success">グループ招待を承諾しました：%1$s</string>
-    <string name="reject_invitation_success">グループ招待を拒否しました：%1$s</string>
+    <string name="group_invitation_message">グループ  に招待されました</string>
+    <string name="accept_invitation_success">グループ招待を承諾しました：</string>
+    <string name="reject_invitation_success">グループ招待を拒否しました：</string>
     <string name="new_group_notification_title">新しいグループ招待</string>
-    <string name="new_group_notification_message">グループ %1$s からの招待を受け取りました</string>
+    <string name="new_group_notification_message">グループ  からの招待を受け取りました</string>
 
     <string name="init_failed">アプリケーションの初期化に失敗しました。開発者に連絡してください</string>
     <string name="map_load_failed">一致するマップ画像を読み込めませんでした</string>
@@ -171,7 +171,7 @@
 
     <string name="password_sync_failed">パスワードの同期に失敗しました: </string>
     <string name="password_sync_success">パスワードの同期に成功しました</string>
-    <string name="location_updated">位置が更新されました：%1$s</string>
+    <string name="location_updated">位置が更新されました：</string>
     <string name="not_joined_any_chatroom">まだどのチャットルームにも参加していません</string>
     <string name="select_chatroom">共有するチャットルームを選択</string>
     <string name="location_shared_message">選択したチャットルームに位置を共有しました</string>
@@ -187,10 +187,10 @@
     <string name="confirm_delete_message">アカウントを削除しますか？この操作は元に戻せません！</string>
     <string name="account_deleted_failed">アカウントの削除に失敗しました</string>
     <string name="no_match_result">一致する結果がありません</string>
-    <string name="match_first">合計 %d</string>
-    <string name="match_second">%d 件の一致結果</string>
+    <string name="match_first">合計 </string>
+    <string name="match_second"> 件の一致結果</string>
     <string name="confirm_location_title">位置の確認</string>
-    <string name="confirm_location_message">現在地は %1$s です\n確認しますか？</string>
+    <string name="confirm_location_message">現在地は  です\n確認しますか？</string>
     <string name="button_see_again">もう一度確認</string>
     <string name="change_password">パスワードの変更</string>
     <string name="original_password">元のパスワード</string>
@@ -252,7 +252,7 @@
     <string name="personal_profile">個人プロフィール</string>
     <string name="change_nickname">ニックネームを変更</string>
     <string name="match_database">データベースにマッチ</string>
-    <string name="match_results_count">合計 %d 件の一致結果</string>
+    <string name="match_results_count">合計  件の一致結果</string>
     <string name="confirm_new_password_hint">新しいパスワードを確認</string>
 
     <string name="group_creator_avatar_desc">グループ作成者のアバター</string>

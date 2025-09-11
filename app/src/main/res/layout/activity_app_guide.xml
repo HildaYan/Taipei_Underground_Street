@@ -5,8 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:theme="@style/AppTheme"
-    android:background="@color/white">
+    android:theme="@style/AppTheme">
 
     <!-- 包含 MainActivity 的佈局作為背景 -->
     <include

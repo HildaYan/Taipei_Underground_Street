@@ -43,11 +43,11 @@
     <string name="account_logout_confirm">您確定要登出嗎？</string>
     <string name="account_logout_success">已成功登出</string>
     <string name="group_invitation_title">群組邀請</string>
-    <string name="group_invitation_message">您已被邀請加入群組：%1$s</string>
-    <string name="accept_invitation_success">已接受群組邀請：%1$s</string>
-    <string name="reject_invitation_success">已拒絕群組邀請：%1$s</string>
+    <string name="group_invitation_message">您已被邀請加入群組：</string>
+    <string name="accept_invitation_success">已接受群組邀請：</string>
+    <string name="reject_invitation_success">已拒絕群組邀請：</string>
     <string name="new_group_notification_title">新群組邀請</string>
-    <string name="new_group_notification_message">您收到來自群組 %1$s 的邀請</string>
+    <string name="new_group_notification_message">您收到來自群組  的邀請</string>
 
     <string name="init_failed">應用程式初始化失敗，請聯繫開發者</string>
     <string name="map_load_failed">無法加載匹配的地圖圖片</string>
@@ -191,8 +191,8 @@
     <string name="confirm_delete_message">確定要刪除帳號嗎？此操作不可逆！</string>
     <string name="account_deleted_failed">帳號刪除失敗</string>
     <string name="no_match_result">無匹配結果</string>
-    <string name="match_first">共 %d</string>
-    <string name="match_second">%d 個匹配結果</string>
+    <string name="match_first">共 </string>
+    <string name="match_second"> 個匹配結果</string>
     <string name="confirm_location_title">確認位置</string>
     <string name="confirm_location_message">您現在的位置是：%1$s\n是否確認？</string>
     <string name="button_see_again">我再看看</string>
@@ -256,7 +256,7 @@
     <string name="personal_profile">個人檔案</string>
     <string name="change_nickname">變更暱稱</string>
     <string name="match_database">匹配資料庫</string>
-    <string name="match_results_count">共 %d 個匹配結果</string>
+    <string name="match_results_count">共  個匹配結果</string>
     <string name="confirm_new_password_hint">確認新密碼</string>
 
     <string name="group_creator_avatar_desc">群組創建者頭貼</string>

@@ -17,7 +17,7 @@ public class PictureDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "PictureDatabaseHelper";
     public static final String PICTURE_DB_NAME = "picture.db";
-    private static final int DATABASE_VERSION = 5; // No upgrades needed for pre-packaged DB
+    private static final int DATABASE_VERSION = 5;
     private static final String DB_PATH = "/data/data/com.example.cameraproject_2/databases";
 
     private final Context context;
@@ -27,7 +27,7 @@ public class PictureDatabaseHelper extends SQLiteOpenHelper {
         super(context, PICTURE_DB_NAME, null, DATABASE_VERSION);
         this.context = context;
         try {
-            createDataBase(); // Copy the database during initialization
+            createDataBase();
         } catch (IOException e) {
             Log.e(TAG, "Failed to initialize database: " + e.getMessage());
             throw new RuntimeException("Failed to initialize database", e);
@@ -42,7 +42,6 @@ public class PictureDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < 5) {
-            // 添加新列或修改表結構
             db.execSQL("ALTER TABLE picture_data ADD COLUMN new_column TEXT");
         }
     }
@@ -51,9 +50,8 @@ public class PictureDatabaseHelper extends SQLiteOpenHelper {
         boolean dbExists = checkDataBase();
         Log.d(TAG, "Checking if database " + PICTURE_DB_NAME + " exists: " + dbExists);
 
-        // 檢查資料庫是否有效（包含 picture_data 表）
         boolean isValid = false;
-        int currentDbVersion = DATABASE_VERSION; // 預設為當前版本
+        int currentDbVersion = DATABASE_VERSION;
         if (dbExists) {
             SQLiteDatabase db = null;
             try {
@@ -62,7 +60,6 @@ public class PictureDatabaseHelper extends SQLiteOpenHelper {
                 isValid = cursor.moveToFirst();
                 cursor.close();
 
-                // 嘗試獲取資料庫的用戶版本
                 Cursor versionCursor = db.rawQuery("PRAGMA user_version;", null);
                 if (versionCursor.moveToFirst()) {
                     currentDbVersion = versionCursor.getInt(0);
@@ -78,7 +75,6 @@ public class PictureDatabaseHelper extends SQLiteOpenHelper {
             }
         }
 
-        // 如果資料庫不存在、無效或版本不匹配，則重新複製
         if (!dbExists || !isValid || currentDbVersion != DATABASE_VERSION) {
             try {
                 if (dbExists) {
@@ -87,9 +83,8 @@ public class PictureDatabaseHelper extends SQLiteOpenHelper {
                     Log.d(TAG, "Deleted old database " + PICTURE_DB_NAME + " due to version mismatch or invalidity");
                 }
                 copyDataBase();
-                copyImagesFromDatabase(); // 根據資料庫數據動態複製圖片
+                copyImagesFromDatabase();
                 verifyDatabase();
-                // 更新資料庫的用戶版本
                 SQLiteDatabase db = getWritableDatabase();
                 db.execSQL("PRAGMA user_version = " + DATABASE_VERSION);
                 db.close();
@@ -103,6 +98,7 @@ public class PictureDatabaseHelper extends SQLiteOpenHelper {
             verifyDatabase();
         }
     }
+
     public void copyImagesFromDatabase() {
         File dir = new File(context.getFilesDir(), "images");
         if (!dir.exists()) {
@@ -121,7 +117,7 @@ public class PictureDatabaseHelper extends SQLiteOpenHelper {
                 File targetFile = new File(dir, imageId + extension);
 
                 if (!targetFile.exists()) {
-                    InputStream input = context.getAssets().open("images/" + imageId + extension); // 假設圖片在 assets/images 中
+                    InputStream input = context.getAssets().open("images/" + imageId + extension);
                     OutputStream output = new FileOutputStream(targetFile);
                     byte[] buffer = new byte[1024];
                     int length;
@@ -194,17 +190,8 @@ public class PictureDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public SQLiteDatabase getPictureDatabase() {
-        /*
         if (pictureDatabase == null || !pictureDatabase.isOpen()) {
-            pictureDatabase = SQLiteDatabase.openDatabase(
-                    DB_PATH + "/" + PICTURE_DB_NAME, null, SQLiteDatabase.OPEN_READWRITE);
-            Log.d(TAG, "getPictureDatabase opened at: " + (DB_PATH + "/" + PICTURE_DB_NAME));
-        }
-        return pictureDatabase;
-
-         */
-        if (pictureDatabase == null || !pictureDatabase.isOpen()) {
-            pictureDatabase = this.getWritableDatabase(); // Use SQLiteOpenHelper's managed connection
+            pictureDatabase = this.getWritableDatabase();
             Log.d(TAG, "getPictureDatabase opened at: " + pictureDatabase.getPath());
         }
         return pictureDatabase;
@@ -246,7 +233,6 @@ public class PictureDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    // New method to get image data from picture_data table
     public String getImageFileName(int imageId) {
         SQLiteDatabase db = getPictureDatabase();
         Cursor cursor = null;
@@ -276,7 +262,6 @@ public class PictureDatabaseHelper extends SQLiteOpenHelper {
         return fileName;
     }
 
-    // New method to get additional metadata from picture_data table
     public PictureData getPictureData(int imageId) {
         SQLiteDatabase db = getPictureDatabase();
         Cursor cursor = null;
@@ -308,7 +293,36 @@ public class PictureDatabaseHelper extends SQLiteOpenHelper {
         return data;
     }
 
-    // New class to hold picture data
+    // 新增方法：根據 location_data 查詢圖片檔案名稱
+    public String getImageUriForLocation(String locationName) {
+        SQLiteDatabase db = getPictureDatabase();
+        Cursor cursor = null;
+        String fileName = null;
+        try {
+            Log.d(TAG, "Querying database for locationName: " + locationName);
+            cursor = db.query("picture_data",
+                    new String[]{"image", "file_extension"},
+                    "location_data = ?",
+                    new String[]{locationName},
+                    null, null, null);
+            if (cursor.moveToFirst()) {
+                int imageId = cursor.getInt(cursor.getColumnIndexOrThrow("image"));
+                String extension = cursor.getString(cursor.getColumnIndexOrThrow("file_extension"));
+                fileName = "images/" + imageId + extension;
+                Log.d(TAG, "Found filename: " + fileName + " for locationName: " + locationName);
+            } else {
+                Log.w(TAG, "No record found for locationName: " + locationName);
+            }
+        } catch (SQLiteException e) {
+            Log.e(TAG, "Error querying image file name for location: " + e.getMessage());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return fileName;
+    }
+
     public static class PictureData {
         public final String name;
         public final String description;

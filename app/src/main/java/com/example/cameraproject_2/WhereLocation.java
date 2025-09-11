@@ -1,8 +1,8 @@
 package com.example.cameraproject_2;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -22,6 +22,9 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -31,12 +34,19 @@ public class WhereLocation extends AppCompatActivity {
     private TextView bottomText;
     private static final int REQUEST_LOCATION_CONFIRM = 1001;
     private static final String TAG = "WhereLocation";
+    private SharedPreferences sharedPreferences;
+    private String originalPhotoUri; // 儲存原始圖片的 URI
+    private ArrayList<MatchResult> topMatches;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_where_location);
 
+        // 初始化 SharedPreferences
+        sharedPreferences = getSharedPreferences("ErrorRecords", MODE_PRIVATE);
+
+        // 初始化 UI 元件
         container = findViewById(R.id.location_container);
         bottomText = findViewById(R.id.bottom_text);
 
@@ -47,10 +57,13 @@ public class WhereLocation extends AppCompatActivity {
         container.setHasFixedSize(true); // 優化性能
         container.requestLayout(); // 強制重新計算佈局
 
-        // 獲取傳遞的 topMatches
+        // 獲取傳遞的 topMatches 和 photoUri
         Intent intent = getIntent();
-        ArrayList<MatchResult> topMatches = intent.getParcelableArrayListExtra("topMatches");
+        topMatches = intent.getParcelableArrayListExtra("topMatches");
+        originalPhotoUri = intent.getStringExtra("photoUri"); // 從 UploadImage 傳來的原始圖片 URI
         Log.d(TAG, "topMatches size: " + (topMatches != null ? topMatches.size() : "null"));
+        Log.d(TAG, "Original photo URI: " + originalPhotoUri);
+
         if (topMatches == null || topMatches.isEmpty()) {
             Toast.makeText(this, getString(R.string.no_match_result), Toast.LENGTH_SHORT).show();
             finish();
@@ -58,7 +71,7 @@ public class WhereLocation extends AppCompatActivity {
         }
 
         // 更新底部文字
-        bottomText.setText(getString(R.string.match_first)+ topMatches.size() + getString(R.string.match_second));
+        bottomText.setText(getString(R.string.match_first) + topMatches.size() + getString(R.string.match_second));
         adapter.setData(topMatches);
 
         // 設置返回箭頭點擊事件，返回到 UploadImage
@@ -82,14 +95,39 @@ public class WhereLocation extends AppCompatActivity {
         return imagePath;
     }
 
-    private void showLocationDialog(String location) {
+    // 記錄錯誤到 SharedPreferences
+    private void recordError(String originalPhotoUri, String wrongLocation, String correctLocation) {
+        try {
+            JSONObject errorRecord = new JSONObject();
+            errorRecord.put("wrongLocation", wrongLocation);
+            errorRecord.put("correctLocation", correctLocation);
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(originalPhotoUri, errorRecord.toString());
+            editor.apply();
+            Log.d(TAG, "Error recorded: photoUri=" + originalPhotoUri + ", wrongLocation=" + wrongLocation + ", correctLocation=" + correctLocation);
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to record error: " + e.getMessage());
+        }
+    }
+
+    private void showLocationDialog(String location, String uriString) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.confirm_location_title));
         builder.setMessage(String.format(getString(R.string.confirm_location_message), location));
         builder.setPositiveButton(getString(R.string.confirm), (dialog, which) -> {
             Intent resultIntent = new Intent();
             resultIntent.putExtra("selectedLocation", location);
+            resultIntent.putExtra("selectedImageUri", uriString); // 傳回圖片 URI
             setResult(RESULT_OK, resultIntent);
+
+            // 記錄錯誤（如果最佳匹配不正確）
+            if (!topMatches.isEmpty() && !topMatches.get(0).getLocation().equals(location)) {
+                String wrongLocation = topMatches.get(0).getLocation();
+                recordError(originalPhotoUri, wrongLocation, location);
+            }
+
+            Log.d(TAG, "Returning selected location: " + location + ", image URI: " + uriString);
             finish();
         });
         builder.setNegativeButton(getString(R.string.button_see_again), (dialog, which) -> {
@@ -152,7 +190,7 @@ public class WhereLocation extends AppCompatActivity {
             GestureDetector gestureDetector = new GestureDetector(WhereLocation.this, new GestureDetector.SimpleOnGestureListener() {
                 @Override
                 public boolean onDoubleTap(MotionEvent e) {
-                    showLocationDialog(location);
+                    showLocationDialog(location, uriString); // 傳遞 uriString
                     return true;
                 }
             });

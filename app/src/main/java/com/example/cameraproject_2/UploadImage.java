@@ -27,6 +27,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.cameraproject_2.ui.FareQueryActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.unity3d.player.UnityPlayerActivity;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
@@ -47,6 +49,7 @@ public class UploadImage extends AppCompatActivity {
 
     private static final String KEY_PHOTO_URI = "photoUri";
     private static final String KEY_CURRENT_BITMAP_PATH = "currentBitmapPath";
+    private static final String KEY_LAST_LOCATION = "lastLocation";
 
     private BottomNavigationView bottomNavigationView;
     private ImageView bigmap;
@@ -55,13 +58,14 @@ public class UploadImage extends AppCompatActivity {
     private Button buttonCorrectLocation;
     private Button buttonIncorrectLocation;
     private Button buttonUpload;
-    private Button sendToChatButton; // 新增對應的按鈕變量
+    private Button sendToChatButton;
     private Uri photoUri;
     private Bitmap currentBitmap;
     private String currentBitmapPath;
     private ArrayList<MatchResult> topMatches = new ArrayList<>();
     private ActivityResultLauncher<Intent> activityResultLauncher;
     private SharedPreferences sharedPreferences;
+    private SharedPreferences errorRecords;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +76,6 @@ public class UploadImage extends AppCompatActivity {
         // Initialize OpenCV
         if (!OpenCVLoader.initDebug()) {
             Log.e("OpenCV", "無法載入 OpenCV");
-            //Toast.makeText(this, "OpenCV 初始化失敗，請檢查應用配置", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -80,6 +83,7 @@ public class UploadImage extends AppCompatActivity {
 
         // Initialize SharedPreferences
         sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        errorRecords = getSharedPreferences("ErrorRecords", MODE_PRIVATE);
 
         // Initialize UI components
         bigmap = findViewById(R.id.bigmap);
@@ -88,19 +92,16 @@ public class UploadImage extends AppCompatActivity {
         buttonCorrectLocation = findViewById(R.id.buttonCorrectLocation);
         buttonIncorrectLocation = findViewById(R.id.buttonIncorrectLocation);
         buttonUpload = findViewById(R.id.buttonupload);
-        sendToChatButton = findViewById(R.id.sendtochat); // 初始化 "分享位置" 按鈕
+        sendToChatButton = findViewById(R.id.sendtochat);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         if (bigmap == null || smallmap == null || currentLocationTextView == null ||
                 buttonCorrectLocation == null || buttonIncorrectLocation == null ||
                 buttonUpload == null || sendToChatButton == null || bottomNavigationView == null) {
             Log.e("UploadImage", "UI components not found in layout, check activity_upload_image.xml");
-            //Toast.makeText(this, "應用程式初始化失敗，請檢查佈局文件", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
-
-
 
         // Setup BottomNavigationView
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
@@ -119,7 +120,7 @@ public class UploadImage extends AppCompatActivity {
                         Intent intent = new Intent(UploadImage.this, chatroom_main.class);
                         startActivity(intent);
                     } else {
-                        String defaultGroup = groupNames.iterator().next(); // 取第一個群組
+                        String defaultGroup = groupNames.iterator().next();
                         String membersString = sharedPreferences.getString(defaultGroup + "_members", "");
                         List<String> members = new ArrayList<>();
                         if (!membersString.isEmpty()) {
@@ -136,7 +137,6 @@ public class UploadImage extends AppCompatActivity {
                 }
                 overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
             } else if (id == R.id.nav_member) {
-                // 保持原有邏輯不變
                 boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
                 Intent intent = new Intent(UploadImage.this, isLoggedIn ? UserProfileActivity.class : PersonalAccount.class);
                 intent.putExtra("isLoggedIn", isLoggedIn);
@@ -172,7 +172,13 @@ public class UploadImage extends AppCompatActivity {
                         String locationFromORB = resultIntent.getStringExtra("location");
                         Log.d("UploadImage", "Received location from ORBActivity: " + locationFromORB);
 
-                        if (locationFromORB != null && !locationFromORB.isEmpty()) {
+                        if (locationFromORB != null && !locationFromORB.isEmpty() && !locationFromORB.equals("未知")) {
+                            // 保存成功比對的地點到 SharedPreferences
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString(KEY_LAST_LOCATION, locationFromORB);
+                            editor.apply();
+                            Log.d("UploadImage", "Saved last location to SharedPreferences: " + locationFromORB);
+
                             currentLocationTextView.setText("Location: " + locationFromORB);
                             Log.d("UploadImage", "Updated currentLocationTextView to: " + locationFromORB);
 
@@ -189,14 +195,18 @@ public class UploadImage extends AppCompatActivity {
                                     String fileName = imageUriString.replace("file://assets/", "");
                                     Log.d("UploadImage", "Attempting to load file: " + fileName);
                                     try {
-                                        InputStream inputStream = getAssets().open(fileName);
-                                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                                        inputStream.close();
-                                        smallmap.setImageBitmap(bitmap);
-                                        Log.d("UploadImage", "Set smallmap image: " + fileName);
-                                    } catch (IOException e) {
+                                        File imageFile = new File(getFilesDir(), fileName);
+                                        Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+                                        if (bitmap != null) {
+                                            smallmap.setImageBitmap(bitmap);
+                                            Log.d("UploadImage", "Set smallmap image: " + fileName);
+                                        } else {
+                                            Log.e("UploadImage", "Failed to decode bitmap for smallmap: " + fileName);
+                                            //Toast.makeText(this, "無法加載匹配的地圖圖片", Toast.LENGTH_SHORT).show();
+                                        }
+                                    } catch (Exception e) {
                                         Log.e("UploadImage", "Failed to load smallmap image: " + fileName + ", Error: " + e.getMessage());
-                                        Toast.makeText(this, "無法加載匹配的地圖圖片", Toast.LENGTH_SHORT).show();
+                                        //Toast.makeText(this, "無法加載匹配的地圖圖片", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             }
@@ -209,20 +219,46 @@ public class UploadImage extends AppCompatActivity {
                                 buttonIncorrectLocation.setEnabled(false);
                             }
                         } else {
-                            Log.w("UploadImage", "locationFromORB is null or empty");
+                            Log.w("UploadImage", "locationFromORB is null or empty or unknown");
                             String selectedLocation = resultIntent.getStringExtra("selectedLocation");
+                            String selectedImageUri = resultIntent.getStringExtra("selectedImageUri");
                             if (selectedLocation != null && !selectedLocation.isEmpty()) {
+                                // 保存手動選擇的地點到 SharedPreferences
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString(KEY_LAST_LOCATION, selectedLocation);
+                                editor.apply();
+                                Log.d("UploadImage", "Saved selected location to SharedPreferences: " + selectedLocation);
+
                                 currentLocationTextView.setText("Location: " + selectedLocation);
                                 Toast.makeText(this, getString(R.string.location_updated) + selectedLocation, Toast.LENGTH_SHORT).show();
                                 buttonCorrectLocation.setEnabled(true);
                                 buttonIncorrectLocation.setEnabled(true);
+
+                                if (selectedImageUri != null && !selectedImageUri.isEmpty()) {
+                                    Log.d("UploadImage", "Received selectedImageUri: " + selectedImageUri);
+                                    String fileName = selectedImageUri.replace("file://assets/", "");
+                                    try {
+                                        File imageFile = new File(getFilesDir(), fileName);
+                                        Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+                                        if (bitmap != null) {
+                                            smallmap.setImageBitmap(bitmap);
+                                            Log.d("UploadImage", "Set smallmap image from WhereLocation: " + fileName);
+                                        } else {
+                                            Log.e("UploadImage", "Failed to decode bitmap for smallmap: " + fileName);
+                                            //Toast.makeText(this, "無法加載選中的地圖圖片", Toast.LENGTH_SHORT).show();
+                                        }
+                                    } catch (Exception e) {
+                                        Log.e("UploadImage", "Failed to load image from WhereLocation: " + fileName + ", Error: " + e.getMessage());
+                                        //Toast.makeText(this, "無法加載選中的地圖圖片", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
                             } else {
-                                //Toast.makeText(this, "未選擇位置", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, getString(R.string.location_not_selected), Toast.LENGTH_SHORT).show();
                             }
                         }
                     } else {
                         Log.w("UploadImage", "Result code is not OK or data is null");
-                        //Toast.makeText(this, "操作取消或失敗", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.operation_cancelled), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -234,11 +270,11 @@ public class UploadImage extends AppCompatActivity {
 
         buttonIncorrectLocation.setOnClickListener(v -> {
             if (topMatches.isEmpty()) {
-                //Toast.makeText(this, "請先進行圖片比對以獲取匹配結果", Toast.LENGTH_SHORT).show();
                 return;
             }
             Intent intent = new Intent(UploadImage.this, WhereLocation.class);
             intent.putParcelableArrayListExtra("topMatches", topMatches);
+            intent.putExtra("photoUri", photoUri.toString());
             activityResultLauncher.launch(intent);
         });
 
@@ -251,14 +287,12 @@ public class UploadImage extends AppCompatActivity {
 
         // "分享位置" 按鈕點擊事件
         sendToChatButton.setOnClickListener(v -> {
-            // 獲取所有聊天室名稱
             Set<String> groupNames = sharedPreferences.getStringSet("groupNames", new HashSet<>());
             if (groupNames == null || groupNames.isEmpty()) {
                 Toast.makeText(this, getString(R.string.not_joined_any_chatroom), Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // 創建多選對話框
             final boolean[] checkedItems = new boolean[groupNames.size()];
             final ArrayList<String> groupList = new ArrayList<>(groupNames);
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -286,7 +320,6 @@ public class UploadImage extends AppCompatActivity {
             photoUri = Uri.parse(photoUriString);
             processImage(photoUri);
         } else {
-            //Toast.makeText(this, "未接收到圖片數據", Toast.LENGTH_SHORT).show();
             finish();
         }
 
@@ -321,19 +354,122 @@ public class UploadImage extends AppCompatActivity {
     private void processImage(Uri photoUri) {
         if (photoUri == null) {
             Log.e("UploadImage", "photoUri is null");
-            //Toast.makeText(this, "無法處理圖片：URI 為空", Toast.LENGTH_LONG).show();
             return;
         }
 
         Log.d("UploadImage", "處理圖片，URI: " + photoUri.toString());
 
-// 創建並顯示進度提示框
+        // 檢查 ErrorRecords 是否有該圖片的記錄
+        String errorRecord = errorRecords.getString(photoUri.toString(), null);
+        if (errorRecord != null) {
+            try {
+                JSONObject json = new JSONObject(errorRecord);
+                String correctLocation = json.getString("correctLocation");
+                Log.d("UploadImage", "Found error record for photoUri: " + photoUri + ", correctLocation: " + correctLocation);
+
+                // 載入原始圖片到 bigmap
+                new AsyncTask<Void, Void, Bitmap>() {
+                    @Override
+                    protected Bitmap doInBackground(Void... voids) {
+                        try {
+                            InputStream inputStream = getContentResolver().openInputStream(photoUri);
+                            if (inputStream == null) {
+                                Log.e("UploadImage", "無法為 photoUri 打開 InputStream");
+                                return null;
+                            }
+
+                            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                            inputStream.close();
+                            if (bitmap == null) {
+                                Log.e("UploadImage", "從 InputStream 解碼 Bitmap 失敗");
+                                return null;
+                            }
+
+                            ExifInterface exif = null;
+                            try {
+                                if (photoUri.getPath() != null) {
+                                    exif = new ExifInterface(getContentResolver().openInputStream(photoUri));
+                                }
+                            } catch (IOException e) {
+                                Log.e("UploadImage", "讀取 EXIF 資訊失敗: " + e.getMessage());
+                            }
+
+                            if (exif != null) {
+                                int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                                Log.d("UploadImage", "EXIF 方向: " + orientation);
+                                bitmap = rotateBitmapIfNeeded(bitmap, orientation);
+                            }
+
+                            return bitmap;
+                        } catch (IOException e) {
+                            Log.e("UploadImage", "處理圖片錯誤: " + e.getMessage());
+                            return null;
+                        }
+                    }
+
+                    @Override
+                    protected void onPostExecute(Bitmap bitmap) {
+                        if (bitmap != null) {
+                            currentBitmap = bitmap;
+                            currentBitmapPath = saveBitmapToTempFile(currentBitmap);
+                            bigmap.setImageBitmap(currentBitmap);
+                            bigmap.setVisibility(View.VISIBLE);
+                            buttonUpload.setEnabled(true);
+                        } else {
+                            Log.e("UploadImage", "Failed to load bitmap for bigmap");
+                            //runOnUiThread(() -> Toast.makeText(UploadImage.this, "無法載入原始圖片", Toast.LENGTH_SHORT).show());
+                        }
+
+                        // 更新 UI
+                        runOnUiThread(() -> {
+                            currentLocationTextView.setText("Location: " + correctLocation);
+                            buttonCorrectLocation.setEnabled(true);
+                            buttonIncorrectLocation.setEnabled(true);
+                            buttonUpload.setEnabled(true);
+                            //Toast.makeText(UploadImage.this, "已使用先前記錄的正確位置: " + correctLocation, Toast.LENGTH_SHORT).show();
+                        });
+
+                        // 從資料庫查詢 correctLocation 的地圖圖片
+                        PictureDatabaseHelper dbHelper = new PictureDatabaseHelper(UploadImage.this);
+                        String imageFileName = dbHelper.getImageUriForLocation(correctLocation);
+                        if (imageFileName != null) {
+                            try {
+                                File imageFile = new File(getFilesDir(), imageFileName);
+                                Bitmap bitmapSmall = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+                                if (bitmapSmall != null) {
+                                    smallmap.setImageBitmap(bitmapSmall);
+                                    Log.d("UploadImage", "Set smallmap image for correct location: " + imageFileName);
+                                    // 更新 topMatches 以便後續使用，假設 URI 格式為 file://<internal storage path>
+                                    String imageUriString = "file://" + imageFile.getAbsolutePath();
+                                    topMatches.clear();
+                                    topMatches.add(new MatchResult(imageUriString, correctLocation, 1));
+                                } else {
+                                    Log.e("UploadImage", "Failed to decode bitmap for smallmap: " + imageFileName);
+                                    runOnUiThread(() -> Toast.makeText(UploadImage.this, getString(R.string.map_load_failed), Toast.LENGTH_SHORT).show());
+                                }
+                            } catch (Exception e) {
+                                Log.e("UploadImage", "Failed to load smallmap image: " + imageFileName + ", Error: " + e.getMessage());
+                                runOnUiThread(() -> Toast.makeText(UploadImage.this, getString(R.string.map_load_failed), Toast.LENGTH_SHORT).show());
+                            }
+                        } else {
+                            Log.w("UploadImage", "No image found for location: " + correctLocation);
+                            //runOnUiThread(() -> Toast.makeText(UploadImage.this, "未找到對應地圖圖片", Toast.LENGTH_SHORT).show());
+                        }
+                    }
+                }.execute();
+                return; // 直接返回，跳過 ORB 比對
+            } catch (JSONException e) {
+                Log.e("UploadImage", "Error parsing error record: " + e.getMessage());
+            }
+        }
+
+        // 創建並顯示進度提示框
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getString(R.string.matching_in_progress));
-        progressDialog.setCancelable(false); // 禁止用戶取消
+        progressDialog.setCancelable(false);
         progressDialog.show();
 
-// 使用 AsyncTask 處理圖片
+        // 使用 AsyncTask 處理圖片
         new AsyncTask<Void, Void, Bitmap>() {
             @Override
             protected Bitmap doInBackground(Void... voids) {
@@ -341,20 +477,16 @@ public class UploadImage extends AppCompatActivity {
                     InputStream inputStream = getContentResolver().openInputStream(photoUri);
                     if (inputStream == null) {
                         Log.e("UploadImage", "無法為 photoUri 打開 InputStream");
-                        //runOnUiThread(() -> Toast.makeText(UploadImage.this, "無法讀取圖片", Toast.LENGTH_SHORT).show());
                         return null;
                     }
 
-// 解碼 Bitmap
                     Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                     inputStream.close();
                     if (bitmap == null) {
                         Log.e("UploadImage", "從 InputStream 解碼 Bitmap 失敗");
-                        //runOnUiThread(() -> Toast.makeText(UploadImage.this, "無法解碼圖片", Toast.LENGTH_SHORT).show());
                         return null;
                     }
 
-// 檢查並校正 EXIF 方向
                     ExifInterface exif = null;
                     try {
                         if (photoUri.getPath() != null) {
@@ -373,7 +505,6 @@ public class UploadImage extends AppCompatActivity {
                     return bitmap;
                 } catch (IOException e) {
                     Log.e("UploadImage", "處理圖片錯誤: " + e.getMessage());
-                    //runOnUiThread(() -> Toast.makeText(UploadImage.this, "處理圖片時出錯", Toast.LENGTH_SHORT).show());
                     return null;
                 }
             }
@@ -387,18 +518,20 @@ public class UploadImage extends AppCompatActivity {
                     bigmap.setVisibility(View.VISIBLE);
                     buttonUpload.setEnabled(true);
 
-// Convert Bitmap to Mat for ORB processing in a separate thread
+                    // Convert Bitmap to Mat for ORB processing in a separate thread
                     new Thread(() -> {
                         try {
                             Mat mat = new Mat();
                             Utils.bitmapToMat(currentBitmap, mat);
 
-// Launch ORBActivity for image comparison
+                            String priorityLocation = sharedPreferences.getString(KEY_LAST_LOCATION, null);
+                            Log.d("UploadImage", "Passing priorityLocation to ORBActivity: " + (priorityLocation != null ? priorityLocation : "none"));
+
                             Intent intent = new Intent(UploadImage.this, ORBActivity.class);
                             intent.putExtra("imageUri", photoUri.toString());
+                            intent.putExtra("priorityLocation", priorityLocation);
                             activityResultLauncher.launch(intent);
                         } finally {
-// 確保進度提示框在 ORB 比對啟動後關閉
                             runOnUiThread(() -> {
                                 if (progressDialog.isShowing()) {
                                     progressDialog.dismiss();
@@ -407,7 +540,6 @@ public class UploadImage extends AppCompatActivity {
                         }
                     }).start();
                 } else {
-// 如果圖片處理失敗，關閉進度提示框
                     if (progressDialog.isShowing()) {
                         progressDialog.dismiss();
                     }
@@ -415,7 +547,6 @@ public class UploadImage extends AppCompatActivity {
             }
         }.execute();
     }
-
 
     private Bitmap rotateBitmapIfNeeded(Bitmap bitmap, int orientation) {
         if (bitmap == null || bitmap.isRecycled()) {
@@ -441,12 +572,12 @@ public class UploadImage extends AppCompatActivity {
         try {
             Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
             if (rotatedBitmap != bitmap) {
-                bitmap.recycle(); // 回收原始 Bitmap
+                bitmap.recycle();
             }
             return rotatedBitmap;
         } catch (OutOfMemoryError e) {
             Log.e("UploadImage", "OutOfMemoryError during bitmap rotation: " + e.getMessage());
-            return bitmap; // 返回原始 Bitmap
+            return bitmap;
         }
     }
 
@@ -461,7 +592,7 @@ public class UploadImage extends AppCompatActivity {
             if (!tempDir.exists()) tempDir.mkdirs();
             File tempFile = File.createTempFile("bitmap_", ".png", tempDir);
             try (FileOutputStream out = new FileOutputStream(tempFile)) {
-                bitmap.compress(Bitmap.CompressFormat.PNG, 80, out); // 降低壓縮質量
+                bitmap.compress(Bitmap.CompressFormat.PNG, 80, out);
                 out.flush();
             }
             return tempFile.getAbsolutePath();

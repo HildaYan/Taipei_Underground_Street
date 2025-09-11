@@ -58,7 +58,7 @@ public class ORBActivity extends AppCompatActivity {
 
         if (!OpenCVLoader.initDebug()) {
             Log.e("ORBActivity", "OpenCV initialization failed!");
-            //Toast.makeText(this, "OpenCV 初始化失敗，請檢查應用配置", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "OpenCV 初始化失敗，請檢查應用配置", Toast.LENGTH_LONG).show();
             finish();
             return;
         } else {
@@ -76,13 +76,17 @@ public class ORBActivity extends AppCompatActivity {
         locationDataList = new ArrayList<>();
         loadLocationDataFromDatabase();
 
+        // 獲取 priorityLocation
         Intent intent = getIntent();
+        String priorityLocation = intent.getStringExtra("priorityLocation");
+        Log.d("ORBActivity", "Priority location: " + (priorityLocation != null ? priorityLocation : "none"));
+
         String imageUriString = intent.getStringExtra("imageUri");
         if (imageUriString != null) {
             Uri imageUri = Uri.parse(imageUriString);
             processImage(imageUri);
         } else {
-            //Toast.makeText(this, "No image provided", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No image provided", Toast.LENGTH_SHORT).show();
             finish();
         }
     }
@@ -111,7 +115,9 @@ public class ORBActivity extends AppCompatActivity {
             });
 
             new Thread(() -> {
-                ArrayList<MatchResult> topMatches = compareImageWithDatabase(uploadedImageMat, imageUri);
+                Intent intent = getIntent();
+                String priorityLocation = intent.getStringExtra("priorityLocation");
+                ArrayList<MatchResult> topMatches = compareImageWithDatabase(uploadedImageMat, imageUri, priorityLocation);
                 runOnUiThread(() -> {
                     // 隱藏覆蓋層和載入指示器
                     overlayView.setVisibility(View.GONE);
@@ -142,13 +148,13 @@ public class ORBActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 overlayView.setVisibility(View.GONE);
                 loadingLayout.setVisibility(View.GONE);
-                //Toast.makeText(this, "Error processing image", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Error processing image", Toast.LENGTH_SHORT).show();
                 finish();
             });
         }
     }
 
-    private ArrayList<MatchResult> compareImageWithDatabase(Mat uploadedImage, Uri imageUri) {
+    private ArrayList<MatchResult> compareImageWithDatabase(Mat uploadedImage, Uri imageUri, String priorityLocation) {
         ORB orb = ORB.create(1000);
         MatOfKeyPoint keypoints1 = new MatOfKeyPoint();
         Mat descriptors1 = new Mat();
@@ -157,7 +163,27 @@ public class ORBActivity extends AppCompatActivity {
         matchResults.clear();
         Log.d("ORBActivity", "Uploaded image keypoints: " + keypoints1.toArray().length);
 
-        for (LocationData locationData : locationDataList) {
+        // 根據 priorityLocation 過濾資料集
+        List<LocationData> filteredDataList = new ArrayList<>();
+        if (priorityLocation != null && !priorityLocation.isEmpty()) {
+            for (LocationData locationData : locationDataList) {
+                if (locationData.getLocationName().equals(priorityLocation)) {
+                    filteredDataList.add(locationData);
+                }
+            }
+            // 如果有優先位置，將其放在列表前面
+            if (!filteredDataList.isEmpty()) {
+                Log.d("ORBActivity", "Prioritizing location: " + priorityLocation + ", found " + filteredDataList.size() + " images");
+                filteredDataList.addAll(locationDataList); // 將其他圖片添加到後面
+            } else {
+                Log.w("ORBActivity", "No images found for priority location: " + priorityLocation);
+                filteredDataList.addAll(locationDataList); // 如果沒找到，則使用全部資料
+            }
+        } else {
+            filteredDataList.addAll(locationDataList); // 無優先位置，使用全部資料
+        }
+
+        for (LocationData locationData : filteredDataList) {
             String imageFileName = locationData.getImageFileName();
             Bitmap bitmap = getBitmapFromAsset(imageFileName);
 
@@ -268,7 +294,7 @@ public class ORBActivity extends AppCompatActivity {
             while (cursor.moveToNext()) {
                 int imageId = cursor.getInt(cursor.getColumnIndexOrThrow("image"));
                 String locationData = cursor.getString(cursor.getColumnIndexOrThrow("location_data"));
-                String locationName = (locationData != null && !locationData.trim().isEmpty()) ? locationData : getString(R.string.unknown_location);;
+                String locationName = (locationData != null && !locationData.trim().isEmpty()) ? locationData : getString(R.string.unknown_location);
                 String fileExtension = cursor.getString(cursor.getColumnIndexOrThrow("file_extension"));
                 String imageFileName = "images/" + imageId + fileExtension;
 

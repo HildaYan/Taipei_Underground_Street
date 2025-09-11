@@ -30,7 +30,7 @@
     <string name="account_deleted">Account successfully deleted.</string>
     <string name="user_info_not_found">User information not found.</string>
     <string name="confirm_language_change">Confirm Language Change</string>
-    <string name="confirm_language_message">Are you sure you want to change the language to %1$s?</string>
+    <string name="confirm_language_message">Are you sure you want to change the language to ?</string>
     <string name="language_change_cancelled">Language change cancelled.</string>
 
     <string name="incorrect_location">Incorrect location</string>
@@ -42,11 +42,11 @@
     <string name="account_logout_confirm">Are you sure you want to log out?</string>
     <string name="account_logout_success">Successfully logged out</string>
     <string name="group_invitation_title">Group Invitation</string>
-    <string name="group_invitation_message">You have been invited to join the group: %1$s</string>
-    <string name="accept_invitation_success">Group invitation accepted: %1$s</string>
-    <string name="reject_invitation_success">Group invitation rejected: %1$s</string>
+    <string name="group_invitation_message">You have been invited to join the group: </string>
+    <string name="accept_invitation_success">Group invitation accepted: </string>
+    <string name="reject_invitation_success">Group invitation rejected: </string>
     <string name="new_group_notification_title">New Group Invitation</string>
-    <string name="new_group_notification_message">You have received an invitation from the group %1$s</string>
+    <string name="new_group_notification_message">You have received an invitation from the group </string>
 
     <string name="init_failed">Application initialization failed, please contact the developer</string>
     <string name="map_load_failed">Failed to load matched map image</string>
@@ -187,10 +187,10 @@
     <string name="confirm_delete_message">Are you sure you want to delete your account? This action is irreversible!</string>
     <string name="account_deleted_failed">Account deletion failed</string>
     <string name="no_match_result">No match results</string>
-    <string name="match_first">Total %d</string>
-    <string name="match_second">%d match results</string>
+    <string name="match_first">Total </string>
+    <string name="match_second"> match results</string>
     <string name="confirm_location_title">Confirm Location</string>
-    <string name="confirm_location_message">Your current location is: %1$s\nConfirm?</string>
+    <string name="confirm_location_message">Your current location is: Confirm?</string>
     <string name="button_see_again">Let me review again</string>
     <string name="change_password">Change Password</string>
     <string name="original_password">Original Password</string>
@@ -252,7 +252,7 @@
     <string name="personal_profile">Personal Profile</string>
     <string name="change_nickname">Change Nickname</string>
     <string name="match_database">Match Database</string>
-    <string name="match_results_count">Total %d match results</string>
+    <string name="match_results_count">Total  match results</string>
     <string name="confirm_new_password_hint">Confirm New Password</string>
 
     <string name="group_creator_avatar_desc">Group creator avatar</string>
