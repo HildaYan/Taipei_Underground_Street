@@ -72,7 +72,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     private static final int REQUEST_CAMERA_PERMISSION_CODE = 1;
     private static final int REQUEST_NOTIFICATION_PERMISSION_CODE = 1002;
-    private static final String INVITATION_CHECK_URL = "http://13.210.14.98/android_studio/fetch_invitations.php";
+    private static final String INVITATION_CHECK_URL = "http://54.252.159.1/android_studio/fetch_invitations.php";
     private static final String USER_ID_KEY = "userId";
     private static final String LOGGED_IN_USER_KEY = "loggedInUser";
     private static final long CHECK_INTERVAL = 30000;

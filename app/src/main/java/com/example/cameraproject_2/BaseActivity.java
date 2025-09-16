@@ -119,23 +119,26 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         View headerView = navigationView.getHeaderView(0);
         if (headerView == null) {
             //Log.e("BaseActivity", "headerView is null");
-            headerView = navigationView.inflateHeaderView(R.layout.activity_menu_header);
+            //headerView = navigationView.inflateHeaderView(R.layout.activity_menu_header);
         }
 
-        TextView usernameValue = headerView.findViewById(R.id.textViewUsernameValue);
-        TextView accountValue = headerView.findViewById(R.id.textViewAccountValue);
+        //TextView usernameValue = headerView.findViewById(R.id.textViewUsernameValue);
+        //TextView accountValue = headerView.findViewById(R.id.textViewAccountValue);
 
+        /*
         if (usernameValue == null || accountValue == null) {
             //Log.e("BaseActivity", "TextViews not found: usernameValue=" + usernameValue + ", accountValue=" + accountValue);
             return;
         }
 
+         */
+
         String username = sharedPreferences.getString("loggedInUser", getString(R.string.guest));
         String userId = sharedPreferences.getString("userId", getString(R.string.guest));
         //Log.d("BaseActivity", "Setting username: " + username + ", userId: " + userId);
 
-        usernameValue.setText(username);
-        accountValue.setText(userId);
+        //usernameValue.setText(username);
+        //accountValue.setText(userId);
 
         headerView.invalidate();
         headerView.requestLayout();

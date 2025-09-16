@@ -89,7 +89,7 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_LAST_SYNC_TIME = "last_sync_time";
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-    private static String SERVER_URL = "http://13.210.14.98/android_studio";
+    private static String SERVER_URL = "http://54.252.159.1/android_studio";
 
     private SQLiteDatabase db;
     private static final Object dbLock = new Object();
@@ -100,7 +100,7 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
     public RegisterDatabaseHelper(Context context) {
         super(context, REGISTER_DB_NAME, null, DATABASE_VERSION);
         this.context = context;
-        SERVER_URL = "http://13.210.14.98/android_studio";
+        SERVER_URL = "http://54.252.159.1/android_studio";
         loadServerUrl();
         checkDatabaseIntegrity();
         cleanInvalidUsers();
@@ -109,7 +109,7 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
 
     private void loadServerUrl() {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        String defaultUrl = "http://13.210.14.98/android_studio";
+        String defaultUrl = "http://54.252.159.1/android_studio";
         SERVER_URL = prefs.getString(KEY_SERVER_URL, defaultUrl);
         Log.d(TAG, "載入的 SERVER_URL: " + SERVER_URL);
         SharedPreferences.Editor editor = prefs.edit();
