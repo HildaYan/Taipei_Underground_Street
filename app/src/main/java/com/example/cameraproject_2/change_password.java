@@ -33,17 +33,12 @@ public class change_password extends AppCompatActivity {
             return insets;
         });
 
-        // 綁定 UI 元素
         editTextOldPassword = findViewById(R.id.edit_text_old_password);
         editTextNewPassword = findViewById(R.id.edit_text_new_password);
         editTextConfirmPassword = findViewById(R.id.edit_text_confirm_password);
         buttonConfirmPassword = findViewById(R.id.button_confirm_password);
         textViewError = findViewById(R.id.text_view_error);
-
-        // 獲取 Intent 數據
         userId = getIntent().getStringExtra("userId");
-
-        // 設置返回箭頭點擊事件
         findViewById(R.id.backArrow).setOnClickListener(v -> finish());
 
         // 設置確認按鈕點擊事件

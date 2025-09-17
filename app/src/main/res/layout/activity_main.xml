@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_end="56dp" /> <!-- 底部導航假設高56dp -->
+            app:layout_constraintGuide_end="56dp" />
 
         <!-- 代表底部導航欄的假設高度為56dp -->
         <com.google.android.material.bottomnavigation.BottomNavigationView

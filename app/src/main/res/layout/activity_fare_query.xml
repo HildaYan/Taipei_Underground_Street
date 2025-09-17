@@ -190,6 +190,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         tools:visibility="visible"
+        android:indeterminateTint="@android:color/holo_blue_bright"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

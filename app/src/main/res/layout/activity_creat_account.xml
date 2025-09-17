@@ -50,7 +50,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-medium"
-                    android:text="NO LOST"
+                    android:text="@string/app_name"
                     android:textColor="@color/white"
                     android:textSize="32sp"
                     android:textStyle="bold" />

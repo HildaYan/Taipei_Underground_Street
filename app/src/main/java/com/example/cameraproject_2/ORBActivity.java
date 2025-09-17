@@ -13,14 +13,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.calib3d.Calib3d;
 import org.opencv.core.Core;
-import org.opencv.core.CvType;
 import org.opencv.core.DMatch;
 import org.opencv.core.KeyPoint;
 import org.opencv.core.Mat;
@@ -40,7 +38,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class ORBActivity extends AppCompatActivity {
-
     private ImageView uploadedImageView;
     private TextView locationTextView;
     private View overlayView;
@@ -65,18 +62,15 @@ public class ORBActivity extends AppCompatActivity {
             Log.d("ORBActivity", "OpenCV initialized successfully");
         }
 
-        // 初始化視圖
         uploadedImageView = findViewById(R.id.uploadedImageView);
         locationTextView = findViewById(R.id.locationTextView);
         overlayView = findViewById(R.id.overlayView);
         loadingLayout = findViewById(R.id.loadingLayout);
-
         dbHelper = new PictureDatabaseHelper(this);
         database = dbHelper.getPictureDatabase();
         locationDataList = new ArrayList<>();
         loadLocationDataFromDatabase();
 
-        // 獲取 priorityLocation
         Intent intent = getIntent();
         String priorityLocation = intent.getStringExtra("priorityLocation");
         Log.d("ORBActivity", "Priority location: " + (priorityLocation != null ? priorityLocation : "none"));
@@ -100,15 +94,11 @@ public class ORBActivity extends AppCompatActivity {
             int targetWidth = 800;
             int targetHeight = (int) (bitmap.getHeight() * ((float) targetWidth / bitmap.getWidth()));
             Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, targetWidth, targetHeight, true);
-
             uploadedImageView.setImageBitmap(scaledBitmap);
-
             uploadedImageMat = new Mat();
             Utils.bitmapToMat(scaledBitmap, uploadedImageMat);
             Imgproc.cvtColor(uploadedImageMat, uploadedImageMat, Imgproc.COLOR_BGR2GRAY);
             Imgproc.equalizeHist(uploadedImageMat, uploadedImageMat);
-
-            // 顯示覆蓋層和載入指示器
             runOnUiThread(() -> {
                 overlayView.setVisibility(View.VISIBLE);
                 loadingLayout.setVisibility(View.VISIBLE);
@@ -119,7 +109,6 @@ public class ORBActivity extends AppCompatActivity {
                 String priorityLocation = intent.getStringExtra("priorityLocation");
                 ArrayList<MatchResult> topMatches = compareImageWithDatabase(uploadedImageMat, imageUri, priorityLocation);
                 runOnUiThread(() -> {
-                    // 隱藏覆蓋層和載入指示器
                     overlayView.setVisibility(View.GONE);
                     loadingLayout.setVisibility(View.GONE);
 
@@ -141,7 +130,6 @@ public class ORBActivity extends AppCompatActivity {
                     finish();
                 });
             }).start();
-
             inputStream.close();
         } catch (IOException e) {
             Log.e("ORBActivity", "Error processing image: " + e.getMessage());
@@ -159,11 +147,8 @@ public class ORBActivity extends AppCompatActivity {
         MatOfKeyPoint keypoints1 = new MatOfKeyPoint();
         Mat descriptors1 = new Mat();
         orb.detectAndCompute(uploadedImage, new Mat(), keypoints1, descriptors1);
-
         matchResults.clear();
         Log.d("ORBActivity", "Uploaded image keypoints: " + keypoints1.toArray().length);
-
-        // 根據 priorityLocation 過濾資料集
         List<LocationData> filteredDataList = new ArrayList<>();
         if (priorityLocation != null && !priorityLocation.isEmpty()) {
             for (LocationData locationData : locationDataList) {
@@ -171,48 +156,40 @@ public class ORBActivity extends AppCompatActivity {
                     filteredDataList.add(locationData);
                 }
             }
-            // 如果有優先位置，將其放在列表前面
             if (!filteredDataList.isEmpty()) {
                 Log.d("ORBActivity", "Prioritizing location: " + priorityLocation + ", found " + filteredDataList.size() + " images");
-                filteredDataList.addAll(locationDataList); // 將其他圖片添加到後面
+                filteredDataList.addAll(locationDataList);
             } else {
                 Log.w("ORBActivity", "No images found for priority location: " + priorityLocation);
-                filteredDataList.addAll(locationDataList); // 如果沒找到，則使用全部資料
+                filteredDataList.addAll(locationDataList);
             }
         } else {
-            filteredDataList.addAll(locationDataList); // 無優先位置，使用全部資料
+            filteredDataList.addAll(locationDataList);
         }
 
         for (LocationData locationData : filteredDataList) {
             String imageFileName = locationData.getImageFileName();
             Bitmap bitmap = getBitmapFromAsset(imageFileName);
-
             if (bitmap == null) {
                 Log.e("ORBActivity", "無法從assets加載圖像：" + imageFileName);
                 continue;
             }
-
             Mat databaseImage = new Mat();
             Utils.bitmapToMat(bitmap, databaseImage);
             Imgproc.cvtColor(databaseImage, databaseImage, Imgproc.COLOR_BGR2GRAY);
-
             MatOfKeyPoint keypoints2 = new MatOfKeyPoint();
             Mat descriptors2 = new Mat();
             orb.detectAndCompute(databaseImage, new Mat(), keypoints2, descriptors2);
-
             if (descriptors1.empty() || descriptors2.empty()) {
                 Log.w("ORBActivity", "Descriptors empty for " + imageFileName);
                 databaseImage.release();
                 continue;
             }
-
             MatOfDMatch matches = new MatOfDMatch();
             DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_HAMMING);
             matcher.match(descriptors1, descriptors2, matches);
-
             List<DMatch> listOfMatches = matches.toList();
             List<DMatch> goodMatches = new ArrayList<>();
-
             double minDist = 100;
             for (DMatch match : listOfMatches) {
                 if (match.distance < minDist) minDist = match.distance;
@@ -220,14 +197,12 @@ public class ORBActivity extends AppCompatActivity {
 
             double dynamicThreshold = Math.min(2 * minDist, 40.0);
             Log.d("ORBActivity", "Min distance: " + minDist + ", Dynamic threshold: " + dynamicThreshold);
-
             for (DMatch match : listOfMatches) {
                 if (match.distance <= dynamicThreshold) {
                     goodMatches.add(match);
                 }
             }
 
-            // RANSAC 幾何驗證
             if (goodMatches.size() > 10) {
                 MatOfDMatch goodMatchesMat = new MatOfDMatch();
                 goodMatchesMat.fromList(goodMatches);
@@ -264,7 +239,6 @@ public class ORBActivity extends AppCompatActivity {
                     mask.release();
                 }
             }
-
             databaseImage.release();
             matches.release();
         }
@@ -278,11 +252,6 @@ public class ORBActivity extends AppCompatActivity {
         Log.d("ORBActivity", "After subList: topMatches size=" + topMatches.size() + ", first match=" + (topMatches.isEmpty() ? "empty" : topMatches.get(0).getLocation()));
         return topMatches;
     }
-
-    private String getImageFileName(int imageId) {
-        return dbHelper.getImageFileName(imageId);
-    }
-
     private void loadLocationDataFromDatabase() {
         SQLiteDatabase db = dbHelper.getPictureDatabase();
         locationDataList.clear();
@@ -297,7 +266,6 @@ public class ORBActivity extends AppCompatActivity {
                 String locationName = (locationData != null && !locationData.trim().isEmpty()) ? locationData : getString(R.string.unknown_location);
                 String fileExtension = cursor.getString(cursor.getColumnIndexOrThrow("file_extension"));
                 String imageFileName = "images/" + imageId + fileExtension;
-
                 Bitmap bitmap = getBitmapFromAsset(imageFileName);
                 String imageData = bitmap != null ? convertBitmapToBase64(bitmap) : null;
                 locationDataList.add(new LocationData(locationName, imageData, imageFileName));

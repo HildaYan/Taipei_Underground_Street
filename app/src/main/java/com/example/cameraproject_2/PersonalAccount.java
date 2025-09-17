@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -43,14 +42,10 @@ public class PersonalAccount extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_account);
 
-        // 初始化執行緒池和主執行緒 Handler
         executorService = Executors.newSingleThreadExecutor();
         mainHandler = new Handler(Looper.getMainLooper());
-
         sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         dbHelper = new RegisterDatabaseHelper(this);
-
-        // 初始化 UI 組件
         editTextUsername = findViewById(R.id.editTextUsername);
         editTextPassword = findViewById(R.id.editTextPassword);
         buttonLogin = findViewById(R.id.buttonLogin);
@@ -65,8 +60,6 @@ public class PersonalAccount extends AppCompatActivity {
             editor.putString("profileImageUrl", null);
             editor.apply();
         }
-
-        // 設置返回箭頭的點擊事件
         backArrow.setOnClickListener(v -> {
             Intent intent = new Intent(PersonalAccount.this, MainActivity.class);
             startActivity(intent);
@@ -83,7 +76,6 @@ public class PersonalAccount extends AppCompatActivity {
                 editTextUsername.requestFocus();
                 return;
             }
-
             if (password.isEmpty()) {
                 textInputLayoutPassword.setError(getString(R.string.password_empty_error));
                 editTextPassword.requestFocus();
@@ -94,31 +86,23 @@ public class PersonalAccount extends AppCompatActivity {
             progressDialog.setMessage(getString(R.string.progress_logging_in));
             progressDialog.setCancelable(false);
             progressDialog.show();
-
             executorService.execute(() -> {
                 boolean loginSuccess = dbHelper.checkUser(username, password);
-
                 mainHandler.post(() -> {
                     progressDialog.dismiss();
-
                     if (loginSuccess) {
                         Toast.makeText(PersonalAccount.this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
                         Log.d("PersonalAccount", "Login attempt for " + username + ": Success");
-
                         String userId = dbHelper.getUserId(username, password);
                         String profileImageUrl = dbHelper.getProfileImageUrl(userId);
-
                         SharedPreferences.Editor loginEditor = sharedPreferences.edit();
                         loginEditor.putString("loggedInUser", username);
                         loginEditor.putString("userId", userId != null ? userId : getString(R.string.user_id_label));
                         loginEditor.putBoolean("isLoggedIn", true);
                         loginEditor.putString("profileImageUrl", profileImageUrl);
                         loginEditor.apply();
-
                         checkGroupInvitations(username, password);
-
                         startBackgroundSync();
-
                         Set<String> groupNames = sharedPreferences.getStringSet("group_names", new HashSet<>());
                         Intent intent = new Intent(PersonalAccount.this, UserProfileActivity.class);
                         intent.putExtra("username", username);

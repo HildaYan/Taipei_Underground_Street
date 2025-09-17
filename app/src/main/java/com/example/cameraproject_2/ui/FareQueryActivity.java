@@ -44,7 +44,6 @@ public class FareQueryActivity extends AppCompatActivity {
     private FrameLayout fabContainer;
     private BottomNavigationView bottomNavigationView;
     private SharedPreferences sharedPreferences;
-
     private FareQueryViewModel viewModel;
     private String selectedStartStation = null;
     private String selectedEndStation = null;
@@ -53,11 +52,7 @@ public class FareQueryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fare_query);
-
-        // 初始化 SharedPreferences
         sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-
-        // 初始化視圖
         autoCompleteStartStation = findViewById(R.id.autoCompleteStartStation);
         autoCompleteEndStation = findViewById(R.id.autoCompleteEndStation);
         buttonQueryFare = findViewById(R.id.buttonQueryFare);
@@ -69,23 +64,16 @@ public class FareQueryActivity extends AppCompatActivity {
         backArrow = findViewById(R.id.backArrow);
         fabContainer = findViewById(R.id.fab_container);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
-
         viewModel = new ViewModelProvider(this).get(FareQueryViewModel.class);
-
-        // 設置返回箭頭點擊事件
         backArrow.setOnClickListener(v -> {
             finish();
             overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right);
         });
-
-        // 設置圓形圖標點擊事件
         fabContainer.setOnClickListener(v -> {
             Intent intent = new Intent(FareQueryActivity.this, ExitMapActivity.class);
             startActivity(intent);
             overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
         });
-
-        // 設置底部導航欄
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.homefill) {
@@ -147,7 +135,6 @@ public class FareQueryActivity extends AppCompatActivity {
         setupButton();
         observeViewModel();
     }
-
     private void setupStationDropdowns() {
         ArrayAdapter<String> emptyAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_dropdown_item_1line, new ArrayList<>());
@@ -159,7 +146,6 @@ public class FareQueryActivity extends AppCompatActivity {
         autoCompleteEndStation.setOnItemClickListener((parent, view, position, id) ->
                 selectedEndStation = (String) parent.getItemAtPosition(position));
     }
-
     private void setupButton() {
         buttonQueryFare.setOnClickListener(v -> {
             if (selectedStartStation != null && !selectedStartStation.isEmpty() &&

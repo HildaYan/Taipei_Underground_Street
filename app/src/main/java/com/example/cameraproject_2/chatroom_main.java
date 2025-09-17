@@ -40,13 +40,9 @@ public class chatroom_main extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_chatroom_main);
-
-        // Initialize SharedPreferences and DatabaseHelper
         sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         dbHelper = new RegisterDatabaseHelper(this);
         currentUserId = sharedPreferences.getString("userId", null);
-
-        // Set back arrow click listener
         ImageView backArrow = findViewById(R.id.backArrow);
         backArrow.setOnClickListener(v -> {
             Intent intent = new Intent(chatroom_main.this, MainActivity.class);
@@ -55,7 +51,6 @@ public class chatroom_main extends AppCompatActivity {
             finish();
         });
 
-        // Initialize RecyclerView
         recyclerViewGroups = findViewById(R.id.recycler_view_groups);
         recyclerViewGroups.setLayoutManager(new LinearLayoutManager(this));
         originalGroupList = loadGroupList();
@@ -68,8 +63,6 @@ public class chatroom_main extends AppCompatActivity {
             overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
         });
         recyclerViewGroups.setAdapter(groupAdapter);
-
-        // Initialize search edit text
         editTextSearch = findViewById(R.id.edit_text_search);
         editTextSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -83,19 +76,13 @@ public class chatroom_main extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {}
         });
-
-        // Set message container click listener
         FrameLayout messageContainer = findViewById(R.id.message_container);
         messageContainer.setOnClickListener(v -> {
             Intent intent = new Intent(chatroom_main.this, receive_group.class);
             startActivity(intent);
             overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
         });
-
-        // Update empty state visibility
         updateEmptyStateVisibility(originalGroupList);
-
-        // Set BottomNavigationView
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.chat);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
@@ -130,8 +117,6 @@ public class chatroom_main extends AppCompatActivity {
             }
             return false;
         });
-
-        // Add click listener for fab_container
         FrameLayout fabContainer = findViewById(R.id.fab_container);
         fabContainer.setOnClickListener(v -> {
             Intent intent = new Intent(chatroom_main.this, CreateGroupActivity.class);
@@ -143,7 +128,6 @@ public class chatroom_main extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Reload group list on resume
         originalGroupList = loadGroupList();
         groupAdapter.updateGroups(originalGroupList);
         updateEmptyStateVisibility(originalGroupList);
@@ -157,7 +141,6 @@ public class chatroom_main extends AppCompatActivity {
             return groupList;
         }
 
-        // Load user's groups from database
         SQLiteDatabase db = dbHelper.getRegisterDatabase();
         Cursor cursor = db.query(RegisterDatabaseHelper.TABLE_INVITATIONS,
                 new String[]{RegisterDatabaseHelper.COL_GROUP_NAME, RegisterDatabaseHelper.COL_INVITED_USER},
@@ -171,8 +154,6 @@ public class chatroom_main extends AppCompatActivity {
             String creatorAvatarUrl = dbHelper.getUserAvatarUrl(creatorId);
             List<String> members = dbHelper.getGroupMembers(groupName);
             Group group = new Group(groupName, creatorId, creatorAvatarUrl, members);
-
-            // Get latest message and time
             String lastMessage = dbHelper.getLastMessage(groupName);
             String lastMessageTime = dbHelper.getLastMessageTime(groupName);
             group.setLastMessage(lastMessage);
@@ -188,7 +169,6 @@ public class chatroom_main extends AppCompatActivity {
     private String getGroupCreatorId(String groupName) {
         String creatorId = null;
         SQLiteDatabase db = dbHelper.getRegisterDatabase();
-        // Query to find the creator of the group (assuming the creator is the first user with a specific flag or earliest record)
         Cursor cursor = db.query(RegisterDatabaseHelper.TABLE_INVITATIONS,
                 new String[]{RegisterDatabaseHelper.COL_INVITED_USER},
                 RegisterDatabaseHelper.COL_GROUP_NAME + "=? AND " + RegisterDatabaseHelper.COL_STATUS + "=?",
@@ -204,7 +184,7 @@ public class chatroom_main extends AppCompatActivity {
 
         if (creatorId == null) {
             Log.e("chatroom_main", "No creator found for group: " + groupName);
-            creatorId = currentUserId; // Fallback to current user ID if no creator is found
+            creatorId = currentUserId;
         }
         Log.d("chatroom_main", "Group: " + groupName + ", Creator ID: " + creatorId);
         return creatorId;

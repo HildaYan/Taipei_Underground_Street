@@ -19,10 +19,8 @@ public class PictureDatabaseHelper extends SQLiteOpenHelper {
     public static final String PICTURE_DB_NAME = "picture.db";
     private static final int DATABASE_VERSION = 5;
     private static final String DB_PATH = "/data/data/com.example.cameraproject_2/databases";
-
     private final Context context;
     private SQLiteDatabase pictureDatabase;
-
     public PictureDatabaseHelper(Context context) {
         super(context, PICTURE_DB_NAME, null, DATABASE_VERSION);
         this.context = context;
@@ -232,68 +230,6 @@ public class PictureDatabaseHelper extends SQLiteOpenHelper {
             Log.e(TAG, "Error copying images: " + e.getMessage());
         }
     }
-
-    public String getImageFileName(int imageId) {
-        SQLiteDatabase db = getPictureDatabase();
-        Cursor cursor = null;
-        String fileName = null;
-        try {
-            Log.d(TAG, "Querying database for imageId: " + imageId);
-            cursor = db.query("picture_data",
-                    new String[]{"image", "file_extension"},
-                    "image = ?",
-                    new String[]{String.valueOf(imageId)},
-                    null, null, null);
-            if (cursor.moveToFirst()) {
-                int id = cursor.getInt(cursor.getColumnIndexOrThrow("image"));
-                String extension = cursor.getString(cursor.getColumnIndexOrThrow("file_extension"));
-                fileName = "images/" + id + extension;
-                Log.d(TAG, "Found filename: " + fileName + " for imageId: " + imageId);
-            } else {
-                Log.w(TAG, "No record found for imageId: " + imageId);
-            }
-        } catch (SQLiteException e) {
-            Log.e(TAG, "Error querying image file name: " + e.getMessage() + ", Database path: " + db.getPath());
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-        return fileName;
-    }
-
-    public PictureData getPictureData(int imageId) {
-        SQLiteDatabase db = getPictureDatabase();
-        Cursor cursor = null;
-        PictureData data = null;
-        try {
-            cursor = db.query("picture_data",
-                    new String[]{"name", "description", "location_data", "latitude", "longitude"},
-                    "image = ?",
-                    new String[]{String.valueOf(imageId)},
-                    null, null, null);
-            if (cursor.moveToFirst()) {
-                String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
-                String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
-                String locationData = cursor.getString(cursor.getColumnIndexOrThrow("location_data"));
-                String latitude = cursor.getString(cursor.getColumnIndexOrThrow("latitude"));
-                String longitude = cursor.getString(cursor.getColumnIndexOrThrow("longitude"));
-                data = new PictureData(name, description, locationData, latitude, longitude);
-                Log.d(TAG, "Found location data: " + locationData + " for imageId: " + imageId);
-            } else {
-                Log.w(TAG, "No metadata found for imageId: " + imageId);
-            }
-        } catch (SQLiteException e) {
-            Log.e(TAG, "Error querying picture data: " + e.getMessage());
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-        return data;
-    }
-
-    // 新增方法：根據 location_data 查詢圖片檔案名稱
     public String getImageUriForLocation(String locationName) {
         SQLiteDatabase db = getPictureDatabase();
         Cursor cursor = null;
@@ -321,21 +257,5 @@ public class PictureDatabaseHelper extends SQLiteOpenHelper {
             }
         }
         return fileName;
-    }
-
-    public static class PictureData {
-        public final String name;
-        public final String description;
-        public final String locationData;
-        public final String latitude;
-        public final String longitude;
-
-        public PictureData(String name, String description, String locationData, String latitude, String longitude) {
-            this.name = name;
-            this.description = description;
-            this.locationData = locationData;
-            this.latitude = latitude;
-            this.longitude = longitude;
-        }
     }
 }

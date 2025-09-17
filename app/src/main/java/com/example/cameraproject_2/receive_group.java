@@ -1,9 +1,6 @@
 package com.example.cameraproject_2;
 
-import static android.provider.Settings.System.getString;
-
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,31 +22,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class receive_group extends AppCompatActivity {
-
     private RegisterDatabaseHelper dbHelper;
     private String currentUserId;
     private RecyclerView recyclerViewInvitations;
     private InvitationAdapter invitationAdapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_receive_group);
-
-        // Initialize DatabaseHelper and userId
         dbHelper = new RegisterDatabaseHelper(this);
         SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         currentUserId = sharedPreferences.getString("userId", null);
-
-        // Set window insets
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        // Initialize RecyclerView
         recyclerViewInvitations = findViewById(R.id.recycler_view_invitations);
         recyclerViewInvitations.setLayoutManager(new LinearLayoutManager(this));
         List<Invitation> invitationList = loadInvitationList();
@@ -63,7 +51,6 @@ public class receive_group extends AppCompatActivity {
         if (currentUserId == null || currentUserId.trim().isEmpty()) {
             return invitationList;
         }
-
         SQLiteDatabase db = dbHelper.getRegisterDatabase();
         Cursor cursor = db.query(RegisterDatabaseHelper.TABLE_INVITATIONS,
                 new String[]{RegisterDatabaseHelper.COL_INVITATION_ID, RegisterDatabaseHelper.COL_GROUP_NAME, RegisterDatabaseHelper.COL_STATUS},
@@ -84,33 +71,24 @@ public class receive_group extends AppCompatActivity {
     private void onInvitationAction(String invitationId, String action) {
         if ("accept".equals(action)) {
             dbHelper.updateInvitationStatus(invitationId, "accepted");
-            //Toast.makeText(this, "已同意加入群組", Toast.LENGTH_SHORT).show();
         } else if ("reject".equals(action)) {
             dbHelper.updateInvitationStatus(invitationId, "rejected");
-            //Toast.makeText(this, "已拒絕加入群組", Toast.LENGTH_SHORT).show();
         }
-        // Refresh the list
         invitationAdapter.updateInvitations(loadInvitationList());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Refresh the list on resume
         invitationAdapter.updateInvitations(loadInvitationList());
     }
 }
-
-// InvitationAdapter class
 class InvitationAdapter extends RecyclerView.Adapter<InvitationAdapter.ViewHolder> {
-
     private List<Invitation> invitations;
     private OnInvitationActionListener listener;
-
     public interface OnInvitationActionListener {
         void onInvitationAction(String invitationId, String action);
     }
-
     public InvitationAdapter(List<Invitation> invitations, OnInvitationActionListener listener) {
         this.invitations = invitations;
         this.listener = listener;
@@ -127,7 +105,6 @@ class InvitationAdapter extends RecyclerView.Adapter<InvitationAdapter.ViewHolde
         Invitation invitation = invitations.get(position);
         holder.textViewGroupName.setText(invitation.getGroupName());
         Context context = holder.itemView.getContext();
-
         if ("pending".equals(invitation.getStatus())) {
             holder.textViewStatus.setText(context.getString(R.string.invitation_status_pending));
             holder.buttonAction.setVisibility(View.VISIBLE);
@@ -141,14 +118,10 @@ class InvitationAdapter extends RecyclerView.Adapter<InvitationAdapter.ViewHolde
             holder.buttonAction.setVisibility(View.GONE);
         }
     }
-
-
-
     @Override
     public int getItemCount() {
         return invitations.size();
     }
-
     public void updateInvitations(List<Invitation> newInvitations) {
         this.invitations = newInvitations;
         notifyDataSetChanged();

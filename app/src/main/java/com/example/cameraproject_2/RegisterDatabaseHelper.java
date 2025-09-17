@@ -8,7 +8,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabaseLockedException;
@@ -23,15 +22,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,9 +38,6 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -55,8 +47,7 @@ import okhttp3.Response;
 public class RegisterDatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "RegisterDatabaseHelper";
     public static final String REGISTER_DB_NAME = "register.db";
-    private static final int DATABASE_VERSION = 9; // 更新為版本 9
-
+    private static final int DATABASE_VERSION = 9;
     public static final String TABLE_NAME = "Users";
     public static final String COL_ID = "id";
     public static final String COL_USERNAME = "username";
@@ -66,41 +57,32 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_IS_SYNCED = "is_synced";
     public static final String COL_SYNC_ACTION = "sync_action";
     public static final String COL_PROFILE_IMAGE_URL = "profile_image_url";
-
     public static final String TABLE_INVITATIONS = "groupinvitations";
     public static final String COL_INVITATION_ID = "invitation_id";
     public static final String COL_GROUP_NAME = "group_name";
     public static final String COL_INVITED_USER = "invited_user";
     public static final String COL_STATUS = "status";
     public static final String COL_IS_SYNCED_INV = "is_synced";
-
     public static final String TABLE_MESSAGES = "messages";
     public static final String COL_MESSAGE_ID = "message_id";
     public static final String COL_SENDER = "sender";
     public static final String COL_MESSAGE = "message";
     public static final String COL_TIMESTAMP = "timestamp";
     public static final String COL_IS_SYNCED_MSG = "is_synced";
-
     private final Context context;
-    private SQLiteDatabase registerDatabase;
-
     private static final String PREFS_NAME = "AppPrefs";
     private static final String KEY_SERVER_URL = "server_url";
     private static final String KEY_LAST_SYNC_TIME = "last_sync_time";
-
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-    private static String SERVER_URL = "http://54.252.159.1/android_studio";
-
+    private static String SERVER_URL = "http://3.25.57.211/android_studio";
     private SQLiteDatabase db;
     private static final Object dbLock = new Object();
-
-    private Toast toast;
     private boolean isSyncing = false;
 
     public RegisterDatabaseHelper(Context context) {
         super(context, REGISTER_DB_NAME, null, DATABASE_VERSION);
         this.context = context;
-        SERVER_URL = "http://54.252.159.1/android_studio";
+        SERVER_URL = "http://3.25.57.211/android_studio";
         loadServerUrl();
         checkDatabaseIntegrity();
         cleanInvalidUsers();
@@ -109,7 +91,7 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
 
     private void loadServerUrl() {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        String defaultUrl = "http://54.252.159.1/android_studio";
+        String defaultUrl = "http://3.25.57.211/android_studio";
         SERVER_URL = prefs.getString(KEY_SERVER_URL, defaultUrl);
         Log.d(TAG, "載入的 SERVER_URL: " + SERVER_URL);
         SharedPreferences.Editor editor = prefs.edit();
@@ -118,16 +100,6 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
         SERVER_URL = defaultUrl;
         Log.d(TAG, "更新後的 SERVER_URL: " + SERVER_URL);
     }
-
-    public void setServerUrl(String url) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(KEY_SERVER_URL, url);
-        editor.apply();
-        loadServerUrl();
-        Log.d(TAG, "Server URL updated to: " + url);
-    }
-
     public void cleanInvalidUsers() {
         SQLiteDatabase db = getRegisterDatabase();
         db.beginTransaction();
@@ -253,13 +225,9 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
             }
         }
         if (oldVersion < 8) {
-            // 假設版本 8 添加了某個功能，例如索引或其他表結構更改
-            // 在此處添加對版本 8 的升級邏輯（根據應用需求）
             Log.d(TAG, "Upgraded to version 8: No structural changes needed");
         }
         if (oldVersion < 9) {
-            // 假設版本 9 添加了某個功能，例如新的欄位或索引
-            // 在此處添加對版本 9 的升級邏輯（根據應用需求）
             Log.d(TAG, "Upgraded to version 9: No structural changes needed");
         }
     }
@@ -420,26 +388,6 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
             }
         }
     }
-
-    public void clearUnsyncedUsersExcept(String userId) {
-        SQLiteDatabase db = getRegisterDatabase();
-        db.delete(TABLE_NAME, COL_IS_SYNCED + " = 0 AND " + COL_ID + " != ?", new String[]{userId});
-        Log.d(TAG, "已清除除用戶ID: " + userId + "外的未同步用戶");
-    }
-
-    public void logUnsyncedUsers() {
-        SQLiteDatabase db = getRegisterDatabase();
-        Cursor cursor = db.query(TABLE_NAME, new String[]{COL_ID, COL_USERNAME, COL_SYNC_ACTION},
-                COL_IS_SYNCED + " = 0", null, null, null, null);
-        while (cursor.moveToNext()) {
-            String id = cursor.getString(cursor.getColumnIndexOrThrow(COL_ID));
-            String username = cursor.getString(cursor.getColumnIndexOrThrow(COL_USERNAME));
-            String syncAction = cursor.getString(cursor.getColumnIndexOrThrow(COL_SYNC_ACTION));
-            Log.d(TAG, "未同步用戶: id=" + id + ", 用戶名=" + username + ", 同步動作=" + syncAction);
-        }
-        cursor.close();
-    }
-
     public String getProfileImageUrl(String userId) {
         SQLiteDatabase db = getRegisterDatabase();
         Cursor cursor = db.query(TABLE_NAME, new String[]{COL_PROFILE_IMAGE_URL},
@@ -653,13 +601,6 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
             }
         });
     }
-
-    public void deleteUserData(String userId) {
-        SQLiteDatabase db = getWritableDatabase();
-        db.delete(TABLE_NAME, COL_ID + " = ?", new String[]{userId});
-        db.close();
-    }
-
     public interface SyncCallback {
         void onSyncComplete(boolean success);
     }
@@ -674,7 +615,6 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
                 }
                 isSyncing = true;
                 uploadUnsyncedInvitations();
-
                 String userId = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
                         .getString("userId", null);
                 if (userId == null) {
@@ -745,7 +685,6 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
             }
         });
     }
-
     public void fetchInvitationsFromServer(Context context, String userId, String lastSyncTime, SyncCallback callback) {
         executorService.execute(() -> {
             OkHttpClient client = new OkHttpClient();
@@ -777,7 +716,6 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
             }
         });
     }
-
     public boolean isInvitationAccepted(String userId, String groupName) {
         SQLiteDatabase db = getRegisterDatabase();
         if (groupName == null) {
@@ -791,7 +729,6 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return isAccepted;
     }
-
     public void syncPendingMessages(Context context) {
         SQLiteDatabase db = getRegisterDatabase();
         Cursor cursor = db.query(TABLE_MESSAGES,
@@ -810,7 +747,6 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
         }
         cursor.close();
     }
-
     private void sendMessageToServer(Context context, String groupName, String sender, String message, String messageId, long timestamp) {
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.SECONDS)
@@ -829,7 +765,6 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
                     .url(getServerUrl() + "/send_message.php")
                     .post(requestBody)
                     .build();
-
             try (Response response = client.newCall(request).execute()) {
                 String responseData = response.body().string();
                 Log.d("RegisterDatabaseHelper", "Server response: " + responseData);
@@ -850,7 +785,6 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
             Log.e("RegisterDatabaseHelper", "Error syncing message: " + e.getMessage());
         }
     }
-
     public void insertInvitation(String invitationId, String groupName, String invitedUser, String status, int isSynced) {
         SQLiteDatabase db = getRegisterDatabase();
         ContentValues values = new ContentValues();
@@ -867,7 +801,6 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
             Log.e(TAG, "插入邀請失敗: " + invitationId);
         }
     }
-
     public static class RegistrationResult {
         public boolean success;
         public String id;
@@ -877,7 +810,6 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
             this.id = id;
         }
     }
-
     public RegistrationResult registerUser(String username, String email, String password) {
         SQLiteDatabase db = getRegisterDatabase();
         ContentValues values = new ContentValues();
@@ -898,7 +830,6 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
         final String finalUsername = username;
         final String finalEmail = email;
         final String finalPassword = password;
-
         values.put(COL_ID, randomId);
         values.put(COL_USERNAME, finalUsername);
         values.put(COL_EMAIL, finalEmail);
@@ -932,10 +863,8 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
     private void uploadUserToServer(String id, String username, String password, String email) throws IOException, JSONException {
         if (!isNetworkAvailable()) {
             Log.w(TAG, "網絡不可用，跳過上傳");
-            //showToast("網絡不可用，上傳將稍後重試");
             return;
         }
-
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(10, java.util.concurrent.TimeUnit.SECONDS)
                 .readTimeout(10, java.util.concurrent.TimeUnit.SECONDS)
@@ -949,24 +878,19 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
         jsonBody.put("last_modified", System.currentTimeMillis());
         jsonBody.put("is_synced", 0);
         jsonBody.put("sync_action", "insert");
-
         String fullUrl = SERVER_URL + "/register.php";
         Log.d(TAG, "上傳用戶到: " + fullUrl);
-
         RequestBody requestBody = RequestBody.create(jsonBody.toString(), MediaType.parse("application/json"));
         Request request = new Request.Builder()
                 .url(fullUrl)
                 .post(requestBody)
                 .build();
-
         try (Response response = client.newCall(request).execute()) {
             String responseData = response.body().string();
             Log.d(TAG, "伺服器回應: " + responseData);
             if (!response.isSuccessful()) {
                 Log.e(TAG, "上傳用戶失敗: " + response.code() + " - " + response.message());
-                //throw new IOException("上傳失敗: " + response.code() + " - " + response.message());
             }
-
             JSONObject jsonResponse = new JSONObject(responseData);
             if (!jsonResponse.getBoolean("success")) {
                 Log.e(TAG, "伺服器註冊失敗: " + jsonResponse.getString("message"));
@@ -974,7 +898,6 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
             }
         }
     }
-
     private void updateSyncStatus(String id, int isSynced) {
         SQLiteDatabase db = getRegisterDatabase();
         ContentValues values = new ContentValues();
@@ -982,7 +905,6 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
         db.update(TABLE_NAME, values, COL_ID + " = ?", new String[]{id});
         Log.d(TAG, "已更新ID: " + id + "的同步狀態為 " + isSynced);
     }
-
     public boolean checkUser(String username, String password) {
         SQLiteDatabase db = getRegisterDatabase();
         Cursor cursor = db.query(TABLE_NAME,
@@ -995,7 +917,6 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return exists;
     }
-
     public String getUserId(String username, String password) {
         SQLiteDatabase db = getRegisterDatabase();
         Cursor cursor = db.query(TABLE_NAME,
@@ -1011,13 +932,11 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return userId;
     }
-
     private boolean isNetworkAvailable() {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null && activeNetwork.isConnected();
     }
-
     public void syncDatabase(SyncCallback callback) {
         if (!isNetworkAvailable()) {
             Log.d(TAG, "無網絡連接，跳過同步");
@@ -1025,11 +944,9 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
             if (callback != null) callback.onSyncComplete(false);
             return;
         }
-
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         long lastSyncTime = prefs.getLong(KEY_LAST_SYNC_TIME, 0);
         long currentTime = System.currentTimeMillis();
-
         executorService.execute(() -> {
             boolean success = false;
             try {
@@ -1051,7 +968,6 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
             }
         });
     }
-
     private void syncDatabaseInternal() throws IOException, JSONException {
         syncDatabaseInternal(System.currentTimeMillis());
     }
@@ -1086,13 +1002,10 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
                 }
             }
         }
-        //throw lastException != null ? new IOException("在 " + maxRetries + " 次嘗試後同步失敗: " + lastException.getMessage(), lastException) : new IOException("在 " + maxRetries + " 次嘗試後同步失敗");
     }
-
     private void fetchAndMergeUsersFromServer(long lastSyncTime) throws IOException, JSONException {
         if (!isNetworkAvailable()) {
             Log.w(TAG, "網絡不可用，跳過下載");
-            //showToast("網絡不可用，下載將稍後重試");
             return;
         }
 
@@ -1103,17 +1016,14 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
 
         String fullUrl = SERVER_URL + "/fetch_users.php";
         Log.d(TAG, "從以下位置獲取用戶: " + fullUrl);
-
         Request request = new Request.Builder()
                 .url(fullUrl)
                 .build();
-
         try (Response response = client.newCall(request).execute()) {
             String responseData = response.body().string();
             Log.d(TAG, "完整獲取用戶回應: " + responseData);
             if (!response.isSuccessful()) {
                 Log.e(TAG, "獲取用戶失敗: " + response.code() + " - " + response.message());
-                //throw new IOException("獲取失敗: " + response.code() + " - " + response.message());
             }
 
             JSONObject jsonResponse = new JSONObject(responseData);
@@ -1175,7 +1085,6 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
             return;
         }
         checkCursor.close();
-
         String invitationId = generateRandomId();
         ContentValues values = new ContentValues();
         values.put(COL_INVITATION_ID, invitationId);
@@ -1183,7 +1092,6 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
         values.put(COL_INVITED_USER, invitedUserId);
         values.put(COL_STATUS, "pending");
         values.put(COL_IS_SYNCED_INV, 0);
-
         long result = db.insert(TABLE_INVITATIONS, null, values);
         if (result != -1) {
             Log.d(TAG, "已為用戶: " + invitedUserId + "，群組: " + groupName + "，邀請ID: " + invitationId + "添加群組邀請");
@@ -1193,7 +1101,6 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
             if (callback != null) callback.onSyncComplete(false);
         }
     }
-
     public List<Invitation> getPendingInvitations(String userId) {
         List<Invitation> invitations = new ArrayList<>();
         SQLiteDatabase db = getRegisterDatabase();
@@ -1237,37 +1144,6 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
         }
         cursor.close();
     }
-
-    public void showNotification(Context context, String userId, String groupName, boolean hasNotificationPermission) {
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            String channelId = "invitation_channel";
-            CharSequence channelName = "邀請通知";
-            NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
-            notificationManager.createNotificationChannel(channel);
-        }
-
-        Intent intent = new Intent(context, MainActivity.class);
-        intent.putExtra("UPDATE_MENU", true);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "invitation_channel")
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
-                .setContentTitle("新群組邀請")
-                .setContentText("您收到來自群組 " + groupName + " 的邀請")
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
-                .setPriority(NotificationCompat.PRIORITY_HIGH);
-
-        if (hasNotificationPermission) {
-            notificationManager.notify((int) System.currentTimeMillis(), builder.build());
-            Log.d(TAG, "為用戶ID: " + userId + "，群組: " + groupName + "發送通知");
-        } else {
-            Log.w(TAG, "用戶ID: " + userId + "未授予通知權限");
-        }
-    }
-
     public void insertMessage(String messageId, String groupName, String sender, String message, long timestamp) {
         SQLiteDatabase db = getRegisterDatabase();
         ContentValues values = new ContentValues();
@@ -1288,17 +1164,14 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
             Log.e(TAG, "插入訊息到本地資料庫失敗: " + messageId);
         }
     }
-
     private String fetchInvitationsFromServer(String url) throws IOException {
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(15, java.util.concurrent.TimeUnit.SECONDS)
                 .readTimeout(15, java.util.concurrent.TimeUnit.SECONDS)
                 .build();
-
         Request request = new Request.Builder()
                 .url(url)
                 .build();
-
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 throw new IOException("獲取邀請失敗: " + response.code() + " - " + response.message());
@@ -1306,7 +1179,6 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
             return response.body().string();
         }
     }
-
     public void updateMessageSyncStatus(String messageId, int isSynced) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -1315,26 +1187,6 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
         Log.d("RegisterDatabaseHelper", "Updated sync status for message_id: " + messageId + ", rows affected: " + rows);
         db.close();
     }
-
-    public String getPendingInvitationId(String userId, String groupName) {
-        SQLiteDatabase db = getRegisterDatabase();
-        Cursor cursor = db.query(TABLE_INVITATIONS,
-                new String[]{COL_INVITATION_ID},
-                COL_INVITED_USER + " = ? AND " + COL_GROUP_NAME + " = ? AND " + COL_STATUS + " = ?",
-                new String[]{userId, groupName, "pending"},
-                null, null, null);
-
-        String invitationId = null;
-        if (cursor.moveToFirst()) {
-            invitationId = cursor.getString(cursor.getColumnIndexOrThrow(COL_INVITATION_ID));
-            Log.d(TAG, "找到待處理邀請ID: " + invitationId + "，用戶: " + userId + "，群組: " + groupName);
-        } else {
-            Log.d(TAG, "未找到用戶: " + userId + "，群組: " + groupName + "的待處理邀請");
-        }
-        cursor.close();
-        return invitationId;
-    }
-
     private void uploadUnsyncedInvitations() throws IOException, JSONException {
         SQLiteDatabase db = getRegisterDatabase();
         Cursor cursor = db.query(TABLE_INVITATIONS, null, COL_IS_SYNCED_INV + " = 0", null, null, null, null);
@@ -1395,9 +1247,8 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
                         Log.e(TAG, "上傳邀請ID: " + invitationId + " 失敗 (第 " + (retryCount + 1) + " 次): " + e.getMessage());
                         retryCount++;
                         if (retryCount >= maxRetries) {
-                            //throw new IOException("上傳邀請ID: " + invitationId + " 在 " + maxRetries + " 次嘗試後失敗: " + e.getMessage());
+
                         }
-                        //Thread.sleep(2000 * retryCount); // 指數退避
                     }
                 }
             }
@@ -1407,7 +1258,6 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
             cursor.close();
         }
     }
-
     public boolean isMessageExists(String messageId) {
         SQLiteDatabase db = getRegisterDatabase();
         Cursor cursor = db.query(TABLE_MESSAGES,
@@ -1419,11 +1269,9 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return exists;
     }
-
     private void fetchAndMergeInvitationsFromServer() throws IOException, JSONException {
         if (!isNetworkAvailable()) {
             Log.w(TAG, "網絡不可用，跳過邀請下載");
-            //showToast("網絡不可用，邀請下載將稍後重試");
             return;
         }
 
@@ -1431,10 +1279,8 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
                 .connectTimeout(15, java.util.concurrent.TimeUnit.SECONDS)
                 .readTimeout(15, java.util.concurrent.TimeUnit.SECONDS)
                 .build();
-
         String fullUrl = SERVER_URL + "/fetch_invitations.php";
         Log.d(TAG, "從以下位置獲取邀請: " + fullUrl);
-
         Request request = new Request.Builder()
                 .url(fullUrl)
                 .build();
@@ -1444,7 +1290,6 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
             Log.d(TAG, "完整獲取邀請回應: " + responseData);
             if (!response.isSuccessful()) {
                 Log.e(TAG, "獲取邀請失敗: " + response.code() + " - " + response.message());
-                //throw new IOException("獲取失敗: " + response.code() + " - " + response.message());
             }
 
             JSONObject jsonResponse = new JSONObject(responseData);
@@ -1621,22 +1466,5 @@ public class RegisterDatabaseHelper extends SQLiteOpenHelper {
 
     public static String getServerUrl() {
         return SERVER_URL;
-    }
-
-    public void logDatabaseContent() {
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query("Users", null, null, null, null, null, null);
-        Log.d("RegisterDatabaseHelper", "本地用戶資料庫內容：");
-        if (cursor.getCount() == 0) {
-            Log.d("RegisterDatabaseHelper", "本地資料庫為空");
-        } else {
-            while (cursor.moveToNext()) {
-                String id = cursor.getString(cursor.getColumnIndexOrThrow("id"));
-                String username = cursor.getString(cursor.getColumnIndexOrThrow("username"));
-                String password = cursor.getString(cursor.getColumnIndexOrThrow("password"));
-                Log.d("RegisterDatabaseHelper", "用戶ID: " + id + ", 用戶名: " + username + ", 密碼: " + password);
-            }
-        }
-        cursor.close();
     }
 }

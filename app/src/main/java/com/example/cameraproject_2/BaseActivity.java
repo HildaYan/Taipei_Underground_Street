@@ -7,10 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -25,7 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public abstract class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public abstract class BaseActivity extends AppCompatActivity {
 
     protected SharedPreferences sharedPreferences;
     protected DrawerLayout drawerLayout;
@@ -42,14 +39,11 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
 
         preferenceChangeListener = (sharedPrefs, key) -> {
-            //Log.d("BaseActivity", "Preference changed, key: " + key);
             if (key.equals("isLoggedIn") || key.equals("loggedInUser") || key.equals("userId") || key.equals("groupNames")) {
-                //Log.d("BaseActivity", "Relevant key changed, updating UI");
                 updateHeader();
                 updateNavigationMenu();
                 if (navigationView != null) {
                     navigationView.getMenu().clear();
-                    getMenuInflater().inflate(R.menu.nav_menu, navigationView.getMenu());
                     updateNavigationMenu();
                     navigationView.requestLayout();
                 }
@@ -62,7 +56,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         super.onStart();
         sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener);
         updateHeader();
-        //updateNavigationMenu();
         Log.d("BaseActivity", "onStart: Navigation menu updated");
     }
 
@@ -110,36 +103,11 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
     }
 
     protected void updateHeader() {
-        //Log.d("BaseActivity", "Updating header...");
         if (navigationView == null) {
-            //Log.e("BaseActivity", "navigationView is null");
             return;
         }
 
         View headerView = navigationView.getHeaderView(0);
-        if (headerView == null) {
-            //Log.e("BaseActivity", "headerView is null");
-            //headerView = navigationView.inflateHeaderView(R.layout.activity_menu_header);
-        }
-
-        //TextView usernameValue = headerView.findViewById(R.id.textViewUsernameValue);
-        //TextView accountValue = headerView.findViewById(R.id.textViewAccountValue);
-
-        /*
-        if (usernameValue == null || accountValue == null) {
-            //Log.e("BaseActivity", "TextViews not found: usernameValue=" + usernameValue + ", accountValue=" + accountValue);
-            return;
-        }
-
-         */
-
-        String username = sharedPreferences.getString("loggedInUser", getString(R.string.guest));
-        String userId = sharedPreferences.getString("userId", getString(R.string.guest));
-        //Log.d("BaseActivity", "Setting username: " + username + ", userId: " + userId);
-
-        //usernameValue.setText(username);
-        //accountValue.setText(userId);
-
         headerView.invalidate();
         headerView.requestLayout();
     }
@@ -157,71 +125,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
-        } else {
-            //Toast.makeText(this, "ActionBar not available", Toast.LENGTH_SHORT).show();
         }
     }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.personal_account) {
-            Intent intent = new Intent(this, PersonalAccount.class);
-            startActivity(intent);
-        } else if (id == R.id.Chat_room) {
-            boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
-            if (isLoggedIn) {
-                Intent intent = new Intent(this, Chatroom.class);
-                startActivity(intent);
-            } else {
-                Intent intent = new Intent(this, PersonalAccount.class);
-                startActivity(intent);
-            }
-        } else if (id == R.id.Create_Group) {
-            Intent intent = new Intent(this, CreateGroupActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.nav_logout) {
-            new android.app.AlertDialog.Builder(this)
-                    .setTitle(getString(R.string.confirm_logout))
-                    .setMessage(getString(R.string.account_logout_confirm))
-                    .setPositiveButton(getString(R.string.confirm), (dialog, which) -> {
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.remove("loggedInUser");
-                        editor.putBoolean("isLoggedIn", false);
-                        editor.putString("userId", getString(R.string.guest));
-                        editor.apply();
-                        Toast.makeText(this, "Logged out", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(this, PersonalAccount.class);
-                        startActivity(intent);
-                    })
-                    .setNegativeButton(getString(R.string.cancel), null)
-                    .show();
-        } else {
-            String groupName = item.getTitle().toString();
-            Set<String> groupNames = sharedPreferences.getStringSet("groupNames", new HashSet<>());
-            if (groupNames.contains(groupName)) {
-                String membersString = sharedPreferences.getString(groupName + "_members", "");
-                List<String> members = new ArrayList<>();
-                if (!membersString.isEmpty()) {
-                    String[] membersArray = membersString.split(",");
-                    for (String member : membersArray) {
-                        members.add(member);
-                    }
-                }
-                Intent intent = new Intent(this, Chatroom.class);
-                intent.putExtra("groupName", groupName);
-                intent.putStringArrayListExtra("members", new ArrayList<>(members));
-                startActivity(intent);
-            }
-        }
-
-        if (drawerLayout != null) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        }
-        return true;
-    }
-
     @Override
     public void onBackPressed() {
         if (drawerLayout != null && drawerLayout.isDrawerOpen(GravityCompat.START)) {

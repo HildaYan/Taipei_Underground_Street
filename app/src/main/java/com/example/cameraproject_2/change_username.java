@@ -30,15 +30,10 @@ public class change_username extends AppCompatActivity {
             return insets;
         });
 
-        // 綁定 UI 元素
         editTextNewUsername = findViewById(R.id.edit_text_new_username);
         buttonConfirmUsername = findViewById(R.id.button_confirm_username);
-
-        // 獲取 Intent 數據
         userId = getIntent().getStringExtra("userId");
         originalUsername = getIntent().getStringExtra("originalUsername");
-
-        // 設置返回箭頭點擊事件
         findViewById(R.id.backArrow).setOnClickListener(v -> finish());
 
         // 設置確認按鈕點擊事件

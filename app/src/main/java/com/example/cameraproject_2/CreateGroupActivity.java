@@ -14,7 +14,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -43,15 +42,12 @@ public class CreateGroupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
-
         sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-
         editTextGroupName = findViewById(R.id.editTextGroupName);
         editTextMemberId = findViewById(R.id.editTextMemberId);
         buttonSearchMember = findViewById(R.id.buttonSearchMember);
         memberRecyclerView = findViewById(R.id.memberRecyclerView);
         buttonCreateGroup = findViewById(R.id.buttonCreateGroup);
-
         dbHelper = new RegisterDatabaseHelper(this);
         searchedUsers = new ArrayList<>();
         memberAdapter = new MemberAdapter(searchedUsers);
@@ -116,11 +112,7 @@ public class CreateGroupActivity extends AppCompatActivity {
             if (!selectedMembers.contains(currentUserId)) {
                 selectedMembers.add(currentUserId);
             }
-
-            // 調用 createGroup 方法來處理群組創建和邀請插入
             createGroup(groupName, selectedMembers);
-
-            // 同步邀請到伺服器
             CountDownLatch latch = new CountDownLatch(selectedMembers.size());
             for (String member : selectedMembers) {
                 Log.d("CreateGroupActivity", "Attempting to add invitation for user: " + member + " to group: " + groupName);
@@ -158,8 +150,6 @@ public class CreateGroupActivity extends AppCompatActivity {
 
     public void createGroup(String groupName, List<String> memberUserIds) {
         SQLiteDatabase db = dbHelper.getRegisterDatabase();
-
-        // 獲取當前用戶作為建立者
         String creatorId = sharedPreferences.getString("userId", null);
         if (creatorId == null) {
             Log.e("CreateGroupActivity", "Creator ID is null, redirecting to login");
@@ -171,7 +161,6 @@ public class CreateGroupActivity extends AppCompatActivity {
             return;
         }
 
-        // 為建立者插入 accepted 邀請
         String invitationId = dbHelper.generateRandomId();
         ContentValues creatorValues = new ContentValues();
         creatorValues.put(COL_INVITATION_ID, invitationId);
@@ -188,7 +177,6 @@ public class CreateGroupActivity extends AppCompatActivity {
             Log.d("CreateGroupActivity", "Inserted creator invitation for group: " + groupName + ", invitationId: " + invitationId);
         }
 
-        // 為其他成員添加 pending 邀請
         for (String memberId : memberUserIds) {
             if (!memberId.equals(creatorId)) {
                 String memberInvitationId = dbHelper.generateRandomId();
@@ -206,8 +194,6 @@ public class CreateGroupActivity extends AppCompatActivity {
                 }
             }
         }
-
-        // 更新 SharedPreferences
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(groupName + "_creator", creatorId);
         Set<String> groupNames = sharedPreferences.getStringSet("groupNames", new HashSet<>());
@@ -215,8 +201,6 @@ public class CreateGroupActivity extends AppCompatActivity {
         editor.putStringSet("groupNames", groupNames);
         editor.putString(groupName + "_members", String.join(",", memberUserIds));
         editor.apply();
-
-        Log.d("CreateGroupActivity", "Saved group: " + groupName + " with members: " + String.join(", ", memberUserIds));
     }
 
     private User getUserById(String userId) {

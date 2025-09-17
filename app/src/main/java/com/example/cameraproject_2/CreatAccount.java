@@ -8,13 +8,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.material.textfield.TextInputLayout;
-
-import java.io.IOException;
-
 public class CreatAccount extends AppCompatActivity {
 
     private EditText editTextNewUsername;
@@ -32,14 +27,8 @@ public class CreatAccount extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_creat_account);
-
-        // 初始化 SharedPreferences
         sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-
-        // 初始化資料庫
         dbHelper = new RegisterDatabaseHelper(this);
-
-        // 初始化 UI 元素
         editTextNewUsername = findViewById(R.id.editTextNewUsername);
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextNewPassword = findViewById(R.id.editTextNewPassword);
@@ -48,15 +37,11 @@ public class CreatAccount extends AppCompatActivity {
         backArrow = findViewById(R.id.backArrow);
         textInputLayoutNewPassword = findViewById(R.id.textInputLayoutNewPassword);
         textInputLayoutConfirmPassword = findViewById(R.id.textInputLayoutConfirmPassword);
-
-        // 檢查 backArrow 是否成功初始化
         if (backArrow == null) {
             Log.e("CreatAccount", "backArrow not found in layout");
         } else {
             Log.d("CreatAccount", "backArrow found successfully");
         }
-
-        // 設置返回箭頭的點擊事件
         backArrow.setOnClickListener(v -> {
             if (backArrow != null) {
                 Intent intent = new Intent(CreatAccount.this, PersonalAccount.class);
@@ -67,8 +52,6 @@ public class CreatAccount extends AppCompatActivity {
                 Log.e("CreatAccount", "backArrow is null, cannot set click listener");
             }
         });
-
-        // 接收從 PersonalAccount 傳遞的帳號和密碼（如果有）
         Intent intent = getIntent();
         String username = intent.getStringExtra("username");
         String password = intent.getStringExtra("password");
@@ -78,14 +61,12 @@ public class CreatAccount extends AppCompatActivity {
             editTextConfirmPassword.setText(password);
         }
 
-        // 設置確認註冊按鈕的點擊事件
         buttonConfirmRegister.setOnClickListener(v -> {
             String newUsername = editTextNewUsername.getText().toString().trim();
             String email = editTextEmail.getText().toString().trim();
             String newPassword = editTextNewPassword.getText().toString().trim();
             String confirmPassword = editTextConfirmPassword.getText().toString().trim();
 
-            // 檢查所有欄位是否為空
             if (newUsername.isEmpty()) {
                 editTextNewUsername.setError(getString(R.string.username_cannot_be_blank));
                 editTextNewUsername.requestFocus();

@@ -12,10 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHolder> {
-
     private List<Group> groupList;
     private final OnGroupClickListener clickListener;
-
     public interface OnGroupClickListener {
         void onGroupClick(Group group);
     }
@@ -43,8 +41,6 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
         holder.groupName.setText(group.getGroupName());
         holder.groupMessage.setText(group.getLastMessage());
         holder.lastMessageTime.setText(group.getLastMessageTime());
-
-        // Load creator's avatar
         String avatarUrl = group.getCreatorAvatarUrl();
         if (avatarUrl != null && !avatarUrl.isEmpty()) {
             Glide.with(holder.itemView.getContext())
@@ -63,7 +59,6 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
     public int getItemCount() {
         return groupList.size();
     }
-
     static class GroupViewHolder extends RecyclerView.ViewHolder {
         ImageView groupCreatorAvatar;
         TextView groupName;

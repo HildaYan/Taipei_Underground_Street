@@ -66,8 +66,6 @@ public class UserProfileActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         dbHelper = new RegisterDatabaseHelper(this);
-
-        // 綁定 UI 元素
         profileImage = findViewById(R.id.profile_image);
         textViewNameLabel = findViewById(R.id.text_view_name_label);
         textViewAccountLabel = findViewById(R.id.text_view_account_label);
@@ -75,9 +73,7 @@ public class UserProfileActivity extends AppCompatActivity {
         changePasswordLayout = findViewById(R.id.change_password_layout);
         logoutLayout = findViewById(R.id.logout_layout);
         deleteAccountLayout = findViewById(R.id.delete_account_layout);
-        ImageView backArrow = findViewById(R.id.backArrow); // 綁定返回箭頭
-
-        // 設置圖片選擇啟動器
+        ImageView backArrow = findViewById(R.id.backArrow);
         pickImageLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -93,28 +89,20 @@ public class UserProfileActivity extends AppCompatActivity {
                     }
                 }
         );
-
-        // 從 Intent 或 SharedPreferences 獲取狀態
-        Intent intent = getIntent(); // 初始 Intent
+        Intent intent = getIntent();
         boolean isLoggedIn = intent.getBooleanExtra("isLoggedIn", sharedPreferences.getBoolean("isLoggedIn", false));
         String loggedInUser = intent.getStringExtra("username");
         userId = intent.getStringExtra("userId");
         if (loggedInUser == null) loggedInUser = sharedPreferences.getString("loggedInUser", getString(R.string.unknown_user));
         if (userId == null) userId = sharedPreferences.getString("userId", getString(R.string.unknown_id));
-
-        // 根據狀態顯示內容
         if (isLoggedIn && !userId.equals(getString(R.string.guest))) {
             originalUsername = loggedInUser;
             textViewNameLabel.setText(getString(R.string.label_name) + loggedInUser);
             textViewAccountLabel.setText("ID: " + userId);
-
-            // 載入頭像
             String profileImageUrl = intent.getStringExtra("profileImageUrl");
             if (profileImageUrl == null) {
                 profileImageUrl = dbHelper.getProfileImageUrl(userId);
             }
-            Log.d(TAG, "onCreate: userId=" + userId + ", profileImageUrl=" + profileImageUrl);
-
             if (profileImageUrl != null && !profileImageUrl.isEmpty()) {
                 Picasso.get().load(profileImageUrl)
                         .error(R.drawable.user)
@@ -134,8 +122,6 @@ public class UserProfileActivity extends AppCompatActivity {
                 profileImage.setImageResource(R.drawable.user);
                 Log.d(TAG, "No profile image URL, using default");
             }
-
-            // 設置點擊事件
             changeNicknameLayout.setOnClickListener(v -> {
                 Intent intentChangeUsername = new Intent(UserProfileActivity.this, change_username.class);
                 intentChangeUsername.putExtra("userId", userId);
@@ -162,15 +148,11 @@ public class UserProfileActivity extends AppCompatActivity {
                         .setNegativeButton(getString(R.string.cancel), (dialog, which) -> dialog.dismiss())
                         .show();
             });
-
-            // 設置返回箭頭點擊事件
             backArrow.setOnClickListener(v -> {
                 Intent mainIntent = new Intent(UserProfileActivity.this, MainActivity.class); // 更改變量名
                 startActivity(mainIntent);
-                finish(); // 關閉當前活動
+                finish();
             });
-
-            // 設置圖標點擊事件（更改頭像）
             findViewById(R.id.circle_icon).setOnClickListener(v -> changeProfileImage());
         } else {
             textViewNameLabel.setText("姓名: 未登入");
@@ -186,7 +168,6 @@ public class UserProfileActivity extends AppCompatActivity {
             finish();
         }
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -201,7 +182,6 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         }
     }
-
     private void deleteAccount(String userId) {
         boolean success = dbHelper.deleteUser(userId);
         if (success) {
@@ -226,7 +206,7 @@ public class UserProfileActivity extends AppCompatActivity {
                 .readTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .build();
-        String url = "http://54.252.159.1/android_studio/upload_profile_image.php";
+        String url = "http://3.25.57.211/android_studio/upload_profile_image.php";
 
         File file = new File(getRealPathFromURI(imageUri));
         Log.d(TAG, "Uploading image for userId: " + userId + ", file path: " + file.getAbsolutePath() + ", file exists: " + file.exists() + ", file size: " + file.length());
@@ -243,30 +223,23 @@ public class UserProfileActivity extends AppCompatActivity {
                 .addFormDataPart("profile_image", file.getName(),
                         RequestBody.create(file, MediaType.parse("image/*")))
                 .build();
-
         Request request = new Request.Builder()
                 .url(url)
                 .post(requestBody)
                 .build();
-
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                //runOnUiThread(() -> Toast.makeText(UserProfileActivity.this, "上傳失敗: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                 Log.e(TAG, "Upload failed: " + e.getMessage());
             }
-
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
                 Log.d(TAG, "Upload response: " + responseData);
-
                 if (!responseData.trim().startsWith("{")) {
-                    //runOnUiThread(() -> Toast.makeText(UserProfileActivity.this, "伺服器錯誤: 無效的回應格式", Toast.LENGTH_SHORT).show());
                     Log.e(TAG, "Invalid JSON response: " + responseData);
                     return;
                 }
-
                 try {
                     JSONObject jsonResponse = new JSONObject(responseData);
                     if (jsonResponse.getBoolean("success")) {
@@ -293,21 +266,14 @@ public class UserProfileActivity extends AppCompatActivity {
                                             profileImage.setImageResource(R.drawable.user);
                                         }
                                     });
-                            //Toast.makeText(UserProfileActivity.this, "圖片上傳成功", Toast.LENGTH_SHORT).show();
                         });
-                    } else {
-                        String message = jsonResponse.optString("message", getString(R.string.unknown_error));
-                        //runOnUiThread(() -> Toast.makeText(UserProfileActivity.this, "上傳失敗: " + message, Toast.LENGTH_SHORT).show());
-                        //Log.e(TAG, "Upload failed: " + message);
                     }
                 } catch (JSONException e) {
-                    //runOnUiThread(() -> Toast.makeText(UserProfileActivity.this, "JSON 錯誤: 無效的伺服器回應", Toast.LENGTH_SHORT).show());
                     Log.e(TAG, "JSON error: " + e.getMessage() + ", response: " + responseData);
                 }
             }
         });
     }
-
     private String getRealPathFromURI(Uri contentUri) {
         String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
@@ -317,25 +283,10 @@ public class UserProfileActivity extends AppCompatActivity {
         cursor.close();
         return path;
     }
-
     private void changeProfileImage() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         pickImageLauncher.launch(intent);
     }
-
-    public void logAllUsers() {
-        SQLiteDatabase db = dbHelper.getRegisterDatabase();
-        Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
-        while (cursor.moveToNext()) {
-            String id = cursor.getString(cursor.getColumnIndexOrThrow(COL_ID));
-            String username = cursor.getString(cursor.getColumnIndexOrThrow(COL_USERNAME));
-            String syncAction = cursor.getString(cursor.getColumnIndexOrThrow(COL_SYNC_ACTION));
-            int isSynced = cursor.getInt(cursor.getColumnIndexOrThrow(COL_IS_SYNCED));
-            Log.d(TAG, "User: id=" + id + ", username=" + username + ", syncAction=" + syncAction + ", isSynced=" + isSynced);
-        }
-        cursor.close();
-    }
-
     private void logout() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("isLoggedIn", false);

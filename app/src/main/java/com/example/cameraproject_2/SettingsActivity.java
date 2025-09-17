@@ -10,7 +10,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,7 +20,6 @@ import androidx.core.view.WindowInsetsCompat;
 import java.util.Locale;
 
 public class SettingsActivity extends AppCompatActivity {
-
     private Spinner languageSpinner;
     private RegisterDatabaseHelper registerDbHelper;
     private SharedPreferences sharedPreferences;
@@ -33,23 +31,12 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_settings);
-
-        // 初始化 SharedPreferences
         sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-
-        // 根據設備區域設置初始語言
         defaultLang = Locale.getDefault().getLanguage().equals("zh") ? "zh" : "en";
         currentLang = sharedPreferences.getString("language", defaultLang);
-
-        // 應用當前語言
         applyLanguage(currentLang);
-
-        // 使用現有的 backArrow ImageView 處理返回到 MainActivity
         findViewById(R.id.backArrow).setOnClickListener(v -> onBackPressed());
-
-        // 初始化資料庫
         registerDbHelper = new RegisterDatabaseHelper(this);
-
         languageSpinner = findViewById(R.id.language_spinner);
 
         String[] languages = {
@@ -62,7 +49,6 @@ public class SettingsActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         languageSpinner.setAdapter(adapter);
 
-        // 設置當前語言
         int selectedPosition = 0;
         switch (currentLang) {
             case "ja":
@@ -94,8 +80,6 @@ public class SettingsActivity extends AppCompatActivity {
                     default:
                         newLangCode = "en";
                 }
-
-                // 只有當語言改變時才顯示確認對話框
                 if (!newLangCode.equals(currentLang)) {
                     showLanguageChangeConfirmation(newLangCode);
                 }
@@ -105,14 +89,11 @@ public class SettingsActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        // 使用說明：啟動 AppGuideActivity
         findViewById(R.id.help_text).setOnClickListener(v -> {
             Intent intent = new Intent(SettingsActivity.this, AppGuideActivity.class);
-            // 傳遞標誌以繞過「不再顯示」檢查
             intent.putExtra("FORCE_SHOW_GUIDE", true);
             startActivity(intent);
         });
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);

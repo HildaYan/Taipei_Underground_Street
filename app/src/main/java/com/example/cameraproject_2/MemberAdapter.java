@@ -14,9 +14,8 @@ import java.util.List;
 
 public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberViewHolder> {
 
-    private List<User> users; // 成員列表
-    private List<String> selectedMembers; // 選中的用戶 ID 列表
-
+    private List<User> users;
+    private List<String> selectedMembers;
     public MemberAdapter(List<User> users) {
         this.users = users != null ? users : new ArrayList<>();
         this.selectedMembers = new ArrayList<>();
@@ -52,23 +51,11 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
     }
 
     public List<String> getSelectedMembers() {
-        return new ArrayList<>(selectedMembers); // 返回 userId 列表
+        return new ArrayList<>(selectedMembers);
     }
-
-    // 添加或移除選中成員
-    public void toggleMemberSelection(String userId, boolean isChecked) {
-        if (isChecked && !selectedMembers.contains(userId)) {
-            selectedMembers.add(userId);
-        } else if (!isChecked) {
-            selectedMembers.remove(userId);
-        }
-        notifyDataSetChanged(); // 刷新適配器
-    }
-
     static class MemberViewHolder extends RecyclerView.ViewHolder {
         TextView textViewMember;
         CheckBox checkBox;
-
         MemberViewHolder(View itemView) {
             super(itemView);
             textViewMember = itemView.findViewById(R.id.text_member);

@@ -1,7 +1,6 @@
 package com.example.cameraproject_2;
 
 import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -64,7 +63,7 @@ public class Chatroom extends AppCompatActivity {
     private ImageView refreshIcon;
     private ImageView backArrow;
     private TextView textViewGroupName;
-    private List<Object> messageList; // 支持訊息和日期標籤
+    private List<Object> messageList;
     private MessageAdapter messageAdapter;
     private String groupName;
     private ArrayList<String> members;
@@ -82,7 +81,6 @@ public class Chatroom extends AppCompatActivity {
     private int pollingRetryCount = 0;
     private static final int MAX_POLLING_RETRIES = 3;
     private static final long POLLING_INTERVAL_MS = 5000;
-    private static final long POLLING_INTERVAL_RETRY_MS = 10000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +114,6 @@ public class Chatroom extends AppCompatActivity {
                     ", refreshIcon=" + (refreshIcon != null) +
                     ", groupName=" + (textViewGroupName != null) +
                     ", dbHelper=" + (dbHelper != null));
-            //Toast.makeText(this, "初始化失敗", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -134,8 +131,6 @@ public class Chatroom extends AppCompatActivity {
             refreshMessages();
             if (isNetworkAvailable()) {
                 fetchMessagesFromServer();
-            } else {
-                Toast.makeText(this, getString(R.string.no_network_local_load_only), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -245,8 +240,6 @@ public class Chatroom extends AppCompatActivity {
         loadMessagesFromDatabase();
         debugLocalMessages();
         startMessagePolling();
-
-        navigationView.setNavigationItemSelectedListener(this::handleNavigationItemSelected);
         updateNavigationMenu();
         checkInvitationStatus();
     }
@@ -267,8 +260,6 @@ public class Chatroom extends AppCompatActivity {
                 String formattedTime = sdf.format(new Date(timestampMs));
 
                 Log.d("Chatroom", "Loaded message: ID=" + messageId + ", sender=" + sender + ", content=" + content + ", formattedTime=" + formattedTime);
-
-                // 添加到訊息列表，使用 MessageAdapter.Message
                 messageList.add(new MessageAdapter.Message(sender, content, formattedTime));
             }
             messageAdapter.notifyDataSetChanged();
@@ -315,11 +306,9 @@ public class Chatroom extends AppCompatActivity {
                         Log.e("Chatroom", "Polling failed with response code: " + responseCode);
                         if (pollingRetryCount >= MAX_POLLING_RETRIES) {
                             pollingRetryCount = 0;
-                            retryDelay = POLLING_INTERVAL_MS; // 重置延遲
-                            lastMessageId = "0"; // 僅在必要時重置
-                            runOnUiThread(() -> Toast.makeText(Chatroom.this, getString(R.string.server_error_retry_fetch_all), Toast.LENGTH_SHORT).show());
+                            retryDelay = POLLING_INTERVAL_MS;
                         } else {
-                            retryDelay *= 2; // 指數退避
+                            retryDelay *= 2;
                         }
                         Thread.sleep(retryDelay);
                     }
@@ -416,10 +405,7 @@ public class Chatroom extends AppCompatActivity {
                                 break;
                             }
                         }
-                    } else {
-                        Log.d("Chatroom", "No pending invitations found for user " + currentUserId);
                     }
-
                     updateUI();
                     updateNavigationMenu();
                 });
@@ -453,7 +439,6 @@ public class Chatroom extends AppCompatActivity {
                         dbHelper.updateInvitationStatus(invitation.getInvitationId(), "rejected");
                         checkInvitationStatus();
                         dialog.dismiss();
-                        //Log.d("Chatroom", "Invitation rejected: " + instance.getInvitationId());
                     })
                     .setCancelable(false)
                     .show();
@@ -482,9 +467,6 @@ public class Chatroom extends AppCompatActivity {
 
         if (isNetworkAvailable()) {
             sendMessageToServer(groupName, currentUsername, message, messageId, timestamp);
-        } else {
-            Log.w("Chatroom", "No network available, message stored locally");
-            Toast.makeText(this, getString(R.string.no_network_location_saved), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -605,13 +587,10 @@ public class Chatroom extends AppCompatActivity {
                                             Log.e("Chatroom", "Invalid timestamp format for message ID=" + messageId + ": " + e.getMessage());
                                             timestamp = System.currentTimeMillis();
                                         }
-
-                                        // 檢查本地是否已有該訊息
                                         if (!dbHelper.isMessageExists(messageId)) {
                                             dbHelper.insertMessage(messageId, groupName, sender, messageText, timestamp);
                                             Log.d("Chatroom", "Inserting new message: ID=" + messageId + ", content=" + messageText + ", timestamp=" + timestamp);
                                         } else {
-                                            // 如果訊息存在，檢查是否需要更新
                                             String localMessage = dbHelper.getMessageContent(messageId);
                                             if (!messageText.equals(localMessage)) {
                                                 dbHelper.updateMessageContent(messageId, messageText);
@@ -784,23 +763,6 @@ public class Chatroom extends AppCompatActivity {
 
             Menu menu = navigationView.getMenu();
             menu.clear();
-
-            menu.add(Menu.NONE, R.id.Chat_room, Menu.NONE, getString(R.string.home_page))
-                    .setIcon(R.drawable.store_icon)
-                    .setOnMenuItemClickListener(item -> {
-                        startActivity(new Intent(Chatroom.this, Chatroom.class));
-                        drawerLayout.closeDrawer(GravityCompat.START);
-                        return true;
-                    });
-
-            menu.add(Menu.NONE, R.id.Create_Group, Menu.NONE, getString(R.string.create_group))
-                    .setIcon(R.drawable.store_icon)
-                    .setOnMenuItemClickListener(item -> {
-                        startActivity(new Intent(Chatroom.this, CreateGroupActivity.class));
-                        drawerLayout.closeDrawer(GravityCompat.START);
-                        return true;
-                    });
-
             Set<String> groupNames = new HashSet<>();
             SQLiteDatabase db = dbHelper.getRegisterDatabase();
             Cursor cursor = db.query(RegisterDatabaseHelper.TABLE_INVITATIONS,
@@ -820,7 +782,7 @@ public class Chatroom extends AppCompatActivity {
 
             for (String group : groupNames) {
                 menu.add(Menu.NONE, Menu.NONE, Menu.NONE, group)
-                        .setIcon(R.drawable.ic_go)
+                        //.setIcon(R.drawable.ic_go)
                         .setOnMenuItemClickListener(item -> {
                             String selectedGroupName = item.getTitle().toString();
                             Intent intent = new Intent(Chatroom.this, Chatroom.class);
@@ -831,49 +793,7 @@ public class Chatroom extends AppCompatActivity {
                             return true;
                         });
             }
-
-            menu.add(Menu.NONE, R.id.nav_logout, Menu.NONE, getString(R.string.logout))
-                    .setIcon(R.drawable.login_icon)
-                    .setOnMenuItemClickListener(item -> {
-                        SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                        editor1.putBoolean("isLoggedIn", false);
-                        editor1.putString("loggedInUser", getString(R.string.guest));
-                        editor1.putString("userId", null);
-                        editor1.apply();
-                        Toast.makeText(Chatroom.this, getString(R.string.logged_out), Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(Chatroom.this, PersonalAccount.class));
-                        finish();
-                        return true;
-                    });
-
-            Log.d("Chatroom", "Navigation menu updated with groups: " + groupNames);
         });
-    }
-
-    private boolean handleNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.nav_logout) {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("isLoggedIn", false);
-            editor.putString("loggedInUser", getString(R.string.guest));
-            editor.putString("userId", null);
-            editor.apply();
-            Toast.makeText(this, getString(R.string.logged_out), Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, PersonalAccount.class));
-            finish();
-        } else if (id == R.id.Chat_room) {
-            startActivity(new Intent(this, Chatroom.class));
-        } else if (id == R.id.Create_Group) {
-            startActivity(new Intent(this, CreateGroupActivity.class));
-        } else {
-            String selectedGroupName = item.getTitle().toString();
-            Intent intent = new Intent(this, Chatroom.class);
-            intent.putExtra("groupName", selectedGroupName);
-            intent.putStringArrayListExtra("members", new ArrayList<>(members));
-            startActivity(intent);
-        }
-        drawerLayout.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     @Override

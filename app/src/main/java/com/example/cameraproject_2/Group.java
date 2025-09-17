@@ -1,7 +1,6 @@
 package com.example.cameraproject_2;
 
 import java.util.List;
-
 public class Group {
     private String groupName;
     private String creatorId;
@@ -15,14 +14,12 @@ public class Group {
         this.creatorId = creatorId;
         this.creatorAvatarUrl = creatorAvatarUrl;
         this.members = members;
-        this.lastMessage = "無訊息"; // Default value
-        this.lastMessageTime = ""; // Default value
+        this.lastMessage = "無訊息";
+        this.lastMessageTime = "";
     }
-
     public String getGroupName() {
         return groupName;
     }
-
     public String getCreatorId() {
         return creatorId;
     }
@@ -30,23 +27,18 @@ public class Group {
     public String getCreatorAvatarUrl() {
         return creatorAvatarUrl != null ? creatorAvatarUrl : "";
     }
-
     public List<String> getMembers() {
         return members;
     }
-
     public String getLastMessage() {
         return lastMessage;
     }
-
     public String getLastMessageTime() {
         return lastMessageTime;
     }
-
     public void setLastMessage(String lastMessage) {
         this.lastMessage = lastMessage;
     }
-
     public void setLastMessageTime(String lastMessageTime) {
         this.lastMessageTime = lastMessageTime;
     }
