@@ -127,7 +127,7 @@
                     android:id="@+id/text_view_account_nickname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/button_see_again"
+                    android:text="@string/change_password"
                     android:textColor="#000000"
                     android:textSize="16sp"
                     android:textStyle="bold" />

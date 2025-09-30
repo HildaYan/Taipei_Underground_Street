@@ -76,11 +76,19 @@ public class AppGuideActivity extends AppCompatActivity {
         // 初始化使用說明圖片清單
         guideImages = new ArrayList<>();
         try {
-            guideImages.add(R.drawable.person);
+            guideImages.add(R.drawable.explanation1);
+            guideImages.add(R.drawable.explanation2);
+            guideImages.add(R.drawable.explanation3);
+            guideImages.add(R.drawable.explanation4);
+            guideImages.add(R.drawable.explanation5);
+            guideImages.add(R.drawable.explanation6);
+            guideImages.add(R.drawable.explanation7);
+            guideImages.add(R.drawable.explanation8);
         } catch (Exception e) {
             finish();
             return;
         }
+
 
         // 設置 ViewPager 適配器
         GuideImageAdapter adapter = new GuideImageAdapter(guideImages);
